@@ -6,11 +6,11 @@ package goGame;
  */
 public class App 
 {
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-        System.out.println("TESTOWANKO SERVERA");
-        System.out.println( "My first Clien commit." );
+    private static ClientGUI clientGUI;
+    public static void main( String[] args ) {
+        initializeGame();
     }
-
+    private static void initializeGame(){
+        clientGUI = new ClientGUI(900, 900);
+    }
 }
