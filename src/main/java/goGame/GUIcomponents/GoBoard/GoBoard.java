@@ -2,10 +2,14 @@ package goGame.GUIcomponents.GoBoard;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
-public class GoBoard extends JPanel implements IGoBoard{
-    private int _size, _xSize, _ySize, _margin, _gap;
-
+public class GoBoard extends JPanel implements IGoBoard, MouseListener {
+    private static int _size, _xSize, _ySize, _margin, _gap;
+    private ArrayList<FieldButton> fieldButtonArrayList;
     public GoBoard(int size){
         _size=size;
         initializeBoard(800,800);
@@ -15,7 +19,10 @@ public class GoBoard extends JPanel implements IGoBoard{
         _xSize=x;
         _ySize=y;
         _margin=30;
+        this.setLayout(new GridLayout(_size, _size));
         this.setPreferredSize(new Dimension(_xSize,_ySize));
+        setButtonList(_size);
+        addMouseListener(this);
     }
 
     @Override
@@ -24,11 +31,12 @@ public class GoBoard extends JPanel implements IGoBoard{
         drawBoard();
         drawFields(_size, g);
         drawSpecialFields(_size, g);
+        drawButtonFields(g);
         //temp
-        drawPlayer(0,0, Color.BLACK, g);
-        drawPlayer(2,4, Color.BLACK, g);
-        drawPlayer(6,8, Color.WHITE, g);
-        drawPlayer(18,18, Color.WHITE, g);
+//        drawPlayer(0,0, Color.BLACK, g);
+//        drawPlayer(2,4, Color.BLACK, g);
+//        drawPlayer(6,8, Color.WHITE, g);
+//        drawPlayer(18,18, Color.WHITE, g);
 
     }
 
@@ -100,5 +108,54 @@ public class GoBoard extends JPanel implements IGoBoard{
     private void drawPlayer(int x, int y, Color clr, Graphics g){
         g.setColor(clr);
         g.fillOval(temporaryConverter(x)-15,temporaryConverter(y)-15,30,30);
+    }
+
+    private void setButtonList(int size){
+        fieldButtonArrayList = new ArrayList<FieldButton>();
+        for(int x=0; x<size; x++){
+            for(int y=0; y<size; y++){
+                fieldButtonArrayList.add(new FieldButton(y,x,20,20));
+            }
+        }
+    }
+    private void drawButtonFields(Graphics g){
+        //g.setColor(Color.RED);
+        for(FieldButton fieldButton : fieldButtonArrayList){
+            fieldButton.setXDraw(temporaryConverter(fieldButton.getPosX())-10);
+            fieldButton.setYDraw(temporaryConverter(fieldButton.getPosY())-10);
+            //g.drawRect(fieldButton.getXDraw(), fieldButton.getYDraw(), fieldButton.getXSize(), fieldButton.getYSize());
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        int xPos = mouseEvent.getX();
+        int yPos = mouseEvent.getY();
+        for(FieldButton fieldButton : fieldButtonArrayList){
+            if(xPos>=fieldButton.getXDraw() && xPos<=fieldButton.getXDraw()+fieldButton.getXSize() && yPos>=fieldButton.getYDraw() && yPos<fieldButton.getYDraw()+fieldButton.getYSize()){
+                System.out.println(fieldButton.getPosX() + ", "+fieldButton.getPosY());
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
     }
 }
