@@ -1,15 +1,18 @@
 package goGame.GUIcomponents.GoBoard;
 
-import javax.swing.JPanel;
+import goGame.GUIcomponents.Stone.Stone;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     private static int _size, _xSize, _ySize, _margin, _gap;
     private ArrayList<FieldButton> fieldButtonArrayList;
+    private Color playerColor;
+    private ArrayList<Stone> whitePlayer, blackPlayer;
     public GoBoard(int size){
         _size=size;
         initializeBoard(800,800);
@@ -23,6 +26,10 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         this.setPreferredSize(new Dimension(_xSize,_ySize));
         setButtonList(_size);
         addMouseListener(this);
+        whitePlayer = new ArrayList<Stone>();
+        blackPlayer = new ArrayList<Stone>();
+        //do testow
+        setPlayerColor(Color.BLACK);
     }
 
     @Override
@@ -31,13 +38,8 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         drawBoard();
         drawFields(_size, g);
         drawSpecialFields(_size, g);
-        drawButtonFields(g);
-        //temp
-//        drawPlayer(0,0, Color.BLACK, g);
-//        drawPlayer(2,4, Color.BLACK, g);
-//        drawPlayer(6,8, Color.WHITE, g);
-//        drawPlayer(18,18, Color.WHITE, g);
-
+        drawButtonFields();
+        drawStones(g);
     }
 
     @Override
@@ -96,7 +98,7 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     public int setGaps(int size){
         return ((_xSize-(2*_margin))/(size-1));
     }
-    //ta funkcja ma byc w game contollerze
+
     private int temporaryConverter(int x){
         int drawX=_margin;
         for(int i=0; i<x; i++){
@@ -104,8 +106,8 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         }
         return drawX;
     }
-    //do testow, ale pewnie zostanie
-    private void drawPlayer(int x, int y, Color clr, Graphics g){
+
+    private void drawStone(int x, int y, Color clr, Graphics g){
         g.setColor(clr);
         g.fillOval(temporaryConverter(x)-15,temporaryConverter(y)-15,30,30);
     }
@@ -118,12 +120,10 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             }
         }
     }
-    private void drawButtonFields(Graphics g){
-        //g.setColor(Color.RED);
+    private void drawButtonFields(){
         for(FieldButton fieldButton : fieldButtonArrayList){
             fieldButton.setXDraw(temporaryConverter(fieldButton.getPosX())-10);
             fieldButton.setYDraw(temporaryConverter(fieldButton.getPosY())-10);
-            //g.drawRect(fieldButton.getXDraw(), fieldButton.getYDraw(), fieldButton.getXSize(), fieldButton.getYSize());
         }
     }
 
@@ -134,28 +134,45 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         for(FieldButton fieldButton : fieldButtonArrayList){
             if(xPos>=fieldButton.getXDraw() && xPos<=fieldButton.getXDraw()+fieldButton.getXSize() && yPos>=fieldButton.getYDraw() && yPos<fieldButton.getYDraw()+fieldButton.getYSize()){
                 System.out.println(fieldButton.getPosX() + ", "+fieldButton.getPosY());
+                setStone(fieldButton.getPosX(), fieldButton.getPosY());
                 return;
             }
         }
     }
 
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-
+    private void setStone(int x, int y){
+        boolean request = true;
+        //request = server.isFieldFree(x,y,playerColor);
+        if(request){
+            //server.sendOpponentMyStone(x,y,playerColor);
+            if (playerColor.equals(Color.BLACK)) {
+                blackPlayer.add(new Stone(x,y,playerColor));
+            }
+            else if(playerColor.equals(Color.WHITE)){
+                whitePlayer.add(new Stone(x,y,playerColor));
+            }
+            repaint();
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "You cant put your stone here.");
+        }
     }
 
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-
+    private void drawStones(Graphics g){
+        for(Stone whiteStone : whitePlayer){
+            drawStone(whiteStone.getPosX(), whiteStone.getPosY(), Color.WHITE, g);
+        }
+        for(Stone blackStone : blackPlayer){
+            drawStone(blackStone.getPosX(), blackStone.getPosY(), Color.BLACK, g);
+        }
     }
 
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-
+    private void setPlayerColor(Color clr){
+        playerColor = clr;
     }
 
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-
-    }
+    public void mousePressed(MouseEvent mouseEvent) {}
+    public void mouseReleased(MouseEvent mouseEvent) {}
+    public void mouseEntered(MouseEvent mouseEvent) {}
+    public void mouseExited(MouseEvent mouseEvent) {}
 }
