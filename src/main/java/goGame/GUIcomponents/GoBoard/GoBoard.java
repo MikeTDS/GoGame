@@ -1,5 +1,6 @@
 package goGame.GUIcomponents.GoBoard;
 
+import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
 import goGame.GUIcomponents.Stone.Stone;
 
 import javax.swing.*;
@@ -151,6 +152,7 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             else if(playerColor.equals(Color.WHITE)){
                 whitePlayer.add(new Stone(x,y,playerColor));
             }
+            ScoreBoard.showStones(whitePlayer.size(), blackPlayer.size());
             repaint();
         }
         else{
@@ -166,11 +168,13 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             drawStone(blackStone.getPosX(), blackStone.getPosY(), Color.BLACK, g);
         }
     }
-
     private void setPlayerColor(Color clr){
         playerColor = clr;
     }
-
+    public int getWhiteAmount(){
+        return whitePlayer.size();
+    }
+    public int getBlackAmount(){ return blackPlayer.size(); }
     public void mousePressed(MouseEvent mouseEvent) {}
     public void mouseReleased(MouseEvent mouseEvent) {}
     public void mouseEntered(MouseEvent mouseEvent) {}

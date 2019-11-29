@@ -11,6 +11,6 @@ public class App
         initializeGame();
     }
     private static void initializeGame(){
-        clientGUI = new ClientGUI(900, 900);
+        clientGUI = new ClientGUI(1200, 900);
     }
 }
