@@ -1,4 +1,4 @@
-package goGame.GUIcomponents.GoBoard;
+package goGame.GUI.GUIcomponents.GoBoard;
 
 import java.awt.*;
 

@@ -1,7 +1,7 @@
-package goGame.GUIcomponents.GoBoard;
+package goGame.GUI.GUIcomponents.GoBoard;
 
-import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
-import goGame.GUIcomponents.Stone.Stone;
+import goGame.Client.ServerComunitator;
+import goGame.GUI.GUIcomponents.Stone.Stone;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +12,13 @@ import java.util.ArrayList;
 public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     private static int _size, _xSize, _ySize, _margin, _gap;
     private ArrayList<FieldButton> fieldButtonArrayList;
-    private Color playerColor;
     private ArrayList<Stone> whitePlayer, blackPlayer;
-    public GoBoard(int size){
+    private ServerComunitator _serverComunitator;
+    private int _currentX, _currentY;
+
+    public GoBoard(int size, ServerComunitator serverComunitator){
         _size=size;
+        _serverComunitator = serverComunitator;
         initializeBoard(800,800);
     }
 
@@ -27,10 +30,8 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         this.setPreferredSize(new Dimension(_xSize,_ySize));
         setButtonList(_size);
         addMouseListener(this);
-        whitePlayer = new ArrayList<Stone>();
-        blackPlayer = new ArrayList<Stone>();
-        //do testow
-        setPlayerColor(Color.BLACK);
+        whitePlayer = new ArrayList<>();
+        blackPlayer = new ArrayList<>();
     }
 
     @Override
@@ -114,7 +115,7 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     }
 
     private void setButtonList(int size){
-        fieldButtonArrayList = new ArrayList<FieldButton>();
+        fieldButtonArrayList = new ArrayList<>();
         for(int x=0; x<size; x++){
             for(int y=0; y<size; y++){
                 fieldButtonArrayList.add(new FieldButton(y,x,20,20));
@@ -135,30 +136,23 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         for(FieldButton fieldButton : fieldButtonArrayList){
             if(xPos>=fieldButton.getXDraw() && xPos<=fieldButton.getXDraw()+fieldButton.getXSize() && yPos>=fieldButton.getYDraw() && yPos<fieldButton.getYDraw()+fieldButton.getYSize()){
                 System.out.println(fieldButton.getPosX() + ", "+fieldButton.getPosY());
-                setStone(fieldButton.getPosX(), fieldButton.getPosY());
+                ServerComunitator.getPrintWriter().println("MOVE");
+                ServerComunitator.getPrintWriter().println(fieldButton.getPosX());
+                ServerComunitator.getPrintWriter().println(fieldButton.getPosY());
                 return;
             }
         }
     }
 
-    private void setStone(int x, int y){
-        boolean request = true;
-        //request = server.isFieldFree(x,y,playerColor);
-        if(request){
-            //server.sendOpponentMyStone(x,y,playerColor);
-            if (playerColor.equals(Color.BLACK)) {
-                blackPlayer.add(new Stone(x,y,playerColor));
+    public void setStone(int x, int y, String playerColor){
+            if (playerColor.equals("Black")) {
+                blackPlayer.add(new Stone(x, y, playerColor));
             }
-            else if(playerColor.equals(Color.WHITE)){
-                whitePlayer.add(new Stone(x,y,playerColor));
+            else if(playerColor.equals("White")){
+                whitePlayer.add(new Stone(x, y, playerColor));
             }
-            ScoreBoard.showStones(whitePlayer.size(), blackPlayer.size());
-            repaint();
-        }
-        else{
-            JOptionPane.showMessageDialog(this, "You cant put your stone here.");
-        }
     }
+
 
     private void drawStones(Graphics g){
         for(Stone whiteStone : whitePlayer){
@@ -168,13 +162,7 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             drawStone(blackStone.getPosX(), blackStone.getPosY(), Color.BLACK, g);
         }
     }
-    private void setPlayerColor(Color clr){
-        playerColor = clr;
-    }
-    public int getWhiteAmount(){
-        return whitePlayer.size();
-    }
-    public int getBlackAmount(){ return blackPlayer.size(); }
+
     public void mousePressed(MouseEvent mouseEvent) {}
     public void mouseReleased(MouseEvent mouseEvent) {}
     public void mouseEntered(MouseEvent mouseEvent) {}
