@@ -81,4 +81,5 @@ class Player implements Runnable {
     }
 
     Player getOpponent(){ return  _opponent; }
+    String getColor(){ return  _color; }
 }

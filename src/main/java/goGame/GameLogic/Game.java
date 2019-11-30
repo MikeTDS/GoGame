@@ -1,17 +1,16 @@
 package goGame.GameLogic;
 
-import java.awt.*;
+
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Game {
-    private static Player[] _board;
+    private static Stone[] _board;
     private static int _size;
 
     Player currentPlayer;
 
     public Game(int size){
-        _board = new Player[size*size];
+        _board = new Stone[size*size];
         _size = size;
     }
 
@@ -25,7 +24,8 @@ public class Game {
         } else if (_board[location] != null) {
             throw new IllegalStateException("Field occupied");
         }
-        _board[location] = currentPlayer;
+
+        _board[location] = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         currentPlayer = currentPlayer.getOpponent();
     }
 
