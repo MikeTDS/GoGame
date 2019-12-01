@@ -79,6 +79,19 @@ public class GoGameClient {
                         _goBoard.setStone(x, y, opponentColor);
                         _goBoard.repaint();
                         break;
+                    case "KILL":
+                        response = ServerComunitator.getScanner().nextLine();
+                        while (!response.equals("KILL_STOP")){
+                            x = convertToInt(response);
+
+                            response = ServerComunitator.getScanner().nextLine();
+                            y = convertToInt(response);
+                            response = ServerComunitator.getScanner().nextLine();
+                            _goBoard.removeStone(x, y, response);
+                            response = ServerComunitator.getScanner().nextLine();
+                        }
+                        _goBoard.repaint();
+                        break;
                 }
             }
             ServerComunitator.getPrintWriter().println("QUIT");
