@@ -1,6 +1,6 @@
 package goGame.GUIcomponents.ScoreBoard;
 
-import goGame.ClientGUI;
+//import goGame.ClientGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ public class ExitButton extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e){
         //server.sendExit();
-        JOptionPane.showMessageDialog(ClientGUI.getGoBoard(), "Exit.");
+        //JOptionPane.showMessageDialog(ClientGUI.getGoBoard(), "Exit.");
         //server.showStartMenu();
     }
 }

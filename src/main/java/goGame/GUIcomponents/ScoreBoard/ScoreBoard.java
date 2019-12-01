@@ -1,6 +1,8 @@
 package goGame.GUIcomponents.ScoreBoard;
 
-import goGame.GUIcomponents.GoBoard.GoBoard;
+//import goGame.GUIcomponents.GoBoard.GoBoard;
+import goGame.Client.ServerComunitator;
+
 import javax.swing.*;
 import java.awt.*;
 
