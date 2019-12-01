@@ -75,6 +75,7 @@ class Player implements Runnable {
             _opponent._output.println(x);
             _opponent._output.println(y);
         } catch (IllegalStateException e) {
+            System.out.println( e.getMessage());
             _output.println("WRONG_MOVE " + e.getMessage());
         }
     }
