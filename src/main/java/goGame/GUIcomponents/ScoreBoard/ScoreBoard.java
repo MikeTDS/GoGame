@@ -39,7 +39,7 @@ public class ScoreBoard extends JPanel{
     public static void showPoints(int ps){
         scoreLabel.showScore(ps);
     }
-    public static void showStones(int w, int b){
+    public void showStones(int w, int b){
         stoneAmountLabel.showStoneAmount(w,b);
     }
 }

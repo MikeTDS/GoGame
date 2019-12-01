@@ -181,6 +181,16 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         }
     }
 
+    public int getStonesAmount(String clr){
+        if(clr.equalsIgnoreCase("black")){
+            return whitePlayer.size();
+        }
+        else if(clr.equalsIgnoreCase("white")){
+            return blackPlayer.size();
+        }
+        return 0;
+    }
+
     public void mousePressed(MouseEvent mouseEvent) {}
     public void mouseReleased(MouseEvent mouseEvent) {}
     public void mouseEntered(MouseEvent mouseEvent) {}

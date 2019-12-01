@@ -2,18 +2,20 @@ package goGame.Client;
 
 import goGame.GUI.GUIcomponents.GoBoard.GoBoard;
 import goGame.GUI.GuiFrame;
+import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
 
 import java.awt.*;
 
 public class GoGameClient {
     private static final String DEFAULT_SERVER_ADRESS = "localhost";
-    private static final int WIDTH = 900,
+    private static final int WIDTH = 1200,
                              HEIGHT = 900,
                              DEFAULT_SERVER_PORT = 59090;
 
     private static ServerComunitator _serverComunitator;
     private static GuiFrame _clientFrame;
     private static GoBoard _goBoard;
+    private static ScoreBoard _scoreBoard;
 
     public static void main( String[] args ) throws Exception {
         initializeGame();
@@ -29,8 +31,10 @@ public class GoGameClient {
 
         int goBoardSize = getBoardSize();
         _goBoard = new GoBoard(goBoardSize, _serverComunitator);
+        _scoreBoard = new ScoreBoard();
         _clientFrame = new GuiFrame(WIDTH, HEIGHT);
         _clientFrame.add(_goBoard);
+        _clientFrame.add(_scoreBoard);
     }
 
     private static int getBoardSize() {
@@ -68,6 +72,7 @@ public class GoGameClient {
 
                         _goBoard.setStone(x, y, color);
                         _goBoard.repaint();
+                        _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
                         break;
                     case "OPPONENT_MOVED":
                         response = ServerComunitator.getScanner().nextLine();
@@ -78,6 +83,7 @@ public class GoGameClient {
 
                         _goBoard.setStone(x, y, opponentColor);
                         _goBoard.repaint();
+                        _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
                         break;
                     case "KILL":
                         response = ServerComunitator.getScanner().nextLine();
@@ -91,6 +97,7 @@ public class GoGameClient {
                             response = ServerComunitator.getScanner().nextLine();
                         }
                         _goBoard.repaint();
+                        _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
                         break;
                 }
             }
@@ -103,5 +110,8 @@ public class GoGameClient {
             ServerComunitator.getSocket().close();
             _clientFrame.dispose();
         }
+    }
+    public static GuiFrame getGuiFrame(){
+        return _clientFrame;
     }
 }
