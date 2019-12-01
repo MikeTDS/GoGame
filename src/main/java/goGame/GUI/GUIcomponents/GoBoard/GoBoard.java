@@ -153,6 +153,24 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             }
     }
 
+    public void removeStone(int x, int y, String playerColor) {
+        if (playerColor.equals("Black")) {
+            for(Stone stone : blackPlayer){
+                if(stone.getPosX() == x && stone.getPosY() == y){
+                    blackPlayer.remove(stone);
+                    break;
+                }
+            }
+        }
+        else if(playerColor.equals("White")){
+            for(Stone stone : whitePlayer){
+                if(stone.getPosX() == x && stone.getPosY() == y){
+                    whitePlayer.remove(stone);
+                    break;
+                }
+            }
+        }
+    }
 
     private void drawStones(Graphics g){
         for(Stone whiteStone : whitePlayer){
@@ -161,6 +179,16 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         for(Stone blackStone : blackPlayer){
             drawStone(blackStone.getPosX(), blackStone.getPosY(), Color.BLACK, g);
         }
+    }
+
+    public int getStonesAmount(String clr){
+        if(clr.equalsIgnoreCase("black")){
+            return whitePlayer.size();
+        }
+        else if(clr.equalsIgnoreCase("white")){
+            return blackPlayer.size();
+        }
+        return 0;
     }
 
     public void mousePressed(MouseEvent mouseEvent) {}

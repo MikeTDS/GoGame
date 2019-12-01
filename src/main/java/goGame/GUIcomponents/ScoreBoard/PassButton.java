@@ -1,6 +1,8 @@
 package goGame.GUIcomponents.ScoreBoard;
 
-import goGame.ClientGUI;
+//import goGame.ClientGUI;
+
+import goGame.Client.GoGameClient;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +19,6 @@ public class PassButton extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e){
         //server.sendPass();
-        JOptionPane.showMessageDialog(ClientGUI.getGoBoard(), "Pass.");
+        JOptionPane.showMessageDialog(GoGameClient.getGuiFrame(), "Pass.");
     }
 }

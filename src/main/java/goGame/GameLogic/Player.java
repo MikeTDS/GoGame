@@ -43,10 +43,10 @@ class Player implements Runnable {
         _output.println(Game.getBoardSize());
         _output.println(_color);
         if (_color.equals("Black")) {
-            _game.currentPlayer = this;
+            Game.currentPlayer = this;
             _output.println("MESSAGE Waiting for opponent to connect");
         } else if(_color.equals("White")){
-            _opponent = _game.currentPlayer;
+            _opponent = Game.currentPlayer;
             _opponent._opponent = this;
             _opponent._output.println("MESSAGE Your move");
         }
@@ -58,7 +58,6 @@ class Player implements Runnable {
             if (command.equals("QUIT")) {
                 return;
             } else if (command.equals("MOVE")) {
-                System.out.println(command);
                 int x = Integer.parseInt(_input.nextLine());
                 int y = Integer.parseInt(_input.nextLine());
                 processMoveCommand(x, y);
@@ -81,4 +80,6 @@ class Player implements Runnable {
     }
 
     Player getOpponent(){ return  _opponent; }
+    String getColor(){ return  _color; }
+    void sendOutput(String out){ _output.println(out); }
 }

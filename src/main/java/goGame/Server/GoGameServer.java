@@ -3,7 +3,6 @@ package goGame.Server;
 import goGame.GameLogic.Game;
 
 import javax.swing.*;
-import java.awt.*;
 import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,16 +17,18 @@ public class GoGameServer {
             initializeServer();
         }catch (Exception ignored){ }
     }
+
     private static void initializeServer() throws Exception{
-        try (ServerSocket listener = new ServerSocket(_port)) {
-            System.out.println("Server is Running :)");
-            ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(200);
-            while (true) {
-                Game game = new Game(_boardSize);
-                pool.execute(game.createPlayer(listener.accept(),"Black"));
-                pool.execute(game.createPlayer(listener.accept(),"White"));
-            }
+        System.out.println("Server is Running :)");
+        ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(200);
+        while (true) {
+            ServerSocket listener = new ServerSocket(_port);
+            Game game = new Game(_boardSize);
+            pool.execute(game.createPlayer(listener.accept(),"Black"));
+            pool.execute(game.createPlayer(listener.accept(),"White"));
+            _port++;
         }
+
     }
 
     private static int getBoardSize() {
