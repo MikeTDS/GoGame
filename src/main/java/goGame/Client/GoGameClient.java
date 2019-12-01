@@ -2,20 +2,18 @@ package goGame.Client;
 
 import goGame.GUI.GUIcomponents.GoBoard.GoBoard;
 import goGame.GUI.GuiFrame;
-import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
 
 import java.awt.*;
 
 public class GoGameClient {
     private static final String DEFAULT_SERVER_ADRESS = "localhost";
-    private static final int WIDTH = 1200,
+    private static final int WIDTH = 900,
                              HEIGHT = 900,
                              DEFAULT_SERVER_PORT = 59090;
 
     private static ServerComunitator _serverComunitator;
     private static GuiFrame _clientFrame;
     private static GoBoard _goBoard;
-    private static ScoreBoard _scoreBoard;
 
     public static void main( String[] args ) throws Exception {
         initializeGame();
@@ -31,10 +29,8 @@ public class GoGameClient {
 
         int goBoardSize = getBoardSize();
         _goBoard = new GoBoard(goBoardSize, _serverComunitator);
-        _scoreBoard = new ScoreBoard();
         _clientFrame = new GuiFrame(WIDTH, HEIGHT);
         _clientFrame.add(_goBoard);
-        _clientFrame.add(_scoreBoard);
     }
 
     private static int getBoardSize() {
@@ -81,6 +77,19 @@ public class GoGameClient {
                         y = convertToInt(response);
 
                         _goBoard.setStone(x, y, opponentColor);
+                        _goBoard.repaint();
+                        break;
+                    case "KILL":
+                        response = ServerComunitator.getScanner().nextLine();
+                        while (!response.equals("KILL_STOP")){
+                            x = convertToInt(response);
+
+                            response = ServerComunitator.getScanner().nextLine();
+                            y = convertToInt(response);
+                            response = ServerComunitator.getScanner().nextLine();
+                            _goBoard.removeStone(x, y, response);
+                            response = ServerComunitator.getScanner().nextLine();
+                        }
                         _goBoard.repaint();
                         break;
                 }

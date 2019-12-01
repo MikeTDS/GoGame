@@ -2,7 +2,6 @@ package goGame.GUI.GUIcomponents.GoBoard;
 
 import goGame.Client.ServerComunitator;
 import goGame.GUI.GUIcomponents.Stone.Stone;
-import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -136,7 +135,6 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         int yPos = mouseEvent.getY();
         for(FieldButton fieldButton : fieldButtonArrayList){
             if(xPos>=fieldButton.getXDraw() && xPos<=fieldButton.getXDraw()+fieldButton.getXSize() && yPos>=fieldButton.getYDraw() && yPos<fieldButton.getYDraw()+fieldButton.getYSize()){
-                ScoreBoard.showStones(whitePlayer.size(), blackPlayer.size());
                 System.out.println(fieldButton.getPosX() + ", "+fieldButton.getPosY());
                 ServerComunitator.getPrintWriter().println("MOVE");
                 ServerComunitator.getPrintWriter().println(fieldButton.getPosX());
@@ -153,6 +151,25 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             else if(playerColor.equals("White")){
                 whitePlayer.add(new Stone(x, y, playerColor));
             }
+    }
+
+    public void removeStone(int x, int y, String playerColor) {
+        if (playerColor.equals("Black")) {
+            for(Stone stone : blackPlayer){
+                if(stone.getPosX() == x && stone.getPosY() == y){
+                    blackPlayer.remove(stone);
+                    break;
+                }
+            }
+        }
+        else if(playerColor.equals("White")){
+            for(Stone stone : whitePlayer){
+                if(stone.getPosX() == x && stone.getPosY() == y){
+                    whitePlayer.remove(stone);
+                    break;
+                }
+            }
+        }
     }
 
     private void drawStones(Graphics g){
