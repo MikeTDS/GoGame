@@ -3,7 +3,6 @@ package goGame.Server;
 import goGame.GameLogic.Game;
 
 import javax.swing.*;
-import java.awt.*;
 import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;

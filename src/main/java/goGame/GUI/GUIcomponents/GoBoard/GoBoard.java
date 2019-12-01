@@ -153,6 +153,24 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             }
     }
 
+    public void removeStone(int x, int y, String playerColor) {
+        if (playerColor.equals("Black")) {
+            for(Stone stone : blackPlayer){
+                if(stone.getPosX() == x && stone.getPosY() == y){
+                    blackPlayer.remove(stone);
+                    break;
+                }
+            }
+        }
+        else if(playerColor.equals("White")){
+            for(Stone stone : whitePlayer){
+                if(stone.getPosX() == x && stone.getPosY() == y){
+                    whitePlayer.remove(stone);
+                    break;
+                }
+            }
+        }
+    }
 
     private void drawStones(Graphics g){
         for(Stone whiteStone : whitePlayer){

@@ -1,20 +1,24 @@
 package goGame.GameLogic;
 
-public class Stone {
+class Stone {
     private int _x,_y;
     private String _color;
-    private int _breaths;
+    private boolean _wasChecked;
+    private boolean _isSafe;
 
-    Stone(int x, int y, String clr){ this(x, y, clr, 4); }
-    public Stone(int x, int y, String clr, int breaths){
+    Stone(int x, int y, String clr){
         _x = x;
         _y = y;
         _color = clr;
-        _breaths = breaths;
+        _wasChecked = false;
+        _isSafe = false;
     }
-    public int getPosX(){return _x;}
-    public int getPosY(){return _y;}
-    public int getBreaths(){return _breaths;}
-    public void setBreaths(int breaths){ _breaths = breaths;}
+    int getPosX(){ return _x; }
+    int getPosY(){ return _y; }
+    String getColor(){ return _color; }
+    boolean wasntChecked(){ return !_wasChecked; }
+    void setWasChecked(boolean bool){ _wasChecked = bool; }
+    boolean isSafe(){ return _isSafe; }
+    void setIsSafe(boolean bool){ _isSafe = bool; }
 }
 
