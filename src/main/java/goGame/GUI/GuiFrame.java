@@ -11,7 +11,6 @@ public class GuiFrame extends JFrame{
         _xSize = xSize;
         _ySize = ySize;
 
-
         initializeGUI();
     }
 

@@ -35,7 +35,7 @@ public class ServerComunitator {
         };
     }
 
-    static void connectToServer() throws IOException {
+    public static void connectToServer() throws IOException {
         int input = JOptionPane.showConfirmDialog(null, _newServerFields, "Łączenie z serwerem", JOptionPane.OK_CANCEL_OPTION);
 
         if(input == 0) {

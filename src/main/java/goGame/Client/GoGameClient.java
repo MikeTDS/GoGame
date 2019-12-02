@@ -4,6 +4,7 @@ import goGame.GUI.GUIcomponents.GoBoard.GoBoard;
 import goGame.GUI.GuiFrame;
 import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class GoGameClient {
@@ -22,9 +23,9 @@ public class GoGameClient {
         play();
     }
 
-    private static void initializeGame(){
-        _serverComunitator = new ServerComunitator(DEFAULT_SERVER_ADRESS, DEFAULT_SERVER_PORT);
 
+    public static void initializeGame(){
+        _serverComunitator = new ServerComunitator(DEFAULT_SERVER_ADRESS, DEFAULT_SERVER_PORT);
         try {
             ServerComunitator.connectToServer();
         }catch (Exception e){ System.out.println(e.getMessage()); }
@@ -37,7 +38,7 @@ public class GoGameClient {
         _clientFrame.add(_scoreBoard);
     }
 
-    private static int getBoardSize() {
+    public static int getBoardSize() {
         String response = ServerComunitator.getScanner().nextLine();
 
         return convertToInt(response);
@@ -52,7 +53,7 @@ public class GoGameClient {
         return num;
     }
 
-    private static void play() throws Exception {
+    public static void play() throws Exception {
         try {
             int x, y;
             String response = ServerComunitator.getScanner().nextLine();
@@ -98,6 +99,18 @@ public class GoGameClient {
                         }
                         _goBoard.repaint();
                         _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
+                        break;
+                    case "SURRENDER":
+                        JOptionPane.showMessageDialog(_clientFrame, "You surrendered the game. Shame!");
+                        ServerComunitator.getSocket().close();
+                        break;
+                    case "SURRENDER_WIN":
+                        JOptionPane.showMessageDialog(_clientFrame, "You won, because your opponent surrendered.");
+                        ServerComunitator.getSocket().close();
+                        break;
+                    case "NORMAL_EXIT":
+                        JOptionPane.showMessageDialog(_clientFrame, "See you!");
+                        ServerComunitator.getSocket().close();
                         break;
                 }
             }
