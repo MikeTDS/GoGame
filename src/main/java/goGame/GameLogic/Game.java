@@ -27,6 +27,7 @@ public class Game {
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
 
+
         if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
@@ -38,14 +39,10 @@ public class Game {
         }
 
         _board[location] = newStone;
+
         if(checkForSuicide(newStone)){
             _board[location] = null;
             throw new IllegalStateException("Suicide move");
-        }
-
-        if(checkAllForKill()){
-            resetCheckStatus();
-            sendKillSignalToCurrentGroup();
         }
 
         if(_canBeUnlocked){
@@ -69,16 +66,16 @@ public class Game {
                     }
                 }
 
-        resetCheckStatus();
         if(commitedKill){ return false; }
-        if(checkAllForKill()){ return true; }
-
-        return false;
+        return checkAllForKill();
     }
 
     private static void resetCheckStatus(){
         for(Stone stone : _board){
-            if(stone != null) stone.setWasChecked(false);
+            if(stone != null){
+                stone.setWasChecked(false);
+                stone.setIsSafe(false);
+            }
         }
     }
 
@@ -103,52 +100,59 @@ public class Game {
         currentPlayer.getOpponent().sendOutput(out);
     }
 
-    private static boolean checkAllForKill(){
+    private boolean checkAllForKill(){
+        resetCheckStatus();
         boolean commitedKill = false;
         for(Stone stone : _board)
             if(stone != null)
-                if(stone.wasntChecked())
-                    commitedKill = commitedKill || checkIsGroupIsOutOfBreaths(stone);
+                if(stone.wasntChecked() && !stone.isSafe()){
+                    commitedKill = commitedKill || checkIsGroupIsOutOfBreaths(stone);;
+                }
 
         resetCheckStatus();
         return commitedKill;
     }
 
-    private static boolean checkIsGroupIsOutOfBreaths(Stone stone){
+    private boolean checkIsGroupIsOutOfBreaths(Stone stone){
         _currentCheckGroup.clear();
+
         return  !scoutForBreath(stone);
     }
 
-    private static boolean scoutForBreath(Stone stone){
+    private boolean scoutForBreath(Stone stone){
         _currentCheckGroup.add(stone);
         Stone[] neighbours = getNeighbours(stone);
-
+        stone.setWasChecked(true);
         boolean foundBreath = false;
 
         for(Stone s : neighbours) {
             if(s != null){
+                boolean test = s.wasntChecked();
                 if(stone.getColor().equals(s.getColor()) && s.wasntChecked()){
                     s.setWasChecked(true);
                     foundBreath = foundBreath || scoutForBreath(s);
                 }
 
             }else{
-                setNeighboursToChecked(stone);
+                stone.setIsSafe(true);
+                setNeighboursToSafe(stone);
                 return true;
             }
         }
-
+        if(foundBreath){
+            stone.setIsSafe(true);
+            setNeighboursToSafe(stone);
+        }
         return foundBreath;
     }
 
-    private static void setNeighboursToChecked(Stone stone){
+    private void setNeighboursToSafe(Stone stone){
         Stone[] neighbours = getNeighbours(stone);
-
         for(Stone s : neighbours) {
             if(s != null){
-                if(stone.getColor().equals(s.getColor()) && s.wasntChecked()){
-                    s.setWasChecked(true);
-                    setNeighboursToChecked(s);
+                if(stone.getColor().equals(s.getColor()) && !s.isSafe()){
+                    s.setIsSafe(true);
+                    setNeighboursToSafe(s);
                 }
             }
         }
