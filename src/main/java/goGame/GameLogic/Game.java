@@ -65,9 +65,7 @@ public class Game {
                 }
 
         if(commitedKill){ return false; }
-        if(checkAllForKill()){ return true; }
-
-        return false;
+        return checkAllForKill();
     }
 
     private static void resetCheckStatus(){
