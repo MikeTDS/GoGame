@@ -10,6 +10,7 @@ public class Game {
     private static ArrayList<Stone> _currentCheckGroup;
     private static int _blockedFiled;
     private static boolean _canBeUnlocked;
+    public boolean _finished;
 
     static Player currentPlayer;
 
@@ -18,6 +19,7 @@ public class Game {
         _board = new Stone[size*size];
         _size = size;
         _blockedFiled = -1;
+        _finished=false;
     }
 
     synchronized void move(int x, int y, Player player) {

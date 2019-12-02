@@ -1,5 +1,9 @@
 package goGame.GameLogic;
 
+import goGame.Client.GoGameClient;
+import goGame.GUI.GuiFrame;
+
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -61,6 +65,16 @@ class Player implements Runnable {
                 int x = Integer.parseInt(_input.nextLine());
                 int y = Integer.parseInt(_input.nextLine());
                 processMoveCommand(x, y);
+            }
+            else if(command.equals("EXIT")){
+                if(!_game._finished && _opponent!=null){
+                    _output.println("SURRENDER");
+                    if(_opponent!=null)
+                        _opponent._output.println("SURRENDER_WIN");
+                }
+                else{
+                    _output.println("NORMAL_EXIT");
+                }
             }
         }
     }
