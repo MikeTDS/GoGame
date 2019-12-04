@@ -25,7 +25,7 @@ public class Game {
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
 
-
+        
         if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
@@ -42,6 +42,8 @@ public class Game {
             _board[location] = null;
             throw new IllegalStateException("Suicide move");
         }
+
+        if(checkAllForKill()){ sendKillSignalToCurrentGroup(); }
 
         if(_canBeUnlocked){
             unlockBlockedField();
