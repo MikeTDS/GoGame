@@ -17,6 +17,7 @@ class Player implements Runnable {
     private Scanner _input;
     private PrintWriter _output;
     private Game _game;
+    private Boolean _lastMovePass;
 
     Player(Socket socket, String color, Game game) {
         _socket = socket;
@@ -46,6 +47,7 @@ class Player implements Runnable {
         _output = new PrintWriter(_socket.getOutputStream(), true);
         _output.println(Game.getBoardSize());
         _output.println(_color);
+        _lastMovePass=false;
         if (_color.equals("Black")) {
             Game.currentPlayer = this;
             _output.println("MESSAGE Waiting for opponent to connect");
@@ -59,7 +61,9 @@ class Player implements Runnable {
     private void processCommands() {
         while (_input.hasNextLine()) {
             String command = _input.nextLine();
+            _lastMovePass=false;
             if (command.equals("QUIT")) {
+                //zniszczyc ten obiekt przed wyjsciem
                 return;
             } else if (command.equals("MOVE")) {
                 int x = Integer.parseInt(_input.nextLine());
@@ -74,6 +78,24 @@ class Player implements Runnable {
                 }
                 else{
                     _output.println("NORMAL_EXIT");
+                }
+            }
+            else if(command.equals("PASS")){
+                if(_opponent==null || _game.getCurrentPlayer()!=this){
+                    _output.println("ERROR_PASS");
+                }
+                else{
+                    if(_opponent.getPass()){
+                        _output.println("QUIT_PASS");
+                        _opponent._output.println("QUIT_PASS");
+                        //_game._finished=true; <-pododawac
+                        //_game.countPoints();
+                    }
+                    else{
+                        _output.println("FIRST_PASS");
+                        _lastMovePass=true;
+                        _game.skipMove();
+                    }
                 }
             }
         }
@@ -97,4 +119,5 @@ class Player implements Runnable {
     Player getOpponent(){ return  _opponent; }
     String getColor(){ return  _color; }
     void sendOutput(String out){ _output.println(out); }
+    public boolean getPass() {return _lastMovePass;}
 }

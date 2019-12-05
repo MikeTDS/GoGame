@@ -112,6 +112,15 @@ public class GoGameClient {
                         JOptionPane.showMessageDialog(_clientFrame, "See you!");
                         ServerComunitator.getSocket().close();
                         break;
+                    case "FIRST_PASS":
+                        JOptionPane.showMessageDialog(_clientFrame, "You passed.");
+                        break;
+                    case "QUIT_PASS":
+                        JOptionPane.showMessageDialog(_clientFrame, "Two passes in row. Game finished.");
+                        break;
+                    case "ERROR_PASS":
+                        JOptionPane.showMessageDialog(_clientFrame, "Can't pass. Wait for opponent.");
+                        break;
                 }
             }
             ServerComunitator.getPrintWriter().println("QUIT");

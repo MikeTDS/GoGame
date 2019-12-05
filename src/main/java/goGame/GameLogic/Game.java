@@ -171,4 +171,8 @@ public class Game {
     private static int calcPos(int x, int y){ return x + y*_size; }
     static int getBoardSize(){ return _size; }
     public Player createPlayer(Socket socket, String color){ return new Player(socket, color, this); }
+    public void skipMove(){
+        currentPlayer=currentPlayer.getOpponent();
+    }
+    public Player getCurrentPlayer(){return currentPlayer;}
 }
