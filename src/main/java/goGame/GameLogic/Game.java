@@ -19,7 +19,7 @@ public class Game {
         _board = new Stone[size*size];
         _size = size;
         _blockedFiled = -1;
-        _finished=false;
+        _finished = false;
     }
 
     synchronized void move(int x, int y, Player player) {
@@ -27,7 +27,7 @@ public class Game {
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
 
-
+        
         if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
@@ -54,6 +54,7 @@ public class Game {
 
     private static void unlockBlockedField() { _blockedFiled = -1; }
     private boolean checkForSuicide(Stone stone){
+        resetCheckStatus();
         boolean commitedKill = false;
         Stone[] neighbours = getNeighbours(stone);
         for(Stone s : neighbours)
@@ -67,7 +68,7 @@ public class Game {
                 }
 
         if(commitedKill){ return false; }
-        if(checkAllForKill()){ return true; }
+        if(checkIsGroupIsOutOfBreaths(stone)){ return true; }
 
         return false;
     }
@@ -100,19 +101,6 @@ public class Game {
     private static void sendOutputToBothPlayers(String out){
         currentPlayer.sendOutput(out);
         currentPlayer.getOpponent().sendOutput(out);
-    }
-
-    private boolean checkAllForKill(){
-        resetCheckStatus();
-        boolean commitedKill = false;
-        for(Stone stone : _board)
-            if(stone != null)
-                if(stone.wasntChecked() && !stone.isSafe()){
-                    commitedKill = commitedKill || checkIsGroupIsOutOfBreaths(stone);;
-                }
-
-        resetCheckStatus();
-        return commitedKill;
     }
 
     private boolean checkIsGroupIsOutOfBreaths(Stone stone){
