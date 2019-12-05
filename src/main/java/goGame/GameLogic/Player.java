@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-class Player implements Runnable {
+public class Player implements Runnable, IPlayer {
     private String _color;
     private Player _opponent;
     private Socket _socket;
@@ -42,7 +42,7 @@ class Player implements Runnable {
         }
     }
 
-    private void setup() throws IOException {
+    public void setup() throws IOException {
         _input = new Scanner(_socket.getInputStream());
         _output = new PrintWriter(_socket.getOutputStream(), true);
         _output.println(Game.getBoardSize());
@@ -58,7 +58,7 @@ class Player implements Runnable {
         }
     }
 
-    private void processCommands() {
+    public void processCommands() {
         while (_input.hasNextLine()) {
             String command = _input.nextLine();
             _lastMovePass=false;
@@ -88,7 +88,7 @@ class Player implements Runnable {
                     if(_opponent.getPass()){
                         _output.println("QUIT_PASS");
                         _opponent._output.println("QUIT_PASS");
-                        //_game._finished=true; <-pododawac
+                        //_game._finished=true; <-pododawac gdy dodam zliczanie punktow
                         //_game.countPoints();
                     }
                     else{
@@ -101,7 +101,7 @@ class Player implements Runnable {
         }
     }
 
-    private void processMoveCommand(int x, int y) {
+    public void processMoveCommand(int x, int y) {
         try {
             _game.move(x, y, this);
             _output.println("VALID_MOVE");
@@ -116,8 +116,8 @@ class Player implements Runnable {
         }
     }
 
-    Player getOpponent(){ return  _opponent; }
-    String getColor(){ return  _color; }
-    void sendOutput(String out){ _output.println(out); }
+    public Player getOpponent(){ return  _opponent; }
+    public String getColor(){ return  _color; }
+    public void sendOutput(String out){ _output.println(out); }
     public boolean getPass() {return _lastMovePass;}
 }
