@@ -1,6 +1,6 @@
 package goGame.GUI.GUIcomponents.GoBoard;
 
-import goGame.Client.ServerComunitator;
+import goGame.Client.ServerComunicator;
 import goGame.GUI.GUIcomponents.Stone.Stone;
 
 import javax.swing.*;
@@ -13,12 +13,12 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     private static int _size, _xSize, _ySize, _margin, _gap;
     private ArrayList<FieldButton> fieldButtonArrayList;
     private ArrayList<Stone> whitePlayer, blackPlayer;
-    private ServerComunitator _serverComunitator;
+    private ServerComunicator _serverComunitator;
     private int _currentX, _currentY;
 
-    public GoBoard(int size, ServerComunitator serverComunitator){
+    public GoBoard(int size){
         _size=size;
-        _serverComunitator = serverComunitator;
+        _serverComunitator = ServerComunicator.getInstance();
         initializeBoard(800,800);
     }
 
@@ -136,9 +136,9 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         for(FieldButton fieldButton : fieldButtonArrayList){
             if(xPos>=fieldButton.getXDraw() && xPos<=fieldButton.getXDraw()+fieldButton.getXSize() && yPos>=fieldButton.getYDraw() && yPos<fieldButton.getYDraw()+fieldButton.getYSize()){
                 System.out.println(fieldButton.getPosX() + ", "+fieldButton.getPosY());
-                ServerComunitator.getPrintWriter().println("MOVE");
-                ServerComunitator.getPrintWriter().println(fieldButton.getPosX());
-                ServerComunitator.getPrintWriter().println(fieldButton.getPosY());
+                _serverComunitator.getPrintWriter().println("MOVE");
+                _serverComunitator.getPrintWriter().println(fieldButton.getPosX());
+                _serverComunitator.getPrintWriter().println(fieldButton.getPosY());
                 return;
             }
         }

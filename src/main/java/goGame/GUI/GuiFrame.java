@@ -1,8 +1,11 @@
 package goGame.GUI;
-import goGame.GUI.GUIcomponents.GoBoard.GoBoard;
+import goGame.Client.ServerComunicator;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.*;
+
+import static javax.swing.JOptionPane.NO_OPTION;
+import static javax.swing.JOptionPane.YES_OPTION;
 
 public class GuiFrame extends JFrame{
     private static int _xSize, _ySize;
@@ -13,7 +16,6 @@ public class GuiFrame extends JFrame{
 
         initializeGUI();
     }
-
     private void initializeGUI(){
         setSize(new Dimension(_xSize, _ySize));
         setLayout(new GridBagLayout());
@@ -21,5 +23,15 @@ public class GuiFrame extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
+    }
+    public void chooseOpponent(){
+        int returnValue=0;
+        returnValue = JOptionPane.showConfirmDialog(this, "Do you want to play with bot?", "Exit", JOptionPane.YES_NO_OPTION);
+        if(returnValue==YES_OPTION){
+            ServerComunicator.getInstance().getPrintWriter().println("PLAY_WITH_BOT");
+        }
+        else if(returnValue==NO_OPTION){
+            ServerComunicator.getInstance().getPrintWriter().println("DONT_PLAY_WITH_BOT");
+        }
     }
 }

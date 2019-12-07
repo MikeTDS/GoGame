@@ -1,28 +1,30 @@
 package goGame.GameLogic;
 
 
+import goGame.Server.Bot.Bot;
+
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class Game {
-    private static Stone[] _board;
-    private static int _size;
-    private static ArrayList<Stone> _currentCheckGroup;
-    private static int _blockedFiled;
-    private static boolean _canBeUnlocked;
+    private Stone[] _board;
+    private int _boardSize;
+    private ArrayList<Stone> _currentCheckGroup;
+    private int _blockedFiled;
+    private boolean _canBeUnlocked;
     public boolean _finished;
 
-    static Player currentPlayer;
+    IPlayer currentPlayer;
 
     public Game(int size){
         _currentCheckGroup = new ArrayList<>();
         _board = new Stone[size*size];
-        _size = size;
+        _boardSize = size;
         _blockedFiled = -1;
         _finished = false;
     }
 
-    synchronized void move(int x, int y, Player player) {
+    synchronized void move(int x, int y, IPlayer player) {
         int location = calcPos(x, y);
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
@@ -52,7 +54,7 @@ public class Game {
         currentPlayer = currentPlayer.getOpponent();
     }
 
-    private static void unlockBlockedField() { _blockedFiled = -1; }
+    private void unlockBlockedField() { _blockedFiled = -1; }
     private boolean checkForSuicide(Stone stone){
         resetCheckStatus();
         boolean commitedKill = false;
@@ -73,7 +75,7 @@ public class Game {
         return false;
     }
 
-    private static void resetCheckStatus(){
+    private void resetCheckStatus(){
         for(Stone stone : _board){
             if(stone != null){
                 stone.setWasChecked(false);
@@ -82,7 +84,7 @@ public class Game {
         }
     }
 
-    private static void sendKillSignalToCurrentGroup(){
+    private void sendKillSignalToCurrentGroup(){
         sendOutputToBothPlayers("KILL");
         for(Stone stone : _currentCheckGroup){
             sendOutputToBothPlayers(String.valueOf(stone.getPosX()));
@@ -98,7 +100,7 @@ public class Game {
         }
     }
 
-    private static void sendOutputToBothPlayers(String out){
+    private void sendOutputToBothPlayers(String out){
         currentPlayer.sendOutput(out);
         currentPlayer.getOpponent().sendOutput(out);
     }
@@ -148,7 +150,7 @@ public class Game {
         }
     }
 
-    private static Stone[] getNeighbours(Stone stone){
+    private Stone[] getNeighbours(Stone stone){
         Stone[] neighbours = new Stone[4];
         int x = stone.getPosX(),
             y = stone.getPosY();
@@ -159,20 +161,25 @@ public class Game {
         if(y-1 < 0) neighbours[1] = new Stone(x, y-1, "Wall");
         else neighbours[1] = _board[calcPos(x, y-1)];
 
-        if(x+1 >= _size) neighbours[2] = new Stone(x+1, y, "Wall");
+        if(x+1 >= _boardSize) neighbours[2] = new Stone(x+1, y, "Wall");
         else neighbours[2] = _board[calcPos(x+1, y)];
 
-        if(y+1 >= _size) neighbours[3] = new Stone(x, y+1, "Wall");
+        if(y+1 >= _boardSize) neighbours[3] = new Stone(x, y+1, "Wall");
         else neighbours[3] = _board[calcPos(x, y+1)];
 
         return neighbours;
     }
 
-    private static int calcPos(int x, int y){ return x + y*_size; }
-    static int getBoardSize(){ return _size; }
-    public Player createPlayer(Socket socket, String color){ return new Player(socket, color, this); }
+    private int calcPos(int x, int y){ return x + y*_boardSize; }
+    public int getBoardSize(){ return _boardSize; }
+    public IPlayer createPlayer(Socket socket, String color){
+        if(color.equalsIgnoreCase("Bot"))
+            return new Bot(socket, color, this);
+        return new Player(socket, color, this);
+    }
     public void skipMove(){
         currentPlayer=currentPlayer.getOpponent();
     }
-    public Player getCurrentPlayer(){return currentPlayer;}
+    public IPlayer getCurrentPlayer(){return currentPlayer;}
+    public Stone[] getBoard(){return _board;}
 }

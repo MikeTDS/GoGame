@@ -6,26 +6,41 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ServerComunitator {
-    private static String _serverAddress;
-    private static int _port;
+public class ServerComunicator {
+    private String _serverAddress;
+    private int _port;
 
-    private static JTextField _tfServerAddress,
+    private JTextField _tfServerAddress,
                               _tfServerPort;
 
-    private static Socket _socket;
-    private static Scanner _in;
-    private static PrintWriter _out;
-    private static Object[] _newServerFields;
+    private Socket _socket;
+    private Scanner _in;
+    private PrintWriter _out;
+    private Object[] _newServerFields;
+    private static ServerComunicator serverComunitator;
 
-    ServerComunitator(String serverAddress, int port){
+    private ServerComunicator(String serverAddress, int port){
         _serverAddress = serverAddress;
         _port = port;
 
         initializeFields();
     }
 
-    private static void initializeFields(){
+    public static ServerComunicator getInstance(String serverAddress, int port){
+        if(serverComunitator==null){
+            serverComunitator = new ServerComunicator(serverAddress, port);
+        }
+        return serverComunitator;
+    }
+
+    public static ServerComunicator getInstance(){
+        if(serverComunitator!=null){
+            return serverComunitator;
+        }
+        return null;
+    }
+
+    private void initializeFields(){
         _tfServerAddress = new JTextField(_serverAddress);
         _tfServerPort = new JTextField(String.valueOf(_port));
 
@@ -35,7 +50,7 @@ public class ServerComunitator {
         };
     }
 
-    public static void connectToServer() throws IOException {
+    public void connectToServer() throws IOException {
         int input = JOptionPane.showConfirmDialog(null, _newServerFields, "Łączenie z serwerem", JOptionPane.OK_CANCEL_OPTION);
 
         if(input == 0) {
@@ -48,7 +63,7 @@ public class ServerComunitator {
         _out = new PrintWriter(_socket.getOutputStream(), true);
     };
 
-    private static int convertToInt(String str){
+    private int convertToInt(String str){
         int num = 0;
         try{
             num = Integer.parseInt(str);
@@ -57,7 +72,7 @@ public class ServerComunitator {
         return num;
     }
 
-    public static Scanner getScanner(){ return _in; }
-    public static PrintWriter getPrintWriter(){ return _out; }
-    public static Socket getSocket() { return _socket; }
+    public Scanner getScanner(){ return _in; }
+    public PrintWriter getPrintWriter(){ return _out; }
+    public Socket getSocket() { return _socket; }
 }

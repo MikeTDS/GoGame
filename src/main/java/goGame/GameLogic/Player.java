@@ -1,23 +1,10 @@
 package goGame.GameLogic;
-
-import goGame.Client.GoGameClient;
-import goGame.GUI.GuiFrame;
-
-import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Player implements Runnable, IPlayer {
-    private String _color;
-    private Player _opponent;
-    private Socket _socket;
-    private Scanner _input;
-    private PrintWriter _output;
-    private Game _game;
-    private Boolean _lastMovePass;
+public class Player extends AbstractPlayer implements Runnable {
 
     Player(Socket socket, String color, Game game) {
         _socket = socket;
@@ -33,8 +20,8 @@ public class Player implements Runnable, IPlayer {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (_opponent != null && _opponent._output != null) {
-                _opponent._output.println("OPPONENT_LEFT");
+            if (_opponent != null && _opponent.getOutput() != null) {
+                _opponent.getOutput().println("OPPONENT_LEFT");
             }
             try {
                 _socket.close();
@@ -45,16 +32,16 @@ public class Player implements Runnable, IPlayer {
     public void setup() throws IOException {
         _input = new Scanner(_socket.getInputStream());
         _output = new PrintWriter(_socket.getOutputStream(), true);
-        _output.println(Game.getBoardSize());
+        _output.println(_game.getBoardSize());
         _output.println(_color);
         _lastMovePass=false;
         if (_color.equals("Black")) {
-            Game.currentPlayer = this;
+            _game.currentPlayer = this;
             _output.println("MESSAGE Waiting for opponent to connect");
         } else if(_color.equals("White")){
-            _opponent = Game.currentPlayer;
-            _opponent._opponent = this;
-            _opponent._output.println("MESSAGE Your move");
+            _opponent = _game.currentPlayer;
+            _opponent.setOpponent(this);
+            _opponent.getOutput().println("MESSAGE Your move");
         }
     }
 
@@ -74,7 +61,7 @@ public class Player implements Runnable, IPlayer {
                 if(!_game._finished && _opponent!=null){
                     _output.println("SURRENDER");
                     if(_opponent!=null)
-                        _opponent._output.println("SURRENDER_WIN");
+                        _opponent.getOutput().println("SURRENDER_WIN");
                 }
                 else{
                     _output.println("NORMAL_EXIT");
@@ -87,7 +74,7 @@ public class Player implements Runnable, IPlayer {
                 else{
                     if(_opponent.getPass()){
                         _output.println("QUIT_PASS");
-                        _opponent._output.println("QUIT_PASS");
+                        _opponent.getOutput().println("QUIT_PASS");
                         //_game._finished=true; <-pododawac gdy dodam zliczanie punktow
                         //_game.countPoints();
                     }
@@ -100,24 +87,4 @@ public class Player implements Runnable, IPlayer {
             }
         }
     }
-
-    public void processMoveCommand(int x, int y) {
-        try {
-            _game.move(x, y, this);
-            _output.println("VALID_MOVE");
-            _output.println(x);
-            _output.println(y);
-            _opponent._output.println("OPPONENT_MOVED");
-            _opponent._output.println(x);
-            _opponent._output.println(y);
-        } catch (IllegalStateException e) {
-            System.out.println( e.getMessage());
-            _output.println("WRONG_MOVE " + e.getMessage());
-        }
-    }
-
-    public Player getOpponent(){ return  _opponent; }
-    public String getColor(){ return  _color; }
-    public void sendOutput(String out){ _output.println(out); }
-    public boolean getPass() {return _lastMovePass;}
 }
