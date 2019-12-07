@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public class AbstractPlayer implements IPlayer{
     protected IPlayer _opponent;
-    protected Scanner _input;
-    protected PrintWriter _output;
+    protected volatile Scanner _input;
+    protected volatile PrintWriter _output;
     protected String _color;
     protected boolean _lastMovePass;
     protected Game _game;
@@ -45,19 +45,4 @@ public class AbstractPlayer implements IPlayer{
         return  this._output;
     }
 
-    @Override
-    public void processMoveCommand(int x, int y) {
-        try {
-            _game.move(x, y, this);
-            _output.println("VALID_MOVE");
-            _output.println(x);
-            _output.println(y);
-            _opponent.getOutput().println("OPPONENT_MOVED");
-            _opponent.getOutput().println(x);
-            _opponent.getOutput().println(y);
-        } catch (IllegalStateException e) {
-            System.out.println( e.getMessage());
-            _output.println("WRONG_MOVE " + e.getMessage());
-        }
-    }
 }

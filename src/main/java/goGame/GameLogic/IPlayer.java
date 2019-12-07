@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 public interface IPlayer {
     void setup() throws IOException;
-    void processMoveCommand(int x, int y);
     void sendOutput(String out);
     IPlayer getOpponent();
     void setOpponent(IPlayer iPlayer);

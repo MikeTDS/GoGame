@@ -32,8 +32,6 @@ public class Player extends AbstractPlayer implements Runnable {
     public void setup() throws IOException {
         _input = new Scanner(_socket.getInputStream());
         _output = new PrintWriter(_socket.getOutputStream(), true);
-        _output.println(_game.getBoardSize());
-        _output.println(_color);
         _lastMovePass=false;
         if (_color.equals("Black")) {
             _game.currentPlayer = this;
@@ -85,6 +83,20 @@ public class Player extends AbstractPlayer implements Runnable {
                     }
                 }
             }
+        }
+    }
+    public void processMoveCommand(int x, int y) {
+        try {
+            _game.move(x, y, this);
+            _output.println("VALID_MOVE");
+            _output.println(x);
+            _output.println(y);
+            _opponent.getOutput().println("OPPONENT_MOVED");
+            _opponent.getOutput().println(x);
+            _opponent.getOutput().println(y);
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            _output.println("WRONG_MOVE " + e.getMessage());
         }
     }
 }

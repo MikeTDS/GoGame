@@ -27,10 +27,10 @@ public class GuiFrame extends JFrame{
     public void chooseOpponent(){
         int returnValue=0;
         returnValue = JOptionPane.showConfirmDialog(this, "Do you want to play with bot?", "Exit", JOptionPane.YES_NO_OPTION);
-        if(returnValue==YES_OPTION){
+        if(returnValue==0){
             ServerComunicator.getInstance().getPrintWriter().println("PLAY_WITH_BOT");
         }
-        else if(returnValue==NO_OPTION){
+        else if(returnValue==1){
             ServerComunicator.getInstance().getPrintWriter().println("DONT_PLAY_WITH_BOT");
         }
     }

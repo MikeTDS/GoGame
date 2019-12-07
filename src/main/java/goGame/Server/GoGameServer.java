@@ -4,6 +4,7 @@ import goGame.GameLogic.Game;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -35,16 +36,24 @@ public class GoGameServer {
     private static void performConnection(ThreadPoolExecutor pool, ServerSocket serverSocket) throws IOException {
         Socket acceptedSocket = serverSocket.accept();
         Game game = new Game(_boardSize);
-        pool.execute((Runnable)game.createPlayer(acceptedSocket,"Black"));
         Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
+        PrintWriter acceptedSocketOutput = new PrintWriter(acceptedSocket.getOutputStream(), true);
+        acceptedSocketOutput.println(_boardSize);
+        acceptedSocketOutput.println("Black");
+
         while(acceptedSocketScanner.hasNextLine()){
             String response = acceptedSocketScanner.nextLine();
             if(response.equals("PLAY_WITH_BOT")){
+                pool.execute((Runnable)game.createPlayer(acceptedSocket,"Black"));
                 pool.execute((Runnable)game.createPlayer(acceptedSocket, "Bot"));
                 break;
             }
             else if(response.equals("DONT_PLAY_WITH_BOT")){
+                pool.execute((Runnable)game.createPlayer(acceptedSocket,"Black"));
                 acceptedSocket = serverSocket.accept();
+                acceptedSocketOutput = new PrintWriter(acceptedSocket.getOutputStream(), true);
+                acceptedSocketOutput.println(_boardSize);
+                acceptedSocketOutput.println("White");
                 pool.execute((Runnable)game.createPlayer(acceptedSocket,"White"));
                 break;
             }

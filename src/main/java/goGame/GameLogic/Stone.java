@@ -1,12 +1,12 @@
 package goGame.GameLogic;
 
-class Stone {
+public class Stone {
     private int _x,_y;
     private String _color;
     private boolean _wasChecked;
     private boolean _isSafe;
 
-    Stone(int x, int y, String clr){
+    public Stone(int x, int y, String clr){
         _x = x;
         _y = y;
         _color = clr;

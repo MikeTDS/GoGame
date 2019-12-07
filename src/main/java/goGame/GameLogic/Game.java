@@ -14,7 +14,7 @@ public class Game {
     private boolean _canBeUnlocked;
     public boolean _finished;
 
-    IPlayer currentPlayer;
+    public volatile IPlayer currentPlayer;
 
     public Game(int size){
         _currentCheckGroup = new ArrayList<>();
@@ -24,7 +24,7 @@ public class Game {
         _finished = false;
     }
 
-    synchronized void move(int x, int y, IPlayer player) {
+    public synchronized void move(int x, int y, IPlayer player) {
         int location = calcPos(x, y);
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
@@ -55,7 +55,7 @@ public class Game {
     }
 
     private void unlockBlockedField() { _blockedFiled = -1; }
-    private boolean checkForSuicide(Stone stone){
+    public synchronized boolean checkForSuicide(Stone stone){
         resetCheckStatus();
         boolean commitedKill = false;
         Stone[] neighbours = getNeighbours(stone);
@@ -174,9 +174,11 @@ public class Game {
     public int getBoardSize(){ return _boardSize; }
     public IPlayer createPlayer(Socket socket, String color){
         if(color.equalsIgnoreCase("Bot"))
-            return new Bot(socket, color, this);
-        return new Player(socket, color, this);
+            return new Bot(socket, "White", this);
+        else
+            return new Player(socket, color, this);
     }
+
     public void skipMove(){
         currentPlayer=currentPlayer.getOpponent();
     }

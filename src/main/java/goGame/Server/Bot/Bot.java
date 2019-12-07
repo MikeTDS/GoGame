@@ -2,7 +2,8 @@ package goGame.Server.Bot;
 
 import goGame.GameLogic.AbstractPlayer;
 import goGame.GameLogic.Game;
-import goGame.GameLogic.IPlayer;
+import goGame.GameLogic.Stone;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -35,17 +36,34 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         _opponent.getOpponent().getOutput().println("MESSAGE Your move");
     }
 
-
-
     //IBot
     @Override
     public void findBestField(){
-        for(int i=0; i<_game.getBoardSize()*_game.getBoardSize(); i++){
-            if(_game.getBoard()[i]==null){
-                processMoveCommand(getXFromBoard(i), getYFromBoard(i));
-            }
+        for(int i=0; i<=_game.getBoardSize()*_game.getBoardSize(); i++){
+                try {
+                    processMoveCommand(getXFromBoard(i), getYFromBoard(i));
+                    break;
+                } catch (Exception e) {
+                    continue;
+                }
+
         }
     }
+
+    public void processMoveCommand(int x, int y) throws Exception {
+        try {
+            Thread.sleep(1);
+            _game.move(x, y, this);
+            _opponent.getOutput().println("OPPONENT_MOVED");
+            _opponent.getOutput().println(x);
+            _opponent.getOutput().println(y);
+        } catch (IllegalStateException | InterruptedException e) {
+            System.out.println( e.getMessage());
+            throw new Exception();
+        }
+    }
+    @Override
+    public void sendOutput(String out) { }
 
     @Override
     public void makeMove(int x, int y) {
@@ -59,13 +77,19 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
     //
     private void play(){
         while(true){
-            findBestField();
+            if(_game.getCurrentPlayer().equals(this)){
+               findBestField();
+            }
         }
     }
     private int getXFromBoard(int i){
-        return _game.getBoardSize()%i;
+        if(i == 0)
+            return 0;
+        return i%_game.getBoardSize();
     }
     private int getYFromBoard(int i){
-        return _game.getBoardSize()/i;
+        if(i == 0)
+            return 0;
+        return i/_game.getBoardSize();
     }
 }
