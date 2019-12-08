@@ -91,9 +91,11 @@ public class Player extends AbstractPlayer implements Runnable {
             _output.println("VALID_MOVE");
             _output.println(x);
             _output.println(y);
-            _opponent.getOutput().println("OPPONENT_MOVED");
-            _opponent.getOutput().println(x);
-            _opponent.getOutput().println(y);
+            if(!_opponent.getSocket().equals(getSocket())){
+                _opponent.getOutput().println("OPPONENT_MOVED");
+                _opponent.getOutput().println(x);
+                _opponent.getOutput().println(y);
+            }
         } catch (IllegalStateException e) {
             System.out.println(e.getMessage());
             _output.println("WRONG_MOVE " + e.getMessage());
