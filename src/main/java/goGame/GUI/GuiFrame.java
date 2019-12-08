@@ -1,13 +1,17 @@
 package goGame.GUI;
+import goGame.Client.GoGameClient;
 import goGame.Client.ServerComunicator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import static javax.swing.JOptionPane.NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 
-public class GuiFrame extends JFrame{
+public class GuiFrame extends JFrame {
     private static int _xSize, _ySize;
 
     public GuiFrame(int xSize, int ySize){
@@ -20,7 +24,17 @@ public class GuiFrame extends JFrame{
         setSize(new Dimension(_xSize, _ySize));
         setLayout(new GridBagLayout());
         setTitle("GoGame");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                int returnValue=0;
+                returnValue = JOptionPane.showConfirmDialog(GoGameClient.getGuiFrame(), "Are you sure?", "Exit", JOptionPane.YES_NO_OPTION);
+                if(returnValue==YES_OPTION) {
+                    ServerComunicator.getInstance().getPrintWriter().println("EXIT");
+                }
+            }
+        });
         setResizable(false);
         setVisible(true);
     }

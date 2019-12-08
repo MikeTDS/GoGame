@@ -76,7 +76,10 @@ public class GoGameServer {
         int num = 0;
         try{
             num = Integer.parseInt(str);
-        }catch (Exception e){ System.out.println(e.getMessage()); }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
 
         return num;
     }
