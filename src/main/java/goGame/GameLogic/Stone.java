@@ -5,6 +5,8 @@ public class Stone {
     private String _color;
     private boolean _wasChecked;
     private boolean _isSafe;
+    private boolean _wasCheckedTerritory;
+    private boolean _isPartOfTerritory;
 
     public Stone(int x, int y, String clr){
         _x = x;
@@ -12,6 +14,8 @@ public class Stone {
         _color = clr;
         _wasChecked = false;
         _isSafe = false;
+        _wasCheckedTerritory=false;
+        _isPartOfTerritory=true;
     }
     int getPosX(){ return _x; }
     int getPosY(){ return _y; }
@@ -20,5 +24,9 @@ public class Stone {
     void setWasChecked(boolean bool){ _wasChecked = bool; }
     boolean isSafe(){ return _isSafe; }
     void setIsSafe(boolean bool){ _isSafe = bool; }
+    boolean wasCheckedTerritory(){return _wasCheckedTerritory;}
+    void setWasCheckedTerritory(boolean wc){_wasCheckedTerritory=wc;}
+    boolean isPartOfTerritory(){return  _isPartOfTerritory;}
+    void setIsPartOfTerritory(boolean inpot){_isPartOfTerritory=inpot;}
 }
 

@@ -10,9 +10,11 @@ public class Game {
     private Stone[] _board;
     private int _boardSize;
     private ArrayList<Stone> _currentCheckGroup;
+    private int _currentTerritory;
     private int _blockedFiled;
     private boolean _canBeUnlocked;
     public boolean _finished;
+
 
     public volatile IPlayer currentPlayer;
 
@@ -51,7 +53,7 @@ public class Game {
         if(_canBeUnlocked){
             unlockBlockedField();
         }
-
+        System.out.println("Territory: " + currentPlayer.getColor() + " " + calculateTerritory(currentPlayer.getColor()));
         currentPlayer = currentPlayer.getOpponent();
     }
 
@@ -82,6 +84,8 @@ public class Game {
                 stone.setWasChecked(false);
                 stone.setIsSafe(false);
             }
+            stone.setWasCheckedTerritory(false);
+            stone.setIsPartOfTerritory(true);
         }
     }
 
@@ -120,7 +124,6 @@ public class Game {
 
         for(Stone s : neighbours) {
             if(!s.getColor().equals("Empty")){
-                boolean test = s.wasntChecked();
                 if(stone.getColor().equals(s.getColor()) && s.wasntChecked()){
                     s.setWasChecked(true);
                     foundBreath = foundBreath || scoutForBreath(s);
@@ -169,6 +172,51 @@ public class Game {
         else neighbours[3] = _board[calcPos(x, y+1)];
 
         return neighbours;
+    }
+
+    private int calculateTerritory(String color){
+        int wholeTerritory=0;
+        _currentTerritory=0;
+        for(Stone s : _board){
+            if(!s.wasCheckedTerritory()){
+                findTerritory(s, color);
+                if(s.isPartOfTerritory())
+                    wholeTerritory+=_currentTerritory;
+                _currentTerritory=0;
+            }
+        }
+        return wholeTerritory;
+    }
+
+    private void findTerritory(Stone stone, String color){
+        stone.setWasCheckedTerritory(true);
+        if(stone.getColor().equals("Empty")){
+            _currentTerritory++;
+            Stone[] neighbours = getNeighbours(stone);
+            for(Stone ns : neighbours){
+                if(ns.getColor().equals("Empty")){
+                    if(!ns.wasCheckedTerritory())
+                        findTerritory(ns, color);
+                }
+                else if(!ns.getColor().equals(color) && !ns.getColor().equals("Wall")){
+                    stone.setIsPartOfTerritory(false);
+                    setNeighboursThatTheyAreActuallyNotAPartOfTheirTerritoryUnfortunately(stone);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void setNeighboursThatTheyAreActuallyNotAPartOfTheirTerritoryUnfortunately(Stone stone){
+        Stone[] neighbours = getNeighbours(stone);
+        for(Stone s : neighbours) {
+            if(s.getColor().equals("Empty")){
+                if(s.isPartOfTerritory()){
+                    s.setIsPartOfTerritory(false);
+                    setNeighboursThatTheyAreActuallyNotAPartOfTheirTerritoryUnfortunately(s);
+                }
+            }
+        }
     }
 
     private int calcPos(int x, int y){ return x + y*_boardSize; }
