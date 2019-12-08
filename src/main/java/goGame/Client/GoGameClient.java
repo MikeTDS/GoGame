@@ -35,7 +35,6 @@ public class GoGameClient {
         _clientFrame = new GuiFrame(WIDTH, HEIGHT);
         _clientFrame.add(_goBoard);
         _clientFrame.add(_scoreBoard);
-        _clientFrame.chooseOpponent();
     }
 
     public static int getBoardSize() {
@@ -59,6 +58,9 @@ public class GoGameClient {
             String response = _serverComunicator.getScanner().nextLine();
             String color = response;
             String opponentColor = color.equals("Black") ? "White" : "Black";
+            if(color.equals("Black")){
+                _clientFrame.chooseOpponent();
+            }
             _clientFrame.setTitle("Go: Gracz " + color);
             while (_serverComunicator.getScanner().hasNextLine()) {
                 response = _serverComunicator.getScanner().nextLine();
@@ -119,6 +121,9 @@ public class GoGameClient {
                         break;
                     case "ERROR_PASS":
                         JOptionPane.showMessageDialog(_clientFrame, "Can't pass. Wait for opponent.");
+                        break;
+                    case "OPPONENT_PASS":
+                        JOptionPane.showMessageDialog(_clientFrame, "Opponent passed. Your move.");
                         break;
                 }
             }

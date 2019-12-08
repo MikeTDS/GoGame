@@ -12,6 +12,8 @@ import java.util.Scanner;
 
 public class Bot extends AbstractPlayer implements Runnable, IBot {
 
+    private int[] _pointsBoard;
+
     public Bot(Socket socket, String color, Game game) {
         _color = color;
         _game = game;
@@ -91,5 +93,12 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         if(i == 0)
             return 0;
         return i/_game.getBoardSize();
+    }
+
+    private void setPointsBoard(){
+
+    }
+    private void calculateBoard(){
+
     }
 }

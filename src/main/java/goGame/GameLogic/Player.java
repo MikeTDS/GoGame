@@ -78,6 +78,7 @@ public class Player extends AbstractPlayer implements Runnable {
                     }
                     else{
                         _output.println("FIRST_PASS");
+                        _opponent.getOutput().println("OPPONENT_PASS");
                         _lastMovePass=true;
                         _game.skipMove();
                     }

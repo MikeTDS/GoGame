@@ -22,6 +22,7 @@ public class Game {
         _boardSize = size;
         _blockedFiled = -1;
         _finished = false;
+        presetBoard();
     }
 
     public synchronized void move(int x, int y, IPlayer player) {
@@ -34,7 +35,7 @@ public class Game {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
             throw new IllegalStateException("Opponent not present");
-        } else if (_board[location] != null) {
+        } else if (!_board[location].getColor().equals("Empty")) {
             throw new IllegalStateException("Field occupied");
         } else if (location == _blockedFiled){
             throw new IllegalStateException("Field is blocked");
@@ -43,7 +44,7 @@ public class Game {
         _board[location] = newStone;
 
         if(checkForSuicide(newStone)){
-            _board[location] = null;
+            _board[location] = new Stone(getXFromBoard(location), getYFromBoard(location), "Empty");
             throw new IllegalStateException("Suicide move");
         }
 
@@ -60,7 +61,7 @@ public class Game {
         boolean commitedKill = false;
         Stone[] neighbours = getNeighbours(stone);
         for(Stone s : neighbours)
-            if(s != null)
+            if(!s.getColor().equals("Empty"))
                 if(s.wasntChecked() && !s.getColor().equals("Wall") && !s.getColor().equals(stone.getColor())){
                     resetCheckStatus();
                     if(checkIsGroupIsOutOfBreaths(s)){
@@ -77,7 +78,7 @@ public class Game {
 
     private void resetCheckStatus(){
         for(Stone stone : _board){
-            if(stone != null){
+            if(!stone.getColor().equals("Empty")){
                 stone.setWasChecked(false);
                 stone.setIsSafe(false);
             }
@@ -90,7 +91,7 @@ public class Game {
             sendOutputToBothPlayers(String.valueOf(stone.getPosX()));
             sendOutputToBothPlayers(String.valueOf(stone.getPosY()));
             sendOutputToBothPlayers(String.valueOf(stone.getColor()));
-            _board[calcPos(stone.getPosX(), stone.getPosY())] = null;
+            _board[calcPos(stone.getPosX(), stone.getPosY())] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
         }
         sendOutputToBothPlayers("KILL_STOP");
 
@@ -118,7 +119,7 @@ public class Game {
         boolean foundBreath = false;
 
         for(Stone s : neighbours) {
-            if(s != null){
+            if(!s.getColor().equals("Empty")){
                 boolean test = s.wasntChecked();
                 if(stone.getColor().equals(s.getColor()) && s.wasntChecked()){
                     s.setWasChecked(true);
@@ -141,7 +142,7 @@ public class Game {
     private void setNeighboursToSafe(Stone stone){
         Stone[] neighbours = getNeighbours(stone);
         for(Stone s : neighbours) {
-            if(s != null){
+            if(!s.getColor().equals("Empty")){
                 if(stone.getColor().equals(s.getColor()) && !s.isSafe()){
                     s.setIsSafe(true);
                     setNeighboursToSafe(s);
@@ -184,4 +185,11 @@ public class Game {
     }
     public IPlayer getCurrentPlayer(){return currentPlayer;}
     public Stone[] getBoard(){return _board;}
+    private int getXFromBoard(int i){return i%_boardSize;}
+    private int getYFromBoard(int i){return i/_boardSize;}
+    private void presetBoard(){
+        for(int i=0; i<_boardSize*_boardSize; i++){
+            _board[i] = new Stone(getXFromBoard(i), getYFromBoard(i), "Empty");
+        }
+    }
 }
