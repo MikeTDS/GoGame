@@ -48,7 +48,6 @@ public class Player extends AbstractPlayer implements Runnable {
             String command = _input.nextLine();
             _lastMovePass=false;
             if (command.equals("QUIT")) {
-                //zniszczyc ten obiekt przed wyjsciem
                 return;
             } else if (command.equals("MOVE")) {
                 int x = Integer.parseInt(_input.nextLine());

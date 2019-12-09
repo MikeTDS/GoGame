@@ -14,6 +14,7 @@ public class Game {
     private int _blockedFiled;
     private boolean _canBeUnlocked;
     public boolean _finished;
+    private String _name;
 
 
     public volatile IPlayer currentPlayer;
@@ -24,6 +25,7 @@ public class Game {
         _boardSize = size;
         _blockedFiled = -1;
         _finished = false;
+        _name = "Defualt Game.";
         presetBoard();
     }
 
@@ -235,6 +237,7 @@ public class Game {
     public Stone[] getBoard(){return _board;}
     private int getXFromBoard(int i){return i%_boardSize;}
     private int getYFromBoard(int i){return i/_boardSize;}
+    public String getName(){return _name;}
     private void presetBoard(){
         for(int i=0; i<_boardSize*_boardSize; i++){
             _board[i] = new Stone(getXFromBoard(i), getYFromBoard(i), "Empty");

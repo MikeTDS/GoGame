@@ -1,9 +1,13 @@
 package goGame.Client;
 
+import goGame.GameLogic.Game;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ServerComunicator {
@@ -17,7 +21,7 @@ public class ServerComunicator {
     private Scanner _in;
     private PrintWriter _out;
     private Object[] _newServerFields;
-    private static ServerComunicator serverComunitator;
+    private static ServerComunicator serverCommunicator;
 
     private ServerComunicator(String serverAddress, int port){
         _serverAddress = serverAddress;
@@ -27,15 +31,15 @@ public class ServerComunicator {
     }
 
     public static ServerComunicator getInstance(String serverAddress, int port){
-        if(serverComunitator==null){
-            serverComunitator = new ServerComunicator(serverAddress, port);
+        if(serverCommunicator ==null){
+            serverCommunicator = new ServerComunicator(serverAddress, port);
         }
-        return serverComunitator;
+        return serverCommunicator;
     }
 
     public static ServerComunicator getInstance(){
-        if(serverComunitator!=null){
-            return serverComunitator;
+        if(serverCommunicator !=null){
+            return serverCommunicator;
         }
         return null;
     }

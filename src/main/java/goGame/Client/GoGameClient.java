@@ -1,30 +1,39 @@
 package goGame.Client;
 
 import goGame.GUI.GUIcomponents.GoBoard.GoBoard;
+import goGame.GUI.MenuFrame;
 import goGame.GUI.GuiFrame;
 import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
 
 import javax.swing.*;
 
 public class GoGameClient {
-    private static final String DEFAULT_SERVER_ADRESS = "localhost";
+    private static final String DEFAULT_SERVER_ADDRESS = "localhost";
     private static final int WIDTH = 1200,
                              HEIGHT = 900,
                              DEFAULT_SERVER_PORT = 59090;
 
     private static ServerComunicator _serverComunicator;
+    public static LobbyComunicator _lobbyCommunicator;
     private static GuiFrame _clientFrame;
     private static GoBoard _goBoard;
     private static ScoreBoard _scoreBoard;
+    private static MenuFrame _menuFrame;
 
     public static void main( String[] args ) throws Exception {
-        initializeGame();
-        play();
+        String chosenGame = chooseMenu();
+        if (chosenGame.equals("New game")){
+            initializeGame();
+            play();
+        }
+        else if(chosenGame.equals("Join game")){
+            connectToLobby();
+        }
     }
 
 
-    public static void initializeGame(){
-        _serverComunicator = ServerComunicator.getInstance(DEFAULT_SERVER_ADRESS, DEFAULT_SERVER_PORT);
+    private static void initializeGame(){
+        _serverComunicator = ServerComunicator.getInstance(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
         try {
             _serverComunicator.connectToServer();
         }catch (Exception e){ System.out.println(e.getMessage()); }
@@ -37,10 +46,33 @@ public class GoGameClient {
         _clientFrame.add(_scoreBoard);
     }
 
-    public static int getBoardSize() {
+    private static void connectToLobby(){
+        _lobbyCommunicator = LobbyComunicator.getInstance();
+        try{
+            _lobbyCommunicator.connectToServer();
+        }
+        catch (Exception e ){System.out.println(e.getMessage());}
+        _menuFrame = new MenuFrame();
+        //_menuFrame.addGamesToList(games from server);
+    }
+
+
+    private static int getBoardSize() {
         String response = _serverComunicator.getScanner().nextLine();
 
         return convertToInt(response);
+    }
+
+    private static String chooseMenu(){
+        String[] options = {"New game", "Join game"};
+        return ((String) JOptionPane.showInputDialog(
+                null,
+                "Choose game:",
+                "Game of Go",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]));
     }
 
     private static int convertToInt(String str){
