@@ -24,8 +24,9 @@ public class GoGameServer {
     public static void main(String[] args) {
 
         _boardSize = getBoardSize();
+        presetGameList();
         try{
-            openLobby();
+            //openLobby();
             initializeServer();
         }catch (Exception ignored){ }
     }
@@ -43,7 +44,6 @@ public class GoGameServer {
 
     private static void openLobby() throws IOException {
         _lobbySocket = new ServerSocket(_lobbyPort);
-        presetGameList();
         ////////////////////////////////////////////////
         for(int i=0; i<10; i++){
             _games.add(new Game(_boardSize));
