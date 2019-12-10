@@ -25,15 +25,13 @@ public class GoGameServer {
 
         _boardSize = getBoardSize();
         try{
-            initializeServer();
             openLobby();
+            initializeServer();
         }catch (Exception ignored){ }
     }
 
     private static void initializeServer() throws Exception{
         System.out.println("Server is Running :)");
-        _games = new ArrayList<>();
-        _players = new boolean[15][30];
         ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(200);
         while (true) {
             ServerSocket listener = new ServerSocket(_port);
@@ -45,6 +43,25 @@ public class GoGameServer {
 
     private static void openLobby() throws IOException {
         _lobbySocket = new ServerSocket(_lobbyPort);
+        presetGameList();
+        ////////////////////////////////////////////////
+        for(int i=0; i<10; i++){
+            _games.add(new Game(_boardSize));
+        }
+        ////////////////////////////////////////////////
+        while(true){
+            Socket acceptedSocket = _lobbySocket.accept();
+            PrintWriter acceptedSocketOutput = new PrintWriter(acceptedSocket.getOutputStream(), true);
+            if(_games.get(0)!=null){
+                acceptedSocketOutput.println("GAME_LIST");
+                for(Game game : _games){
+                    acceptedSocketOutput.println(_games.indexOf(game) + " " + game.getName());
+                }
+            }
+            else{
+                acceptedSocketOutput.println("EMPTY_GAMES_LIST");
+            }
+        }
     }
 
     private static void performConnection(ThreadPoolExecutor pool, ServerSocket serverSocket) throws IOException {
@@ -77,7 +94,7 @@ public class GoGameServer {
         }
     }
 
-    private static int getBoardSize() {
+    public static int getBoardSize() {
         String[] options = {"9", "13", "19"};
         return convertToInt((String) JOptionPane.showInputDialog(
                 null,
@@ -100,7 +117,17 @@ public class GoGameServer {
 
         return num;
     }
-    public void sendGameList(){
-
+    public ArrayList<Game> getGameList(){
+        return _games;
+    }
+    public void setBoardSize(int n){
+        _boardSize=n;
+    }
+    public static void presetGameList(){
+        _games = new ArrayList<>();
+        _players = new boolean[15][30];
+    }
+    public void closeLobby() throws IOException {
+        _lobbySocket.close();
     }
 }

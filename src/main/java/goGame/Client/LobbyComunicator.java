@@ -13,14 +13,9 @@ import java.util.Scanner;
 public class LobbyComunicator {
     private String _serverAddress;
     private int _port;
-
-    private JTextField _tfServerAddress,
-            _tfServerPort;
-
     private Socket _socket;
     private Scanner _in;
     private PrintWriter _out;
-    private Object[] _newServerFields;
     private static LobbyComunicator lobbyCommunicator;
 
     private LobbyComunicator(){
@@ -29,10 +24,10 @@ public class LobbyComunicator {
     }
 
     public static LobbyComunicator getInstance(){
-        if(lobbyCommunicator !=null){
-            return lobbyCommunicator;
+        if(lobbyCommunicator==null){
+            lobbyCommunicator = new LobbyComunicator();
         }
-        return null;
+        return lobbyCommunicator;
     }
 
     public void connectToServer() throws IOException {
@@ -53,5 +48,6 @@ public class LobbyComunicator {
     public Scanner getScanner(){ return _in; }
     public PrintWriter getPrintWriter(){ return _out; }
     public Socket getSocket() { return _socket; }
+    public void closeConnection() throws IOException { _socket.close(); }
 }
 

@@ -14,7 +14,7 @@ public class GoGameClient {
                              DEFAULT_SERVER_PORT = 59090;
 
     private static ServerComunicator _serverComunicator;
-    public static LobbyComunicator _lobbyCommunicator;
+    private static LobbyComunicator _lobbyCommunicator;
     private static GuiFrame _clientFrame;
     private static GoBoard _goBoard;
     private static ScoreBoard _scoreBoard;
@@ -46,14 +46,25 @@ public class GoGameClient {
         _clientFrame.add(_scoreBoard);
     }
 
-    private static void connectToLobby(){
+    public static void connectToLobby(){
         _lobbyCommunicator = LobbyComunicator.getInstance();
         try{
             _lobbyCommunicator.connectToServer();
         }
         catch (Exception e ){System.out.println(e.getMessage());}
         _menuFrame = new MenuFrame();
-        //_menuFrame.addGamesToList(games from server);
+        showGames();
+    }
+
+    private static void showGames(){
+        if(_lobbyCommunicator.getScanner().nextLine().equals("GAME_LIST")){
+            while(_lobbyCommunicator.getScanner().hasNextLine()){
+                _menuFrame.addGamesToList(_lobbyCommunicator.getScanner().nextLine());
+            }
+        }
+        else{
+            System.out.println("No games found.");
+        }
     }
 
 
@@ -172,4 +183,6 @@ public class GoGameClient {
     public static GuiFrame getGuiFrame(){
         return _clientFrame;
     }
+    public static MenuFrame getMenuFrame() {return _menuFrame;}
+    public static LobbyComunicator getLobbyCommunicator() {return _lobbyCommunicator;}
 }

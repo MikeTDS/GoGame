@@ -7,7 +7,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class MenuFrame extends JFrame {
-    private ArrayList<Game> _gamesList;
     private List _gamesToChoose;
 
     public MenuFrame(){
@@ -20,11 +19,11 @@ public class MenuFrame extends JFrame {
         _gamesToChoose = new List();
         add(_gamesToChoose);
     }
-    public void addGamesToList(ArrayList<Game> _games){
-        _gamesList = _games;
-        for(int i=0; i<_games.size(); i++){
-            _gamesToChoose.add(_games.get(i).getName(), i);
-        }
+    public void addGamesToList(String game){
+        _gamesToChoose.add(game);
+    }
+    public List getGamesToChoose(){
+        return _gamesToChoose;
     }
 //    public void getPlayerTable(boolean[][] player){
 //
