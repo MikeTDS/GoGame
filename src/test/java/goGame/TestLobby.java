@@ -15,19 +15,19 @@ import java.io.InputStream;
 import static org.junit.Assert.assertEquals;
 
 public class TestLobby {
-    private GoGameServer goGameServer;
     private int boardSize;
     private GoGameClient goGameClient;
     @Before
     public void presetServer(){
-        goGameServer = new GoGameServer();
+
     }
     @Before
     public void presetLobby() throws Exception {
         goGameClient = new GoGameClient();
+        goGameClient.main(null);
     }
     @Test
-    public void testMainServer() throws Exception {
+    public void testSendingGames() throws Exception {
 
     }
 }

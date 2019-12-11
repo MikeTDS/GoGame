@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class GoGameServer {
     private static final int MAX_GAMES = 15;
-    private static int _port = 59090;
+    private static final int PORT = 59090;
     private static int _boardSize;
     private static ServerSocket _serverSocket;
     private static ThreadPoolExecutor _pool;
@@ -35,7 +35,7 @@ public class GoGameServer {
     private static void initializeServer() throws Exception{
         System.out.println("Server is Running :)");
          _pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_GAMES*2);
-        _serverSocket = new ServerSocket(_port);
+        _serverSocket = new ServerSocket(PORT);
 
     }
     private static void listenForClients() {
