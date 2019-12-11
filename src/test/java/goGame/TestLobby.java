@@ -1,5 +1,6 @@
 package goGame;
 
+import com.sun.tools.javac.Main;
 import goGame.Client.GoGameClient;
 import goGame.GameLogic.Game;
 import goGame.Server.GoGameServer;
@@ -7,8 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.io.InputStream;
 import static org.junit.Assert.assertEquals;
 
 public class TestLobby {
@@ -18,20 +21,13 @@ public class TestLobby {
     @Before
     public void presetServer(){
         goGameServer = new GoGameServer();
-        goGameServer.main(null);
     }
     @Before
     public void presetLobby() throws Exception {
         goGameClient = new GoGameClient();
-        goGameClient.main(null);
     }
     @Test
-    public void testSendingGameList() throws IOException {
-        for(int i=0; i<10; i++){
-            goGameServer.getGameList().add(new Game(boardSize));
-        }
-        assertEquals(goGameServer.getGameList().size(), 10);
-        List gamesToChoose =  goGameClient.getMenuFrame().getGamesToChoose();
-        assertEquals(goGameServer.getGameList().size(), gamesToChoose.getItemCount());
+    public void testMainServer() throws Exception {
+
     }
 }

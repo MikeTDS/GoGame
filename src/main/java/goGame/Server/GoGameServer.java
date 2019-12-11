@@ -57,7 +57,7 @@ public class GoGameServer {
                         while(!checkIfChosenGameIsCorrect(convertToInt(chosenGame), acceptedSocketWriter)){
                             chosenGame = getGameOption(acceptedSocketScanner);
                         }
-                        acceptedSocketWriter.println("CONNECT_MESSAGE Connected to game: " + chosenGame);
+                        acceptedSocketWriter.println("Connected to game: " + chosenGame);
                         connectToChosenGame(acceptedSocket, convertToInt(chosenGame), acceptedSocketWriter);
                     }
                     else{
@@ -76,7 +76,7 @@ public class GoGameServer {
 
     private static boolean checkIfChosenGameIsCorrect(int chosenGame, PrintWriter acceptedSocketWriter) {
         if(chosenGame>=_games.size() || chosenGame<0 || _players[chosenGame][1]){
-            acceptedSocketWriter.println("CONNECT_MESSAGE Game is full.");
+            acceptedSocketWriter.println("Game is full.");
             return false;
         }
         return true;
