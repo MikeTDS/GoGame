@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Game {
-    private Stone[] _board;
+    private volatile Stone[] _board;
     private int _boardSize;
     private ArrayList<Stone> _currentCheckGroup;
     private int _currentTerritory;
@@ -15,7 +15,6 @@ public class Game {
     private boolean _canBeUnlocked;
     public boolean _finished;
     private String _name;
-
 
     public volatile IPlayer currentPlayer;
 
@@ -26,7 +25,7 @@ public class Game {
         _blockedFiled = -1;
         _finished = false;
         _name = "Defualt Game.";
-        presetBoard();
+        resetBoard();
     }
 
     public synchronized void move(int x, int y, IPlayer player) {
@@ -34,7 +33,6 @@ public class Game {
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
 
-        
         if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
@@ -52,6 +50,8 @@ public class Game {
             throw new IllegalStateException("Suicide move");
         }
 
+        if(checkIfCommitedKill(newStone)){ sendKillSignalToCurrentGroup(); }
+
         if(_canBeUnlocked){
             unlockBlockedField();
         }
@@ -59,24 +59,54 @@ public class Game {
         currentPlayer = currentPlayer.getOpponent();
     }
 
+    public synchronized boolean checkForCorrectMove(Stone newStone, IPlayer player) {
+        int location = calcPos(newStone.getPosX(), newStone.getPosY());
+
+        if (player != currentPlayer || player.getOpponent() == null ||
+            !_board[location].getColor().equals("Empty") || location == _blockedFiled )
+                return false;
+
+        _board[location] = newStone;
+
+        if(checkForSuicide(newStone)){
+            _board[location] = new Stone(getXFromBoard(location), getYFromBoard(location), "Empty");
+            return false;
+        }
+
+        _board[location] = new Stone(getXFromBoard(location), getYFromBoard(location), "Empty");
+        return true;
+    }
+
     private void unlockBlockedField() { _blockedFiled = -1; }
     public synchronized boolean checkForSuicide(Stone stone){
+        if(checkIfCommitedKill(stone)){ return false; }
+        if(checkIsGroupIsOutOfBreaths(stone)){ return true; }
+
+        return false;
+    }
+
+    public boolean checkIfCommitedKill(Stone stone){
+        int location = calcPos(stone.getPosX(), stone.getPosY());
+        boolean mockChecking = false;
+        if(_board[location].getColor().equals("Empty")){
+            mockChecking = true;
+            _board[location] = stone;
+        }
+
         resetCheckStatus();
-        boolean commitedKill = false;
         Stone[] neighbours = getNeighbours(stone);
         for(Stone s : neighbours)
             if(!s.getColor().equals("Empty"))
                 if(s.wasntChecked() && !s.getColor().equals("Wall") && !s.getColor().equals(stone.getColor())){
                     resetCheckStatus();
                     if(checkIsGroupIsOutOfBreaths(s)){
-                        commitedKill = true;
-                        sendKillSignalToCurrentGroup();
+                        if(mockChecking)
+                            _board[location] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
+                        return true;
                     }
                 }
-
-        if(commitedKill){ return false; }
-        if(checkIsGroupIsOutOfBreaths(stone)){ return true; }
-
+        if(mockChecking)
+            _board[location] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
         return false;
     }
 
@@ -114,8 +144,9 @@ public class Game {
 
     private boolean checkIsGroupIsOutOfBreaths(Stone stone){
         _currentCheckGroup.clear();
+        boolean test = scoutForBreath(stone);
 
-        return  !scoutForBreath(stone);
+        return  !test;
     }
 
     private boolean scoutForBreath(Stone stone){
@@ -156,7 +187,7 @@ public class Game {
         }
     }
 
-    private Stone[] getNeighbours(Stone stone){
+    public Stone[] getNeighbours(Stone stone){
         Stone[] neighbours = new Stone[4];
         int x = stone.getPosX(),
             y = stone.getPosY();
@@ -176,7 +207,38 @@ public class Game {
         return neighbours;
     }
 
-    private int calculateTerritory(String color){
+    public Stone[] getCornerNeighbours(Stone stone){
+        Stone[] neighbours = new Stone[4];
+        int x = stone.getPosX(),
+                y = stone.getPosY();
+        if(y+1 >= _boardSize || x-1 < 0) neighbours[1] = new Stone(x-1, y+1, "Wall");
+        else neighbours[0] = _board[calcPos(x-1, y+1)];
+
+        if(x-1 < 0 || y-1 < 0) neighbours[0] = new Stone(x-1, y-1, "Wall");
+        else neighbours[1] = _board[calcPos(x-1, y-1)];
+
+        if(y-1 < 0 || x+1 >= _boardSize) neighbours[1] = new Stone(x+1, y-1, "Wall");
+        else neighbours[2] = _board[calcPos(x+1, y-1)];
+
+        if(x+1 >= _boardSize || y+1 >= _boardSize) neighbours[2] = new Stone(x+1, y+1, "Wall");
+        else neighbours[3] = _board[calcPos(x+1, y+1)];
+
+        return neighbours;
+    }
+
+    public int calculateTerritoryWithNewStone(Stone stone){
+        int location = calcPos(stone.getPosX(), stone.getPosY()),
+            newTerritory = 0;
+        if(_board[location].getColor().equals("Empty")){
+            _board[location] = stone;
+            newTerritory = calculateTerritory(stone.getColor());
+            _board[location] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
+        }
+
+        return newTerritory;
+    }
+
+    public int calculateTerritory(String color){
         int wholeTerritory=0;
         _currentTerritory=0;
         for(Stone s : _board){
@@ -223,24 +285,22 @@ public class Game {
 
     private int calcPos(int x, int y){ return x + y*_boardSize; }
     public int getBoardSize(){ return _boardSize; }
+    public IPlayer getCurrentPlayer(){return currentPlayer;}
+    private int getXFromBoard(int i){return i%_boardSize;}
+    private int getYFromBoard(int i){return i/_boardSize;}
+    public String getName(){return _name;}
+    private void resetBoard(){
+        for(int i=0; i<_boardSize*_boardSize; i++){
+            _board[i] = new Stone(getXFromBoard(i), getYFromBoard(i), "Empty");
+        }
+    }
     public IPlayer createPlayer(Socket socket, String color){
         if(color.equalsIgnoreCase("Bot"))
             return new Bot(socket, "White", this);
         else
             return new Player(socket, color, this);
     }
-
     public void skipMove(){
         currentPlayer=currentPlayer.getOpponent();
-    }
-    public IPlayer getCurrentPlayer(){return currentPlayer;}
-    public Stone[] getBoard(){return _board;}
-    private int getXFromBoard(int i){return i%_boardSize;}
-    private int getYFromBoard(int i){return i/_boardSize;}
-    public String getName(){return _name;}
-    private void presetBoard(){
-        for(int i=0; i<_boardSize*_boardSize; i++){
-            _board[i] = new Stone(getXFromBoard(i), getYFromBoard(i), "Empty");
-        }
     }
 }

@@ -17,9 +17,9 @@ public class Stone {
         _wasCheckedTerritory=false;
         _isPartOfTerritory=true;
     }
-    int getPosX(){ return _x; }
-    int getPosY(){ return _y; }
-    String getColor(){ return _color; }
+    public int getPosX(){ return _x; }
+    public int getPosY(){ return _y; }
+    public String getColor(){ return _color; }
     boolean wasntChecked(){ return !_wasChecked; }
     void setWasChecked(boolean bool){ _wasChecked = bool; }
     boolean isSafe(){ return _isSafe; }
