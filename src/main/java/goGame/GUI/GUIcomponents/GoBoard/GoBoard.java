@@ -173,11 +173,11 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     }
 
     private void drawStones(Graphics g){
-        for(Stone whiteStone : whitePlayer){
-            drawStone(whiteStone.getPosX(), whiteStone.getPosY(), Color.WHITE, g);
+        for(int i=0; i<whitePlayer.size(); i++){
+            drawStone(whitePlayer.get(i).getPosX(), whitePlayer.get(i).getPosY(), Color.WHITE, g);
         }
-        for(Stone blackStone : blackPlayer){
-            drawStone(blackStone.getPosX(), blackStone.getPosY(), Color.BLACK, g);
+        for(int i=0; i<blackPlayer.size(); i++){
+            drawStone(blackPlayer.get(i).getPosX(), blackPlayer.get(i).getPosY(), Color.BLACK, g);
         }
     }
 

@@ -14,10 +14,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class GoGameServer {
-    private static int _lobbyPort = 50000;
+    private static final int MAX_GAMES = 15;
     private static int _port = 59090;
     private static int _boardSize;
-    private static ServerSocket _lobbySocket;
+    private static ServerSocket _serverSocket;
+    private static ThreadPoolExecutor _pool;
     private static ArrayList<Game> _games;
     private static boolean[][] _players;
 
@@ -26,71 +27,108 @@ public class GoGameServer {
         _boardSize = getBoardSize();
         presetGameList();
         try{
-            //openLobby();
             initializeServer();
+            listenForClients();
         }catch (Exception ignored){ }
     }
 
     private static void initializeServer() throws Exception{
         System.out.println("Server is Running :)");
-        ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(200);
+         _pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_GAMES*2);
+        _serverSocket = new ServerSocket(_port);
+
+    }
+    private static void listenForClients() {
         while (true) {
-            ServerSocket listener = new ServerSocket(_port);
-            performConnection(pool, listener);
-            _port++;
-        }
+            Socket acceptedSocket;
+            try {
+                acceptedSocket = _serverSocket.accept();
+                Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
+                PrintWriter acceptedSocketWriter = new PrintWriter(acceptedSocket.getOutputStream(), true);
 
-    }
-
-    private static void openLobby() throws IOException {
-        _lobbySocket = new ServerSocket(_lobbyPort);
-        ////////////////////////////////////////////////
-        for(int i=0; i<10; i++){
-            _games.add(new Game(_boardSize));
-        }
-        ////////////////////////////////////////////////
-        while(true){
-            Socket acceptedSocket = _lobbySocket.accept();
-            PrintWriter acceptedSocketOutput = new PrintWriter(acceptedSocket.getOutputStream(), true);
-            if(_games.get(0)!=null){
-                acceptedSocketOutput.println("GAME_LIST");
-                for(Game game : _games){
-                    acceptedSocketOutput.println(_games.indexOf(game) + " " + game.getName());
+                String gameOption = getGameOption(acceptedSocketScanner);
+                if(gameOption!=null){
+                    if(gameOption.equals("NEW_GAME")){
+                        createNewGame(acceptedSocket, acceptedSocketScanner, acceptedSocketWriter);
+                    }
+                    else if(gameOption.equals(("JOIN_GAME"))){
+                        sendGameList(acceptedSocketWriter);
+                        String chosenGame = getGameOption(acceptedSocketScanner);
+                        while(!checkIfChosenGameIsCorrect(convertToInt(chosenGame), acceptedSocketWriter)){
+                            chosenGame = getGameOption(acceptedSocketScanner);
+                        }
+                        acceptedSocketWriter.println("CONNECT_MESSAGE Connected to game: " + chosenGame);
+                        connectToChosenGame(acceptedSocket, convertToInt(chosenGame), acceptedSocketWriter);
+                    }
+                    else{
+                        System.out.println("Error occurred while choosing game option.");
+                    }
                 }
+                else{
+                    System.out.println("Error occurred while choosing game option.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            else{
-                acceptedSocketOutput.println("EMPTY_GAMES_LIST");
-            }
+
         }
     }
 
-    private static void performConnection(ThreadPoolExecutor pool, ServerSocket serverSocket) throws IOException {
-        Socket acceptedSocket = serverSocket.accept();
+    private static boolean checkIfChosenGameIsCorrect(int chosenGame, PrintWriter acceptedSocketWriter) {
+        if(chosenGame>=_games.size() || chosenGame<0 || _players[chosenGame][1]){
+            acceptedSocketWriter.println("CONNECT_MESSAGE Game is full.");
+            return false;
+        }
+        return true;
+    }
+
+    private static String getGameOption(Scanner scanner){
+        while(scanner.hasNextLine()){
+            String response = scanner.nextLine();
+            if(response != null)
+                return response;
+        }
+
+        return null;
+    }
+    private static void createNewGame(Socket playerSocket, Scanner playerScanner, PrintWriter playerWriter){
         Game game = new Game(_boardSize);
         _games.add(game);
-        Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
-        PrintWriter acceptedSocketOutput = new PrintWriter(acceptedSocket.getOutputStream(), true);
-        acceptedSocketOutput.println(_boardSize);
-        acceptedSocketOutput.println("Black");
+        playerWriter.println(_boardSize);
+        playerWriter.println("Black");
 
-        while(acceptedSocketScanner.hasNextLine()){
-            String response = acceptedSocketScanner.nextLine();
+        while(playerScanner.hasNextLine()){
+            String response = playerScanner.nextLine();
             if(response.equals("PLAY_WITH_BOT")){
-                pool.execute((Runnable)game.createPlayer(acceptedSocket,"Black"));
-                pool.execute((Runnable)game.createPlayer(acceptedSocket, "Bot"));
-                break;
-            }
-            else if(response.equals("DONT_PLAY_WITH_BOT")){
-                pool.execute((Runnable)game.createPlayer(acceptedSocket,"Black"));
+                _pool.execute((Runnable)game.createPlayer(playerSocket,"Black"));
                 _players[_games.indexOf(game)][0] = true;
-                acceptedSocket = serverSocket.accept();
-                acceptedSocketOutput = new PrintWriter(acceptedSocket.getOutputStream(), true);
-                acceptedSocketOutput.println(_boardSize);
-                acceptedSocketOutput.println("White");
-                pool.execute((Runnable)game.createPlayer(acceptedSocket,"White"));
+                _pool.execute((Runnable)game.createPlayer(playerSocket, "Bot"));
                 _players[_games.indexOf(game)][1] = true;
                 break;
             }
+            else if(response.equals("DONT_PLAY_WITH_BOT")){
+                _pool.execute((Runnable)game.createPlayer(playerSocket,"Black"));
+                _players[_games.indexOf(game)][0] = true;
+                break;
+            }
+        }
+    }
+    private static void connectToChosenGame(Socket playerSocket, int gameNumber, PrintWriter playerWriter){
+        Game chosenGame = _games.get(gameNumber);
+        playerWriter.println(_boardSize);
+        playerWriter.println("White");
+        _pool.execute((Runnable)chosenGame.createPlayer(playerSocket,"White"));
+        _players[gameNumber][1] = true;
+    }
+    private static void sendGameList(PrintWriter writer) {
+        if (_games.get(0) != null) {
+            writer.println("GAME_LIST");
+            for (Game game : _games) {
+                writer.println(_games.indexOf(game) + " " + game.getName());
+            }
+            writer.println("NO_MORE_GAMES");
+        } else {
+            writer.println("EMPTY_GAMES_LIST");
         }
     }
 
@@ -125,9 +163,6 @@ public class GoGameServer {
     }
     public static void presetGameList(){
         _games = new ArrayList<>();
-        _players = new boolean[15][30];
-    }
-    public void closeLobby() throws IOException {
-        _lobbySocket.close();
+        _players = new boolean[MAX_GAMES][2];
     }
 }

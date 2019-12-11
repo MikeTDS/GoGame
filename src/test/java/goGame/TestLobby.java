@@ -1,7 +1,6 @@
 package goGame;
 
 import goGame.Client.GoGameClient;
-import goGame.Client.LobbyComunicator;
 import goGame.GameLogic.Game;
 import goGame.Server.GoGameServer;
 import org.junit.Before;
@@ -33,8 +32,6 @@ public class TestLobby {
         }
         assertEquals(goGameServer.getGameList().size(), 10);
         List gamesToChoose =  goGameClient.getMenuFrame().getGamesToChoose();
-        goGameClient.getLobbyCommunicator().closeConnection();
-        goGameServer.closeLobby();
         assertEquals(goGameServer.getGameList().size(), gamesToChoose.getItemCount());
     }
 }

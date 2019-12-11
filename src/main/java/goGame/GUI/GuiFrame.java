@@ -6,9 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import static javax.swing.JOptionPane.NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 
 public class GuiFrame extends JFrame {
@@ -36,7 +33,6 @@ public class GuiFrame extends JFrame {
             }
         });
         setResizable(false);
-        setVisible(true);
     }
     public void chooseOpponent(){
         int returnValue=0;

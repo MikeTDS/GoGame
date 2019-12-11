@@ -15,7 +15,6 @@ public class GoGameClient {
                              DEFAULT_SERVER_PORT = 59090;
 
     private static ServerComunicator _serverComunicator;
-    private static LobbyComunicator _lobbyCommunicator;
     private static GuiFrame _clientFrame;
     private static GoBoard _goBoard;
     private static ScoreBoard _scoreBoard;
@@ -23,46 +22,59 @@ public class GoGameClient {
 
     private static String color, opponentColor;
 
-    public static void main( String[] args ) throws Exception {
+    public static void main( String[] args ) {
+            connectToServer();
+            chooseGame();
+    }
+
+    private static void chooseGame(){
         String chosenGame = chooseMenu();
-        if (chosenGame.equals("New game")){
+        if(chosenGame.equals("New game")){
+            _serverComunicator.getPrintWriter().println("NEW_GAME");
             initializeGame();
-            play();
+            try {
+                play();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else if(chosenGame.equals("Join game")){
+            _serverComunicator.getPrintWriter().println("JOIN_GAME");
             connectToLobby();
         }
     }
 
-
     private static void initializeGame(){
-        _serverComunicator = ServerComunicator.getInstance(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
-        try {
-            _serverComunicator.connectToServer();
-        }catch (Exception e){ System.out.println(e.getMessage()); }
-
-        int goBoardSize = getBoardSize();
+        int goBoardSize = convertToInt(getResponse());
         _goBoard = new GoBoard(goBoardSize);
         _scoreBoard = new ScoreBoard();
         _clientFrame = new GuiFrame(WIDTH, HEIGHT);
         _clientFrame.add(_goBoard);
         _clientFrame.add(_scoreBoard);
+        _clientFrame.setVisible(true);
+    }
+
+    private static void connectToServer(){
+        _serverComunicator = ServerComunicator.getInstance(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
+        try {
+            _serverComunicator.connectToServer();
+        }catch (Exception e){ System.out.println(e.getMessage()); }
     }
 
     public static void connectToLobby(){
-        _lobbyCommunicator = LobbyComunicator.getInstance();
-        try{
-            _lobbyCommunicator.connectToServer();
-        }
-        catch (Exception e ){System.out.println(e.getMessage());}
         _menuFrame = new MenuFrame();
         showGames();
     }
 
     private static void showGames(){
-        if(_lobbyCommunicator.getScanner().nextLine().equals("GAME_LIST")){
-            while(_lobbyCommunicator.getScanner().hasNextLine()){
-                _menuFrame.addGamesToList(_lobbyCommunicator.getScanner().nextLine());
+        if(_serverComunicator.getScanner().hasNextLine()){
+            if(_serverComunicator.getScanner().nextLine().equals("GAME_LIST")){
+                while(_serverComunicator.getScanner().hasNextLine()){
+                    String response = _serverComunicator.getScanner().nextLine();
+                    if(response.equals("NO_MORE_GAMES"))
+                        break;
+                    _menuFrame.addGamesToList(response);
+                }
             }
         }
         else{
@@ -70,11 +82,32 @@ public class GoGameClient {
         }
     }
 
+    public static void sendChosenGame(int game){
+        _serverComunicator.getPrintWriter().println(game);
+        String response = getResponse();
+        if(response.startsWith("CONNECT_MESSAGE")){
+            JOptionPane.showMessageDialog(null, response.substring(16));
+            if(response.contains("Connected to game")){
+                _menuFrame.dispose();
+                initializeGame();
+                try {
+                    play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-    private static int getBoardSize() {
-        String response = _serverComunicator.getScanner().nextLine();
+    }
+    private static String getResponse() {
+        String response = null;
+        while (_serverComunicator.getScanner().hasNextLine()){
+            response = _serverComunicator.getScanner().nextLine();
+            if(response != null)
+                break;
+        }
 
-        return convertToInt(response);
+        return response;
     }
 
     private static String chooseMenu(){
@@ -106,7 +139,6 @@ public class GoGameClient {
                 response = _serverComunicator.getScanner().nextLine();
                 performActionFromResponse(response);
             }
-
             _serverComunicator.getPrintWriter().println("QUIT");
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,5 +229,4 @@ public class GoGameClient {
         return _clientFrame;
     }
     public static MenuFrame getMenuFrame() {return _menuFrame;}
-    public static LobbyComunicator getLobbyCommunicator() {return _lobbyCommunicator;}
 }
