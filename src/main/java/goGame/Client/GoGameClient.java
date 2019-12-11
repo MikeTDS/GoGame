@@ -6,6 +6,7 @@ import goGame.GUI.GuiFrame;
 import goGame.GUIcomponents.ScoreBoard.ScoreBoard;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class GoGameClient {
     private static final String DEFAULT_SERVER_ADDRESS = "localhost";
@@ -19,6 +20,8 @@ public class GoGameClient {
     private static GoBoard _goBoard;
     private static ScoreBoard _scoreBoard;
     private static MenuFrame _menuFrame;
+
+    private static String color, opponentColor;
 
     public static void main( String[] args ) throws Exception {
         String chosenGame = chooseMenu();
@@ -96,80 +99,14 @@ public class GoGameClient {
     }
 
     public static void play() throws Exception {
+        String response;
         try {
-            int x, y;
-            String response = _serverComunicator.getScanner().nextLine();
-            String color = response;
-            String opponentColor = color.equals("Black") ? "White" : "Black";
-            if(color.equals("Black")){
-                _clientFrame.chooseOpponent();
-            }
-            _clientFrame.setTitle("Go: Gracz " + color);
+            setupClient();
             while (_serverComunicator.getScanner().hasNextLine()) {
                 response = _serverComunicator.getScanner().nextLine();
-                switch (response){
-                    case "VALID_MOVE":
-                        response = _serverComunicator.getScanner().nextLine();
-                        x = convertToInt(response);
-
-                        response = _serverComunicator.getScanner().nextLine();
-                        y = convertToInt(response);
-
-                        _goBoard.setStone(x, y, color);
-                        _goBoard.repaint();
-                        _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
-                        break;
-                    case "OPPONENT_MOVED":
-                        response = _serverComunicator.getScanner().nextLine();
-                        x = convertToInt(response);
-
-                        response = _serverComunicator.getScanner().nextLine();
-                        y = convertToInt(response);
-
-                        _goBoard.setStone(x, y, opponentColor);
-                        _goBoard.repaint();
-                        _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
-                        break;
-                    case "KILL":
-                        response = _serverComunicator.getScanner().nextLine();
-                        while (!response.equals("KILL_STOP")){
-                            x = convertToInt(response);
-
-                            response = _serverComunicator.getScanner().nextLine();
-                            y = convertToInt(response);
-                            response = _serverComunicator.getScanner().nextLine();
-                            _goBoard.removeStone(x, y, response);
-                            response = _serverComunicator.getScanner().nextLine();
-                        }
-                        _goBoard.repaint();
-                        _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
-                        break;
-                    case "SURRENDER":
-                        JOptionPane.showMessageDialog(_clientFrame, "You surrendered the game. Shame!");
-                        _serverComunicator.getSocket().close();
-                        break;
-                    case "SURRENDER_WIN":
-                        JOptionPane.showMessageDialog(_clientFrame, "You won, because your opponent surrendered.");
-                        _serverComunicator.getSocket().close();
-                        break;
-                    case "NORMAL_EXIT":
-                        JOptionPane.showMessageDialog(_clientFrame, "See you!");
-                        _serverComunicator.getSocket().close();
-                        break;
-                    case "FIRST_PASS":
-                        JOptionPane.showMessageDialog(_clientFrame, "You passed.");
-                        break;
-                    case "QUIT_PASS":
-                        JOptionPane.showMessageDialog(_clientFrame, "Two passes in row. Game finished.");
-                        break;
-                    case "ERROR_PASS":
-                        JOptionPane.showMessageDialog(_clientFrame, "Can't pass. Wait for opponent.");
-                        break;
-                    case "OPPONENT_PASS":
-                        JOptionPane.showMessageDialog(_clientFrame, "Opponent passed. Your move.");
-                        break;
-                }
+                performActionFromResponse(response);
             }
+
             _serverComunicator.getPrintWriter().println("QUIT");
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,6 +117,82 @@ public class GoGameClient {
             _clientFrame.dispose();
         }
     }
+
+    private static void setupClient() {
+        color = _serverComunicator.getScanner().nextLine();;
+        opponentColor = color.equals("Black") ? "White" : "Black";
+        if(color.equals("Black")){
+            _clientFrame.chooseOpponent();
+        }
+        _clientFrame.setTitle("Go: Gracz " + color);
+    }
+
+    private static void performActionFromResponse(String response) throws IOException {
+        int x, y;
+        switch (response){
+            case "VALID_MOVE":
+                response = _serverComunicator.getScanner().nextLine();
+                x = convertToInt(response);
+
+                response = _serverComunicator.getScanner().nextLine();
+                y = convertToInt(response);
+
+                _goBoard.setStone(x, y, color);
+                _goBoard.repaint();
+                _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
+                break;
+            case "OPPONENT_MOVED":
+                response = _serverComunicator.getScanner().nextLine();
+                x = convertToInt(response);
+
+                response = _serverComunicator.getScanner().nextLine();
+                y = convertToInt(response);
+
+                _goBoard.setStone(x, y, opponentColor);
+                _goBoard.repaint();
+                _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
+                break;
+            case "KILL":
+                response = _serverComunicator.getScanner().nextLine();
+                while (!response.equals("KILL_STOP")){
+                    x = convertToInt(response);
+
+                    response = _serverComunicator.getScanner().nextLine();
+                    y = convertToInt(response);
+                    response = _serverComunicator.getScanner().nextLine();
+                    _goBoard.removeStone(x, y, response);
+                    response = _serverComunicator.getScanner().nextLine();
+                }
+                _goBoard.repaint();
+                _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
+                break;
+            case "SURRENDER":
+                JOptionPane.showMessageDialog(_clientFrame, "You surrendered the game. Shame!");
+                _serverComunicator.getSocket().close();
+                break;
+            case "SURRENDER_WIN":
+                JOptionPane.showMessageDialog(_clientFrame, "You won, because your opponent surrendered.");
+                _serverComunicator.getSocket().close();
+                break;
+            case "NORMAL_EXIT":
+                JOptionPane.showMessageDialog(_clientFrame, "See you!");
+                _serverComunicator.getSocket().close();
+                break;
+            case "FIRST_PASS":
+                JOptionPane.showMessageDialog(_clientFrame, "You passed.");
+                break;
+            case "QUIT_PASS":
+                JOptionPane.showMessageDialog(_clientFrame, "Two passes in row. Game finished.");
+                break;
+            case "ERROR_PASS":
+                JOptionPane.showMessageDialog(_clientFrame, "Can't pass. Wait for opponent.");
+                break;
+            case "OPPONENT_PASS":
+                JOptionPane.showMessageDialog(_clientFrame, "Opponent passed. Your move.");
+                break;
+        }
+    }
+
     public static GuiFrame getGuiFrame(){
         return _clientFrame;
     }
