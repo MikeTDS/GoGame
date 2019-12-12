@@ -17,11 +17,10 @@ public class MenuFrame extends JFrame{
     }
     private void initializeMenu(){
         setTitle("Game of Go : Lobby");
-        setSize(new Dimension(600,600));
+        setSize(new Dimension(300,300));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        _gamesToChoose = new List();
-        add(_gamesToChoose);
+        setLayout(new BorderLayout());
+        setGamesList();
         setButton();
     }
     public void addGamesToList(String game){
@@ -29,12 +28,18 @@ public class MenuFrame extends JFrame{
     }
     private void setButton(){
         _chooseGameButton = new JButton();
+        _chooseGameButton.setText("Connect");
         _chooseGameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 GoGameClient.sendChosenGame(_gamesToChoose.getSelectedIndex());
             }
         } );
-        setPreferredSize(new Dimension(100,500));
-        add(_chooseGameButton);
+        _chooseGameButton.setPreferredSize(new Dimension(300,50));
+        add(_chooseGameButton, BorderLayout.PAGE_END);
+    }
+    private void setGamesList(){
+        _gamesToChoose = new List();
+        _gamesToChoose.setSize(new Dimension(600, 300));
+        add(_gamesToChoose, BorderLayout.PAGE_START);
     }
 }
