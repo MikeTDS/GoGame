@@ -33,6 +33,7 @@ public class Player extends AbstractPlayer implements Runnable {
         _input = new Scanner(_socket.getInputStream());
         _output = new PrintWriter(_socket.getOutputStream(), true);
         _lastMovePass=false;
+        resetPoints();
         if (_color.equals("Black")) {
             _game.currentPlayer = this;
             _output.println("MESSAGE Waiting for opponent to connect");
@@ -62,6 +63,7 @@ public class Player extends AbstractPlayer implements Runnable {
                 }
                 else{
                     _output.println("NORMAL_EXIT");
+                    _game._finished=true;
                 }
             }
             else if(command.equals("PASS")){
@@ -72,8 +74,7 @@ public class Player extends AbstractPlayer implements Runnable {
                     if(_opponent.getPass()){
                         _output.println("QUIT_PASS");
                         _opponent.getOutput().println("QUIT_PASS");
-                        //_game._finished=true; <-pododawac gdy dodam zliczanie punktow
-                        //_game.countPoints();
+                        _game._finished=true;
                     }
                     else{
                         _output.println("FIRST_PASS");
@@ -91,7 +92,7 @@ public class Player extends AbstractPlayer implements Runnable {
             _output.println("VALID_MOVE");
             _output.println(x);
             _output.println(y);
-            if(!_opponent.getSocket().equals(getSocket())){
+            if (!_opponent.getSocket().equals(getSocket())) {
                 _opponent.getOutput().println("OPPONENT_MOVED");
                 _opponent.getOutput().println(x);
                 _opponent.getOutput().println(y);
@@ -100,5 +101,10 @@ public class Player extends AbstractPlayer implements Runnable {
             System.out.println(e.getMessage());
             _output.println("WRONG_MOVE " + e.getMessage());
         }
+    }
+    public void sendPoints(){
+        _output.println("POINTS");
+        _output.println(totalPoints);
+        //System.out.println(_color + " " + totalPoints);
     }
 }

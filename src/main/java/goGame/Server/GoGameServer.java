@@ -123,8 +123,13 @@ public class GoGameServer {
     private static void sendGameList(PrintWriter writer) {
         if (_games.get(0) != null) {
             writer.println("GAME_LIST");
-            for (Game game : _games) {
-                writer.println(_games.indexOf(game) + " " + game.getName());
+            for (int i=0; i<_games.size(); i++) {
+                if(_games.get(i).currentPlayer!=null && _games.get(i).currentPlayer.getOpponent()!=null){
+                    writer.println(i + ". " + _games.get(i).getName() + "2/2");
+                }
+                else{
+                    writer.println(i + ". " + _games.get(i).getName() + "1/2");
+                }
             }
             writer.println("NO_MORE_GAMES");
         } else {
@@ -154,9 +159,6 @@ public class GoGameServer {
         }
 
         return num;
-    }
-    public ArrayList<Game> getGameList(){
-        return _games;
     }
     public void setBoardSize(int n){
         _boardSize=n;

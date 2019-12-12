@@ -13,4 +13,8 @@ public interface IPlayer {
     boolean getPass();
     PrintWriter getOutput();
     Socket getSocket();
+    void addKillPoints(int points);
+    void resetPoints();
+    void updatePoints();
+    void sendPoints();
 }

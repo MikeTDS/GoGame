@@ -111,7 +111,7 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
 
     private void drawStone(int x, int y, Color clr, Graphics g){
         g.setColor(clr);
-        g.fillOval(temporaryConverter(x)-15,temporaryConverter(y)-15,30,30);
+        g.fillOval(temporaryConverter(x)-(_gap/3),temporaryConverter(y)-(_gap/3),(_gap*2)/3, (2*_gap)/3);
     }
 
     private void setButtonList(int size){

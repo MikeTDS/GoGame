@@ -117,7 +117,7 @@ public class GoGameClient {
 
     private static String chooseMenu(){
         String[] options = {"New game", "Join game"};
-        return ((String) JOptionPane.showInputDialog(
+        String response = ((String) JOptionPane.showInputDialog(
                 null,
                 "Choose game:",
                 "Game of Go",
@@ -125,6 +125,10 @@ public class GoGameClient {
                 null,
                 options,
                 options[0]));
+        if(response==null || (response!=null && response.equals("")))
+            System.exit(-1);
+        return response;
+
     }
 
     private static int convertToInt(String str){
@@ -234,11 +238,13 @@ public class GoGameClient {
             case "OPPONENT_PASS":
                 JOptionPane.showMessageDialog(_clientFrame, "Opponent passed. Your move.");
                 break;
+            case "POINTS":
+                int points = Integer.parseInt(_serverComunicator.getScanner().nextLine());
+                ScoreBoard.showPoints(points);
         }
     }
 
     public static GuiFrame getGuiFrame(){
         return _clientFrame;
     }
-    public static MenuFrame getMenuFrame() {return _menuFrame;}
 }

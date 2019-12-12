@@ -55,7 +55,9 @@ public class Game {
         if(_canBeUnlocked){
             unlockBlockedField();
         }
-        System.out.println("Territory: " + currentPlayer.getColor() + " " + calculateTerritory(currentPlayer.getColor()));
+        currentPlayer.updatePoints();
+        currentPlayer.sendPoints();
+        //System.out.println("Territory: " + currentPlayer.getColor() + " " + calculateTerritory(currentPlayer.getColor()));
         currentPlayer = currentPlayer.getOpponent();
     }
 
@@ -128,6 +130,7 @@ public class Game {
             sendOutputToBothPlayers(String.valueOf(stone.getPosY()));
             sendOutputToBothPlayers(String.valueOf(stone.getColor()));
             _board[calcPos(stone.getPosX(), stone.getPosY())] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
+            currentPlayer.addKillPoints(1);
         }
         sendOutputToBothPlayers("KILL_STOP");
 

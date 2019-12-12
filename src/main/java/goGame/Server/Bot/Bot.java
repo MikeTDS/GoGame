@@ -55,6 +55,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         _opponent = _game.getCurrentPlayer();
         _opponent.setOpponent(this);
         _opponent.getOpponent().getOutput().println("MESSAGE Your move");
+        resetPoints();
     }
 
     private void processMoveCommand(int x, int y) {
@@ -175,11 +176,6 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
 
         return newTerritory + 1 < currentTerritory;
     }
-
-    private void resetPoints(){
-        for(int i=0; i<_boardsize*_boardsize; i++){ _pointsBoard[i] = 0; }
-    }
-
     @Override
     public void sendOutput(String out) { }
 
@@ -196,6 +192,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
     private void play(){
         while(true){
             if(_game.getCurrentPlayer().equals(this)){
+                updatePoints();
                findBestField();
             }
         }

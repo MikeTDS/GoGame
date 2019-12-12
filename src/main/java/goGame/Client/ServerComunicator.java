@@ -56,10 +56,14 @@ public class ServerComunicator {
 
     public void connectToServer() throws IOException {
         int input = JOptionPane.showConfirmDialog(null, _newServerFields, "Łączenie z serwerem", JOptionPane.OK_CANCEL_OPTION);
-
+        _serverAddress="";
+        _port=-1;
         if(input == 0) {
             _serverAddress = _tfServerAddress.getText();
             _port = convertToInt(_tfServerPort.getText());
+        }
+        if(_serverAddress=="" || _port==-1 ){
+            System.exit(-1);
         }
 
         _socket = new Socket(_serverAddress, _port);
