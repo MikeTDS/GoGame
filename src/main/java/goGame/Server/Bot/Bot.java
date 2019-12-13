@@ -27,12 +27,12 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
 
     private void setPointsSystem() {
         _pointsMap.put("kill", 1300);
-        _pointsMap.put("chain", 100);
+        _pointsMap.put("chain", 50);
         _pointsMap.put("enemyHug", 200);
-        _pointsMap.put("friendHug", 50);
+        _pointsMap.put("friendHug", 15);
         _pointsMap.put("territoryExpansion", 500);
         _pointsMap.put("enemyOutnumber", 150);
-        _pointsMap.put("enemyEqualization", 320);
+        _pointsMap.put("enemyEqualization", 180);
         _pointsMap.put("enemyKillProtection", 700);
         _pointsMap.put("enemyNeighbour", -50);
         _pointsMap.put("wrongMove", -100000);
@@ -76,7 +76,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         for(int i=0; i< _boardsize*_boardsize; i++){
             Stone allyStone = new Stone(getXFromBoard(i), getYFromBoard(i), _color);
             Stone enemyTestStone = new Stone(getXFromBoard(i), getYFromBoard(i), _opponent.getColor());
-            if(checkForKill(allyStone)) _pointsBoard[i] += _pointsMap.get("kill");
+            if(checkForKill(allyStone)) _pointsBoard[i] += _pointsMap.get("kill") * _game.getSizeOfKillGroups();
             if(checkForKill(enemyTestStone)) _pointsBoard[i] += _pointsMap.get("enemyKillProtection");
             if(checkForTerritoryExpansion(allyStone)) _pointsBoard[i] += _pointsMap.get("territoryExpansion");
             if(checkForChain(allyStone)) _pointsBoard[i] += _pointsMap.get("chain");
@@ -142,10 +142,11 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
     private boolean checkForCorrectMove(Stone stone) { return _game.checkForCorrectMove(stone, this); }
     private boolean checkForChain(Stone stone) { return countStonesOfGivenColorAround(stone, _color) == 1; }
     private boolean checkForFriendHug(Stone stone) { return countStonesOfGivenColorAround(stone, _color) > 1; }
-    private boolean checkForEnemyEqualization(Stone stone) { return (countStonesOfGivenColorAround(stone, _color) + 1) == countStonesOfGivenColorAround(stone, _opponent.getColor())
-                                                             && countStonesOfGivenColorAround(stone, _color) > 0; }
-    private boolean checkForEnemyOutnumber(Stone stone) { return countStonesOfGivenColorAround(stone, _color) > countStonesOfGivenColorAround(stone, _opponent.getColor())
-                                                          && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 0; }
+    private boolean checkForEnemyEqualization(Stone stone) { return ((countStonesOfGivenColorAround(stone, _color)) + 1)== countStonesOfGivenColorAround(stone, _opponent.getColor())
+                                                             && countStonesOfGivenColorAround(stone, _color) > 0
+                                                             && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 0; }
+    private boolean checkForEnemyOutnumber(Stone stone) { return ((countStonesOfGivenColorAround(stone, _color)) + 1) > countStonesOfGivenColorAround(stone, _opponent.getColor())
+                                                          && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 0 && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 1; }
     private int countStonesOfGivenColorAround(Stone stone, String clr) {
         Stone[] neighbours = _game.getNeighbours(stone);
         Stone[] cornerNeighbours = _game.getCornerNeighbours(stone);
@@ -174,7 +175,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         int currentTerritory = _game.calculateTerritory(stone.getColor());
         int newTerritory = _game.calculateTerritoryWithNewStone(stone);
 
-        return newTerritory + 1 < currentTerritory;
+        return newTerritory < currentTerritory && newTerritory != 0;
     }
     @Override
     public void sendOutput(String out) { }

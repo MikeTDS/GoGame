@@ -10,6 +10,7 @@ public class Game {
     private volatile Stone[] _board;
     private int _boardSize;
     private ArrayList<Stone> _currentCheckGroup;
+    private ArrayList<ArrayList<Stone>> _killGroups;
     private int _currentTerritory;
     private int _blockedFiled;
     private boolean _canBeUnlocked;
@@ -20,6 +21,7 @@ public class Game {
 
     public Game(int size){
         _currentCheckGroup = new ArrayList<>();
+        _killGroups = new ArrayList<>();
         _board = new Stone[size*size];
         _boardSize = size;
         _blockedFiled = -1;
@@ -32,7 +34,7 @@ public class Game {
         int location = calcPos(x, y);
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
-
+        calculateTerritoryWithNewStone(newStone);
         if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
@@ -50,7 +52,7 @@ public class Game {
             throw new IllegalStateException("Suicide move");
         }
 
-        if(checkIfCommitedKill(newStone)){ sendKillSignalToCurrentGroup(); }
+        if(checkIfCommitedKill(newStone)){ sendKillSignalToKillGroups(); }
 
         if(_canBeUnlocked){
             unlockBlockedField();
@@ -88,8 +90,10 @@ public class Game {
     }
 
     public boolean checkIfCommitedKill(Stone stone){
+        _killGroups.clear();
         int location = calcPos(stone.getPosX(), stone.getPosY());
-        boolean mockChecking = false;
+        boolean mockChecking = false,
+                commitedKill = false;
         if(_board[location].getColor().equals("Empty")){
             mockChecking = true;
             _board[location] = stone;
@@ -102,14 +106,14 @@ public class Game {
                 if(s.wasntChecked() && !s.getColor().equals("Wall") && !s.getColor().equals(stone.getColor())){
                     resetCheckStatus();
                     if(checkIsGroupIsOutOfBreaths(s)){
-                        if(mockChecking)
-                            _board[location] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
-                        return true;
+                        commitedKill = true;
+                        ArrayList<Stone> gck = (ArrayList<Stone>)_currentCheckGroup.clone();
+                        _killGroups.add(gck);
                     }
                 }
         if(mockChecking)
             _board[location] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
-        return false;
+        return commitedKill;
     }
 
     private void resetCheckStatus(){
@@ -123,21 +127,22 @@ public class Game {
         }
     }
 
-    private void sendKillSignalToCurrentGroup(){
+    private void sendKillSignalToKillGroups(){
         sendOutputToBothPlayers("KILL");
-        for(Stone stone : _currentCheckGroup){
-            sendOutputToBothPlayers(String.valueOf(stone.getPosX()));
-            sendOutputToBothPlayers(String.valueOf(stone.getPosY()));
-            sendOutputToBothPlayers(String.valueOf(stone.getColor()));
-            _board[calcPos(stone.getPosX(), stone.getPosY())] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
-            currentPlayer.addKillPoints(1);
+        for(ArrayList<Stone> currentCheckGroup : _killGroups)
+            for(Stone stone : currentCheckGroup){
+                sendOutputToBothPlayers(String.valueOf(stone.getPosX()));
+                sendOutputToBothPlayers(String.valueOf(stone.getPosY()));
+                sendOutputToBothPlayers(String.valueOf(stone.getColor()));
+                _board[calcPos(stone.getPosX(), stone.getPosY())] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
+                currentPlayer.addKillPoints(1);
+
+                if(_currentCheckGroup.size() == 1){
+                    _blockedFiled = calcPos(_currentCheckGroup.get(0).getPosX(), _currentCheckGroup.get(0).getPosY());
+                    _canBeUnlocked = false;
+                }
         }
         sendOutputToBothPlayers("KILL_STOP");
-
-        if(_currentCheckGroup.size() == 1){
-            _blockedFiled = calcPos(_currentCheckGroup.get(0).getPosX(), _currentCheckGroup.get(0).getPosY());
-            _canBeUnlocked = false;
-        }
     }
 
     private void sendOutputToBothPlayers(String out){
@@ -242,6 +247,7 @@ public class Game {
     }
 
     public int calculateTerritory(String color){
+        resetCheckStatus();
         int wholeTerritory=0;
         _currentTerritory=0;
         for(Stone s : _board){
@@ -288,6 +294,7 @@ public class Game {
 
     private int calcPos(int x, int y){ return x + y*_boardSize; }
     public int getBoardSize(){ return _boardSize; }
+    public int getSizeOfKillGroups() { return _killGroups.size(); }
     public IPlayer getCurrentPlayer(){return currentPlayer;}
     private int getXFromBoard(int i){return i%_boardSize;}
     private int getYFromBoard(int i){return i/_boardSize;}
