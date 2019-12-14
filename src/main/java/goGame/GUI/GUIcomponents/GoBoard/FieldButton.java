@@ -2,7 +2,7 @@ package goGame.GUI.GUIcomponents.GoBoard;
 
 import java.awt.*;
 
-class FieldButton extends Rectangle {
+public class FieldButton extends Rectangle {
     private int _x, _y, _xDraw, _yDraw,  _xSize, _ySize;
     FieldButton(int x, int y, int xsize, int ysize){
         _x=x;

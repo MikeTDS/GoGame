@@ -10,19 +10,18 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 public class GoBoard extends JPanel implements IGoBoard, MouseListener {
-    private static int _size, _xSize, _ySize, _margin, _gap;
+    private static int _size, _xSize, _ySize, _margin, _gap, WIDTH=800, HEIGHT=800;
     private ArrayList<FieldButton> fieldButtonArrayList;
     private ArrayList<Stone> whitePlayer, blackPlayer;
     private ServerComunicator _serverComunitator;
-    private int _currentX, _currentY;
 
     public GoBoard(int size){
         _size=size;
         _serverComunitator = ServerComunicator.getInstance();
-        initializeBoard(800,800);
+        initializeBoard(WIDTH,HEIGHT);
     }
 
-    private void initializeBoard(int x, int y){
+    public void initializeBoard(int x, int y){
         _xSize=x;
         _ySize=y;
         _margin=30;
@@ -74,34 +73,35 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
             case 19:
                 for(int x=3; x<=15; x+=6){
                     for(int y=3; y<=15; y+=6){
-                        g.fillOval(temporaryConverter(x)-8, temporaryConverter(y)-8, 16, 16);
+                        g.fillOval(fieldConverter(x)-8, fieldConverter(y)-8, 16, 16);
                     }
                 }
                 break;
             case 13:
                 for(int x=3; x<=9; x+=6){
                     for(int y=3; y<=9; y+=6){
-                        g.fillOval(temporaryConverter(x)-8, temporaryConverter(y)-8, 16, 16);
+                        g.fillOval(fieldConverter(x)-8, fieldConverter(y)-8, 16, 16);
                     }
                 }
-                g.fillOval(temporaryConverter(6)-8, temporaryConverter(6)-8, 16, 16);//srodkowy
+                g.fillOval(fieldConverter(6)-8, fieldConverter(6)-8, 16, 16);//srodkowy
                 break;
             case 9:
                 for(int x=2; x<=6; x+=4){
                     for(int y=2; y<=6; y+=4){
-                        g.fillOval(temporaryConverter(x)-8, temporaryConverter(y)-8, 16, 16);
+                        g.fillOval(fieldConverter(x)-8, fieldConverter(y)-8, 16, 16);
                     }
                 }
-                g.fillOval(temporaryConverter(4)-8, temporaryConverter(4)-8, 16, 16);//srodkowy
+                g.fillOval(fieldConverter(4)-8, fieldConverter(4)-8, 16, 16);//srodkowy
                 break;
         }
     }
     @Override
     public int setGaps(int size){
-        return ((_xSize-(2*_margin))/(size-1));
+        _gap = ((_xSize-(2*_margin))/(size-1));
+        return _gap;
     }
 
-    private int temporaryConverter(int x){
+    public int fieldConverter(int x){
         int drawX=_margin;
         for(int i=0; i<x; i++){
             drawX+=_gap;
@@ -111,7 +111,7 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
 
     private void drawStone(int x, int y, Color clr, Graphics g){
         g.setColor(clr);
-        g.fillOval(temporaryConverter(x)-(_gap/3),temporaryConverter(y)-(_gap/3),(_gap*2)/3, (2*_gap)/3);
+        g.fillOval(fieldConverter(x)-(_gap/3), fieldConverter(y)-(_gap/3),(_gap*2)/3, (2*_gap)/3);
     }
 
     private void setButtonList(int size){
@@ -124,8 +124,8 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     }
     private void drawButtonFields(){
         for(FieldButton fieldButton : fieldButtonArrayList){
-            fieldButton.setXDraw(temporaryConverter(fieldButton.getPosX())-10);
-            fieldButton.setYDraw(temporaryConverter(fieldButton.getPosY())-10);
+            fieldButton.setXDraw(fieldConverter(fieldButton.getPosX())-10);
+            fieldButton.setYDraw(fieldConverter(fieldButton.getPosY())-10);
         }
     }
 
@@ -191,6 +191,18 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
         return 0;
     }
 
+    public ArrayList<FieldButton> getFieldButtonArrayList(){return fieldButtonArrayList;}
+    public ArrayList<Stone> getPlayer(String color){
+        if(color.equalsIgnoreCase("white")){
+            return whitePlayer;
+        }
+        else if(color.equalsIgnoreCase("black")){
+            return blackPlayer;
+        }else {
+            return null;
+        }
+    }
+    public int getMargin(){return _margin;}
     public void mousePressed(MouseEvent mouseEvent) {}
     public void mouseReleased(MouseEvent mouseEvent) {}
     public void mouseEntered(MouseEvent mouseEvent) {}

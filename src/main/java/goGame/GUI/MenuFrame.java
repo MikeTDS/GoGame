@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuFrame extends JFrame{
+public class MenuFrame extends JFrame implements IMenuFrame{
     private List _gamesToChoose;
     private JButton _chooseGameButton;
 
@@ -15,7 +15,8 @@ public class MenuFrame extends JFrame{
         initializeMenu();
         setVisible(true);
     }
-    private void initializeMenu(){
+    @Override
+    public void initializeMenu(){
         setTitle("Game of Go : Lobby");
         setSize(new Dimension(300,300));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -23,6 +24,7 @@ public class MenuFrame extends JFrame{
         setGamesList();
         setButton();
     }
+    @Override
     public void addGamesToList(String game){
         _gamesToChoose.add(game);
     }
@@ -37,7 +39,8 @@ public class MenuFrame extends JFrame{
         _chooseGameButton.setPreferredSize(new Dimension(300,50));
         add(_chooseGameButton, BorderLayout.PAGE_END);
     }
-    private void setGamesList(){
+    @Override
+    public void setGamesList(){
         _gamesToChoose = new List();
         _gamesToChoose.setSize(new Dimension(600, 300));
         add(_gamesToChoose, BorderLayout.PAGE_START);
