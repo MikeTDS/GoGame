@@ -112,8 +112,9 @@ public class BotBrain {
             return ((countStonesOfGivenColorAround(stone, _color)) + 1)== countStonesOfGivenColorAround(stone,_opponentColor)
             && countStonesOfGivenColorAround(stone, _color) > 0
             && countStonesOfGivenColorAround(stone, _opponentColor) > 0; }
-    boolean checkForEnemyOutnumber(Stone stone) { return ((countStonesOfGivenColorAround(stone, _color)) + 1) > countStonesOfGivenColorAround(stone,_opponentColor)
-            && countStonesOfGivenColorAround(stone, _opponentColor) > 0 && countStonesOfGivenColorAround(stone, _opponentColor) > 1; }
+    boolean checkForEnemyOutnumber(Stone stone) {
+            return ((countStonesOfGivenColorAround(stone, _color)) + 1) > countStonesOfGivenColorAround(stone,_opponentColor)
+            && countStonesOfGivenColorAround(stone, _opponentColor) > 0; }
     private int countStonesOfGivenColorAround(Stone stone, String clr) {
         Stone[] neighbours = _game.getNeighbours(stone);
         Stone[] cornerNeighbours = getCornerNeighbours(stone);
@@ -146,7 +147,15 @@ public class BotBrain {
         return newTerritory < currentTerritory && newTerritory != 0;
     }
 
-    private boolean checkForSemiSuicuidalMove(Stone allyStone) {
+    boolean checkForSemiSuicidalMove(Stone stone) {
+        Stone[] neighbours = _game.getNeighbours(stone);
+        for(Stone nei : neighbours)
+            if(nei.getColor().equals("Empty")){
+                Stone mock = new Stone(nei.getPosX(), nei.getPosY(), _opponentColor);
+                if(_game.checkIfCommitedKillForTwo(stone, mock))
+                    return true;
+            }
+
         return false;
     }
 

@@ -3,238 +3,352 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="321.0" y="521.0">goGame.GUI.GUIcomponents.GoBoard.FieldButton</node>
-    <node x="128.52083333333337" y="298.0">goGame.GameLogic.Game</node>
-    <node x="544.1333333333333" y="639.0">goGame.GUI.MenuFrame</node>
-    <node x="100.52083333333336" y="374.0">goGame.Server.GoGameServer</node>
-    <node x="0.0" y="521.0">goGame.GUI.IGuiFrame</node>
-    <node x="125.5" y="445.0">goGame.Client.IServerCommunicator</node>
-    <node x="313.61336805555555" y="0.0">goGame.GameLogic.IPlayer</node>
-    <node x="379.11066017316017" y="617.0">goGame.GUI.GUIcomponents.GoBoard.GoBoard</node>
-    <node x="494.1106601731601" y="617.0">goGame.GUIcomponents.ScoreBoard.ScoreBoard</node>
-    <node x="464.0" y="521.0">goGame.GUI.GUIcomponents.Stone.Stone</node>
-    <node x="30.53003472222224" y="0.0">goGame.GameLogic.Stone</node>
-    <node x="129.0" y="521.0">goGame.Client.ServerCommunicator</node>
-    <node x="274.20833333333337" y="96.0">goGame.GameLogic.AbstractPlayer</node>
-    <node x="347.2583333333333" y="182.0">goGame.GameLogic.Player</node>
-    <node x="48.833333333333314" y="96.0">goGame.Server.Bot.BotBrain</node>
-    <node x="565.0" y="521.0">goGame.GUI.GUIcomponents.GoBoard.IGoBoard</node>
-    <node x="138.3" y="723.0">goGame.Client.GoGameClient</node>
-    <node x="29.0" y="617.0">goGame.GUI.GuiFrame</node>
-    <node x="132.02083333333331" y="182.0">goGame.Server.Bot.Bot</node>
-    <node x="180.20833333333331" y="96.0">goGame.Server.Bot.IBot</node>
-    <node x="2.3000000000000114" y="723.0">goGame.GUI.IMenuFrame</node>
+    <node x="381.6655723905724" y="676.0">goGame.Server.Bot.LateMoveState</node>
+    <node x="127.13333333333333" y="1111.0">goGame.GUI.MenuFrame</node>
+    <node x="375.2655723905724" y="146.0">goGame.Server.Bot.MidMoveState</node>
+    <node x="125.5" y="747.0">goGame.Client.IServerCommunicator</node>
+    <node x="27.91228956228963" y="0.0">goGame.GameLogic.IPlayer</node>
+    <node x="423.1333874458874" y="929.0">goGame.GUI.GUIcomponents.GoBoard.GoBoard</node>
+    <node x="475.4761784511785" y="0.0">goGame.GameLogic.Stone</node>
+    <node x="129.0" y="823.0">goGame.Client.ServerCommunicator</node>
+    <node x="525.2655723905724" y="146.0">goGame.Server.Bot.EarlyMoveState</node>
+    <node x="33.41228956228963" y="262.0">goGame.GameLogic.Player</node>
+    <node x="608.913888888889" y="494.0">goGame.Server.Bot.BotBrain</node>
+    <node x="321.0" y="823.0">goGame.GUI.GUIcomponents.GoBoard.IGoBoard</node>
+    <node x="276.47899831649835" y="262.0">goGame.Server.Bot.Bot</node>
+    <node x="712.0" y="747.0">goGame.Server.Bot.IBot</node>
+    <node x="395.6655723905724" y="600.0">goGame.Server.Bot.MoveState</node>
+    <node x="242.64057239057234" y="388.0">goGame.Server.Bot.IMoveState</node>
+    <node x="544.0" y="823.0">goGame.GUI.GUIcomponents.GoBoard.FieldButton</node>
+    <node x="98.84057239057239" y="388.0">goGame.GameLogic.Game</node>
+    <node x="47.233333333333405" y="494.0">goGame.Server.GoGameServer</node>
+    <node x="0.0" y="823.0">goGame.GUI.IGuiFrame</node>
+    <node x="538.1333874458874" y="929.0">goGame.GUIcomponents.ScoreBoard.ScoreBoard</node>
+    <node x="443.0" y="823.0">goGame.GUI.GUIcomponents.Stone.Stone</node>
+    <node x="18.60000000000008" y="146.0">goGame.GameLogic.AbstractPlayer</node>
+    <node x="218.26557239057237" y="146.0">goGame.Server.Bot.MoveOrganizer</node>
+    <node x="29.0" y="929.0">goGame.GUI.GuiFrame</node>
+    <node x="138.3" y="1035.0">goGame.Client.GoGameClient</node>
+    <node x="2.3000000000000114" y="1035.0">goGame.GUI.IMenuFrame</node>
   </nodes>
   <notes />
   <edges>
+    <edge source="goGame.Server.Bot.LateMoveState" target="goGame.Server.Bot.MoveState">
+      <point x="-17.125" y="-13.0" />
+      <point x="433.0405723905724" y="651.0" />
+      <point x="422.9155723905724" y="651.0" />
+      <point x="-27.25" y="13.0" />
+    </edge>
     <edge source="goGame.GameLogic.Player" target="goGame.GameLogic.AbstractPlayer">
       <point x="-22.0" y="-13.0" />
-      <point x="369.2583333333333" y="162.0" />
-      <point x="375.0083333333334" y="162.0" />
-      <point x="28.80000000000001" y="13.0" />
+      <point x="55.41228956228963" y="242.0" />
+      <point x="61.800000000000125" y="242.0" />
+      <point x="-28.799999999999955" y="13.0" />
     </edge>
     <edge source="goGame.Server.Bot.BotBrain" target="goGame.GameLogic.Game">
-      <point x="-20.399999999999977" y="13.0" />
-      <point x="79.43333333333334" y="162.0" />
-      <point x="72.31666666666666" y="162.0" />
-      <point x="72.31666666666666" y="238.0" />
-      <point x="156.27083333333337" y="238.0" />
-      <point x="-9.25" y="-13.0" />
+      <point x="-45.900000000000034" y="-13.0" />
+      <point x="614.0138888888889" y="464.0" />
+      <point x="150.64057239057234" y="464.0" />
+      <point x="14.799999999999955" y="13.0" />
     </edge>
     <edge source="goGame.GUI.GuiFrame" target="goGame.Client.GoGameClient">
       <point x="38.25" y="13.0" />
-      <point x="118.25" y="673.0" />
-      <point x="179.66363636363639" y="673.0" />
+      <point x="118.25" y="985.0" />
+      <point x="179.66363636363639" y="985.0" />
       <point x="-23.636363636363626" y="-13.0" />
     </edge>
-    <edge source="goGame.GameLogic.Game" target="goGame.GameLogic.IPlayer">
-      <point x="27.75" y="-13.0" />
-      <point x="193.27083333333337" y="268.0" />
-      <point x="445.7583333333333" y="268.0" />
-      <point x="445.7583333333333" y="66.0" />
-      <point x="384.86336805555555" y="66.0" />
-      <point x="23.75" y="13.0" />
-    </edge>
-    <edge source="goGame.Client.GoGameClient" target="goGame.GUI.GUIcomponents.GoBoard.GoBoard">
-      <point x="23.636363636363626" y="-13.0" />
-      <point x="226.93636363636364" y="673.0" />
-      <point x="450.36066017316017" y="673.0" />
-      <point x="23.75" y="13.0" />
+    <edge source="goGame.GameLogic.AbstractPlayer" target="goGame.GameLogic.Game">
+      <point x="-57.60000000000002" y="13.0" />
+      <point x="33.00000000000006" y="242.0" />
+      <point x="22.91228956228963" y="242.0" />
+      <point x="22.91228956228963" y="348.0" />
+      <point x="117.34057239057239" y="348.0" />
+      <point x="-18.5" y="-13.0" />
     </edge>
     <edge source="goGame.GameLogic.Game" target="goGame.GameLogic.Stone">
-      <point x="-27.75000000000003" y="-13.0" />
-      <point x="137.77083333333331" y="268.0" />
-      <point x="32.16666666666666" y="268.0" />
-      <point x="32.16666666666666" y="66.0" />
-      <point x="45.71753472222224" y="66.0" />
-      <point x="-25.3125" y="13.0" />
-    </edge>
-    <edge source="goGame.GameLogic.AbstractPlayer" target="goGame.GameLogic.Game">
-      <point x="0.0" y="13.0" />
-      <point x="346.20833333333337" y="162.0" />
-      <point x="336.7583333333333" y="162.0" />
-      <point x="336.7583333333333" y="238.0" />
-      <point x="174.77083333333337" y="238.0" />
-      <point x="9.25" y="-13.0" />
+      <point x="18.5" y="-13.0" />
+      <point x="154.3405723905724" y="328.0" />
+      <point x="203.54057239057235" y="328.0" />
+      <point x="203.54057239057235" y="106.0" />
+      <point x="495.7261784511785" y="106.0" />
+      <point x="-20.25" y="13.0" />
     </edge>
     <edge source="goGame.Client.GoGameClient" target="goGame.GUI.MenuFrame">
       <point x="0.0" y="13.0" />
-      <point x="203.3" y="774.0" />
-      <point x="195.25833333333333" y="774.0" />
+      <point x="203.3" y="1086.0" />
+      <point x="195.25833333333333" y="1086.0" />
       <point x="13.625" y="-13.0" />
     </edge>
     <edge source="goGame.GUI.GuiFrame" target="goGame.Client.ServerCommunicator">
       <point x="25.5" y="-13.0" />
-      <point x="105.5" y="597.0" />
-      <point x="146.2" y="597.0" />
+      <point x="105.5" y="909.0" />
+      <point x="146.2" y="909.0" />
       <point x="-68.80000000000001" y="13.0" />
     </edge>
     <edge source="goGame.Server.GoGameServer" target="goGame.GameLogic.Game">
-      <point x="-43.33333333333334" y="-13.0" />
-      <point x="122.18750000000001" y="349.0" />
-      <point x="140.85416666666669" y="349.0" />
-      <point x="-24.666666666666657" y="13.0" />
+      <point x="-43.33333333333337" y="-13.0" />
+      <point x="68.90000000000003" y="474.0" />
+      <point x="106.24057239057237" y="474.0" />
+      <point x="-29.600000000000023" y="13.0" />
     </edge>
-    <edge source="goGame.Server.Bot.BotBrain" target="goGame.Server.Bot.Bot">
-      <point x="40.80000000000001" y="13.0" />
-      <point x="140.63333333333333" y="142.0" />
-      <point x="152.95833333333331" y="142.0" />
-      <point x="-12.5625" y="-13.0" />
+    <edge source="goGame.Server.Bot.LateMoveState" target="goGame.Server.Bot.BotBrain">
+      <point x="51.375" y="-13.0" />
+      <point x="501.5405723905724" y="651.0" />
+      <point x="677.7933080808082" y="651.0" />
+      <point x="677.7933080808082" y="580.0" />
+      <point x="693.913888888889" y="580.0" />
+      <point x="34.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MoveOrganizer" target="goGame.Server.Bot.Bot">
+      <point x="54.79999999999998" y="13.0" />
+      <point x="341.56557239057236" y="202.0" />
+      <point x="309.97899831649835" y="202.0" />
+      <point x="0.0" y="-13.0" />
     </edge>
     <edge source="goGame.Client.GoGameClient" target="goGame.GUI.GuiFrame">
-      <point x="-59.09090909090901" y="-13.0" />
-      <point x="144.209090909091" y="703.0" />
-      <point x="41.75" y="703.0" />
-      <point x="-38.25" y="13.0" />
-    </edge>
-    <edge source="goGame.Server.Bot.Bot" target="goGame.GameLogic.AbstractPlayer">
-      <point x="29.3125" y="-13.0" />
-      <point x="194.83333333333331" y="162.0" />
-      <point x="317.40833333333336" y="162.0" />
-      <point x="-28.80000000000001" y="13.0" />
-    </edge>
-    <edge source="goGame.GameLogic.Game" target="goGame.GameLogic.Player">
-      <point x="15.416666666666686" y="-13.0" />
-      <point x="180.93750000000006" y="248.0" />
-      <point x="369.2583333333333" y="248.0" />
-      <point x="-22.0" y="13.0" />
+      <point x="-35.45454545454544" y="-13.0" />
+      <point x="167.84545454545457" y="995.0" />
+      <point x="92.75" y="995.0" />
+      <point x="12.75" y="13.0" />
     </edge>
     <edge source="goGame.GUI.GUIcomponents.GoBoard.GoBoard" target="goGame.GUI.GUIcomponents.GoBoard.IGoBoard">
-      <point x="42.22222222222223" y="-13.0" />
-      <point x="468.8328823953824" y="597.0" />
-      <point x="616.0" y="597.0" />
+      <point x="-21.111111111111086" y="-13.0" />
+      <point x="449.52227633477634" y="889.0" />
+      <point x="372.0" y="889.0" />
       <point x="0.0" y="13.0" />
     </edge>
     <edge source="goGame.Client.GoGameClient" target="goGame.GUIcomponents.ScoreBoard.ScoreBoard">
-      <point x="47.27272727272725" y="-13.0" />
-      <point x="250.57272727272726" y="693.0" />
-      <point x="552.1106601731601" y="693.0" />
-      <point x="0.0" y="13.0" />
-    </edge>
-    <edge source="goGame.GameLogic.AbstractPlayer" target="goGame.GameLogic.IPlayer">
-      <point x="-48.0" y="-13.0" />
-      <point x="298.20833333333337" y="76.0" />
-      <point x="337.36336805555555" y="76.0" />
-      <point x="-23.75" y="13.0" />
+      <point x="59.090909090909065" y="-13.0" />
+      <point x="262.3909090909091" y="1015.0" />
+      <point x="634.8000541125541" y="1015.0" />
+      <point x="38.66666666666666" y="13.0" />
     </edge>
     <edge source="goGame.Server.Bot.BotBrain" target="goGame.GameLogic.IPlayer">
-      <point x="38.25" y="-13.0" />
-      <point x="138.08333333333331" y="66.0" />
-      <point x="321.53003472222224" y="66.0" />
-      <point x="-39.583333333333336" y="13.0" />
+      <point x="15.300000000000011" y="-13.0" />
+      <point x="675.213888888889" y="444.0" />
+      <point x="682.4155723905724" y="444.0" />
+      <point x="682.4155723905724" y="76.0" />
+      <point x="114.995622895623" y="76.0" />
+      <point x="39.58333333333337" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MidMoveState" target="goGame.Server.Bot.MoveState">
+      <point x="0.0" y="13.0" />
+      <point x="440.2655723905724" y="222.0" />
+      <point x="439.1655723905724" y="222.0" />
+      <point x="439.1655723905724" y="580.0" />
+      <point x="438.0544612794613" y="580.0" />
+      <point x="-12.111111111111114" y="-13.0" />
     </edge>
     <edge source="goGame.GUI.GUIcomponents.GoBoard.GoBoard" target="goGame.Client.ServerCommunicator">
-      <point x="-42.22222222222223" y="-13.0" />
-      <point x="384.38843795093794" y="597.0" />
-      <point x="249.40000000000003" y="597.0" />
+      <point x="-42.22222222222217" y="-13.0" />
+      <point x="428.41116522366525" y="909.0" />
+      <point x="249.40000000000003" y="909.0" />
       <point x="34.400000000000034" y="13.0" />
     </edge>
-    <edge source="goGame.Server.Bot.BotBrain" target="goGame.GameLogic.Stone">
-      <point x="-12.75" y="-13.0" />
-      <point x="87.08333333333331" y="76.0" />
-      <point x="76.09253472222224" y="76.0" />
-      <point x="5.0625" y="13.0" />
-    </edge>
-    <edge source="goGame.Server.Bot.Bot" target="goGame.Server.Bot.IBot">
-      <point x="12.5625" y="-13.0" />
-      <point x="178.08333333333331" y="142.0" />
-      <point x="217.20833333333331" y="142.0" />
-      <point x="0.0" y="13.0" />
-    </edge>
-    <edge source="goGame.GUI.GUIcomponents.GoBoard.GoBoard" target="goGame.GUI.GUIcomponents.GoBoard.FieldButton">
-      <point x="0.0" y="-13.0" />
-      <point x="426.61066017316017" y="597.0" />
-      <point x="423.5" y="597.0" />
-      <point x="41.0" y="13.0" />
+    <edge source="goGame.Server.Bot.EarlyMoveState" target="goGame.Server.Bot.BotBrain">
+      <point x="57.60000000000002" y="13.0" />
+      <point x="654.8655723905724" y="212.0" />
+      <point x="665.0138888888889" y="212.0" />
+      <point x="5.100000000000023" y="-13.0" />
     </edge>
     <edge source="goGame.Server.Bot.Bot" target="goGame.GameLogic.Game">
-      <point x="16.75" y="13.0" />
-      <point x="182.27083333333331" y="228.0" />
-      <point x="168.60416666666669" y="228.0" />
-      <point x="3.0833333333333144" y="-13.0" />
-    </edge>
-    <edge source="goGame.Client.ServerCommunicator" target="goGame.Client.IServerCommunicator">
-      <point x="0.0" y="-13.0" />
-      <point x="0.0" y="13.0" />
+      <point x="-16.75" y="13.0" />
+      <point x="293.22899831649835" y="348.0" />
+      <point x="169.14057239057234" y="348.0" />
+      <point x="33.299999999999955" y="-13.0" />
     </edge>
     <edge source="goGame.GUI.GuiFrame" target="goGame.GUI.IGuiFrame">
       <point x="-25.5" y="-13.0" />
       <point x="0.0" y="13.0" />
     </edge>
     <edge source="goGame.GUI.GUIcomponents.GoBoard.GoBoard" target="goGame.GUI.GUIcomponents.Stone.Stone">
-      <point x="21.111111111111086" y="-13.0" />
-      <point x="447.72177128427126" y="577.0" />
-      <point x="504.5" y="577.0" />
+      <point x="0.0" y="-13.0" />
+      <point x="470.6333874458874" y="869.0" />
+      <point x="483.5" y="869.0" />
       <point x="0.0" y="13.0" />
     </edge>
     <edge source="goGame.GUI.MenuFrame" target="goGame.Client.GoGameClient">
       <point x="-13.625" y="-13.0" />
-      <point x="168.00833333333333" y="774.0" />
-      <point x="159.96666666666664" y="774.0" />
-      <point x="-43.33333333333337" y="13.0" />
-    </edge>
-    <edge source="goGame.Server.Bot.Bot" target="goGame.GameLogic.Stone">
-      <point x="4.1875" y="-13.0" />
-      <point x="169.70833333333331" y="46.0" />
-      <point x="106.46753472222224" y="46.0" />
-      <point x="35.4375" y="13.0" />
+      <point x="168.00833333333333" y="1086.0" />
+      <point x="159.96666666666667" y="1086.0" />
+      <point x="-43.33333333333334" y="13.0" />
     </edge>
     <edge source="goGame.GameLogic.Player" target="goGame.GameLogic.Game">
       <point x="22.0" y="13.0" />
-      <point x="413.2583333333333" y="258.0" />
-      <point x="187.10416666666669" y="258.0" />
-      <point x="21.583333333333314" y="-13.0" />
+      <point x="99.41228956228963" y="328.0" />
+      <point x="132.14057239057234" y="328.0" />
+      <point x="-3.7000000000000455" y="-13.0" />
     </edge>
     <edge source="goGame.Server.Bot.Bot" target="goGame.Server.Bot.BotBrain">
-      <point x="-29.3125" y="-13.0" />
-      <point x="136.20833333333331" y="162.0" />
-      <point x="99.83333333333331" y="162.0" />
-      <point x="0.0" y="13.0" />
+      <point x="27.916666666666686" y="13.0" />
+      <point x="337.89566498316503" y="358.0" />
+      <point x="627.0138888888889" y="358.0" />
+      <point x="627.0138888888889" y="434.0" />
+      <point x="644.6138888888889" y="434.0" />
+      <point x="-15.300000000000011" y="-13.0" />
     </edge>
-    <edge source="goGame.Client.GoGameClient" target="goGame.Client.ServerCommunicator">
-      <point x="-11.818181818181756" y="-13.0" />
-      <point x="191.48181818181826" y="663.0" />
-      <point x="179.3828823953824" y="663.0" />
-      <point x="179.3828823953824" y="597.0" />
-      <point x="180.60000000000002" y="597.0" />
-      <point x="-34.39999999999998" y="13.0" />
+    <edge source="goGame.Server.Bot.EarlyMoveState" target="goGame.GameLogic.Stone">
+      <point x="36.0" y="-13.0" />
+      <point x="633.2655723905724" y="116.0" />
+      <point x="528.1261784511785" y="116.0" />
+      <point x="12.149999999999977" y="13.0" />
     </edge>
     <edge source="goGame.GameLogic.Game" target="goGame.Server.Bot.Bot">
-      <point x="-3.0833333333333712" y="-13.0" />
-      <point x="162.4375" y="228.0" />
-      <point x="148.77083333333331" y="228.0" />
-      <point x="-16.75" y="13.0" />
+      <point x="25.899999999999977" y="-13.0" />
+      <point x="161.74057239057237" y="338.0" />
+      <point x="282.06233164983166" y="338.0" />
+      <point x="-27.916666666666686" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.Bot" target="goGame.Server.Bot.EarlyMoveState">
+      <point x="22.333333333333314" y="-13.0" />
+      <point x="332.31233164983166" y="232.0" />
+      <point x="539.6655723905724" y="232.0" />
+      <point x="-57.60000000000002" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.IMoveState" target="goGame.Server.Bot.Bot">
+      <point x="0.0" y="-13.0" />
+      <point x="300.64057239057234" y="368.0" />
+      <point x="315.56233164983166" y="368.0" />
+      <point x="5.583333333333314" y="13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.Game" target="goGame.GameLogic.IPlayer">
+      <point x="-33.30000000000007" y="-13.0" />
+      <point x="102.54057239057232" y="368.0" />
+      <point x="0.0" y="368.0" />
+      <point x="0.0" y="106.0" />
+      <point x="35.82895622895626" y="106.0" />
+      <point x="-39.58333333333337" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MidMoveState" target="goGame.Server.Bot.Bot">
+      <point x="-26.0" y="13.0" />
+      <point x="414.2655723905724" y="222.0" />
+      <point x="324.86788720538726" y="222.0" />
+      <point x="14.888888888888914" y="-13.0" />
+    </edge>
+    <edge source="goGame.Client.GoGameClient" target="goGame.GUI.GUIcomponents.GoBoard.GoBoard">
+      <point x="23.636363636363626" y="-13.0" />
+      <point x="226.93636363636364" y="985.0" />
+      <point x="494.3833874458874" y="985.0" />
+      <point x="23.75" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.EarlyMoveState" target="goGame.Server.Bot.Bot">
+      <point x="-28.80000000000001" y="13.0" />
+      <point x="568.4655723905723" y="242.0" />
+      <point x="339.7567760942761" y="242.0" />
+      <point x="29.77777777777777" y="-13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MoveState" target="goGame.Server.Bot.IMoveState">
+      <point x="-24.22222222222223" y="-13.0" />
+      <point x="425.94335016835015" y="560.0" />
+      <point x="300.64057239057234" y="560.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.Bot" target="goGame.GameLogic.AbstractPlayer">
+      <point x="-22.333333333333314" y="-13.0" />
+      <point x="287.64566498316503" y="212.0" />
+      <point x="148.2000000000001" y="212.0" />
+      <point x="57.60000000000002" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MoveState" target="goGame.Server.Bot.BotBrain">
+      <point x="48.44444444444446" y="-13.0" />
+      <point x="498.61001683501684" y="580.0" />
+      <point x="659.913888888889" y="580.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.Game" target="goGame.GameLogic.Player">
+      <point x="-11.100000000000023" y="-13.0" />
+      <point x="124.74057239057237" y="338.0" />
+      <point x="55.41228956228963" y="338.0" />
+      <point x="-22.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.Bot" target="goGame.Server.Bot.MoveOrganizer">
+      <point x="-7.444444444444457" y="-13.0" />
+      <point x="302.5345538720539" y="192.0" />
+      <point x="314.1655723905724" y="192.0" />
+      <point x="27.400000000000006" y="13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.AbstractPlayer" target="goGame.GameLogic.IPlayer">
+      <point x="0.0" y="-13.0" />
+      <point x="90.60000000000008" y="126.0" />
+      <point x="83.32895622895626" y="126.0" />
+      <point x="7.916666666666629" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MoveOrganizer" target="goGame.Server.Bot.MoveState">
+      <point x="-54.79999999999998" y="13.0" />
+      <point x="231.9655723905724" y="232.0" />
+      <point x="221.14057239057234" y="232.0" />
+      <point x="221.14057239057234" y="580.0" />
+      <point x="401.7211279461279" y="580.0" />
+      <point x="-48.44444444444446" y="-13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.EarlyMoveState" target="goGame.Server.Bot.MoveState">
+      <point x="0.0" y="13.0" />
+      <point x="597.2655723905724" y="232.0" />
+      <point x="587.413888888889" y="232.0" />
+      <point x="587.413888888889" y="550.0" />
+      <point x="462.27668350168346" y="550.0" />
+      <point x="12.111111111111114" y="-13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.BotBrain" target="goGame.GameLogic.Stone">
+      <point x="25.5" y="-13.0" />
+      <point x="685.413888888889" y="454.0" />
+      <point x="701.4762205387207" y="454.0" />
+      <point x="701.4762205387207" y="66.0" />
+      <point x="536.2261784511785" y="66.0" />
+      <point x="20.250000000000014" y="13.0" />
+    </edge>
+    <edge source="goGame.GUI.GUIcomponents.GoBoard.GoBoard" target="goGame.GUI.GUIcomponents.GoBoard.FieldButton">
+      <point x="42.22222222222217" y="-13.0" />
+      <point x="512.8556096681095" y="909.0" />
+      <point x="646.5" y="909.0" />
+      <point x="41.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.LateMoveState" target="goGame.Server.Bot.Bot">
+      <point x="-51.375" y="-13.0" />
+      <point x="398.7905723905724" y="651.0" />
+      <point x="195.4000000000001" y="651.0" />
+      <point x="195.4000000000001" y="358.0" />
+      <point x="304.39566498316503" y="358.0" />
+      <point x="-5.583333333333314" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.Bot" target="goGame.Server.Bot.MidMoveState">
+      <point x="7.444444444444457" y="-13.0" />
+      <point x="317.4234427609428" y="212.0" />
+      <point x="388.2655723905724" y="212.0" />
+      <point x="-52.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Client.ServerCommunicator" target="goGame.Client.IServerCommunicator">
+      <point x="0.0" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MidMoveState" target="goGame.Server.Bot.BotBrain">
+      <point x="52.0" y="13.0" />
+      <point x="492.2655723905724" y="222.0" />
+      <point x="654.8138888888889" y="222.0" />
+      <point x="-5.100000000000023" y="-13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.MidMoveState" target="goGame.GameLogic.Stone">
+      <point x="32.5" y="-13.0" />
+      <point x="472.7655723905724" y="126.0" />
+      <point x="511.9261784511785" y="126.0" />
+      <point x="-4.050000000000011" y="13.0" />
+    </edge>
+    <edge source="goGame.Client.GoGameClient" target="goGame.Client.ServerCommunicator">
+      <point x="0.0" y="-13.0" />
+      <point x="203.3" y="909.0" />
+      <point x="215.0" y="909.0" />
+      <point x="0.0" y="13.0" />
     </edge>
     <edge source="goGame.GUI.MenuFrame" target="goGame.GUI.IMenuFrame">
       <point x="-40.875" y="-13.0" />
-      <point x="140.75833333333333" y="774.0" />
-      <point x="60.30000000000001" y="774.0" />
+      <point x="140.75833333333333" y="1086.0" />
+      <point x="60.30000000000001" y="1086.0" />
       <point x="0.0" y="13.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="476.0" y="570.0" />
+  <settings layout="Hierarchic Group" zoom="1.0" x="447.5" y="558.5" />
   <SelectedNodes>
-    <node>goGame.GUI.MenuFrame</node>
+    <node>goGame.Server.Bot.IMoveState</node>
   </SelectedNodes>
   <Categories />
   <SCOPE>All</SCOPE>

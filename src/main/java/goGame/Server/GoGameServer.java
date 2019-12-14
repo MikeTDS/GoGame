@@ -43,7 +43,7 @@ public class GoGameServer {
                 acceptedSocket = _serverSocket.accept();
                 Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
                 PrintWriter acceptedSocketWriter = new PrintWriter(acceptedSocket.getOutputStream(), true);
-                checkIfGameFinished();
+                //checkIfGameFinished();
                 String gameOption = getGameOption(acceptedSocketScanner);
                 if(gameOption!=null){
                     if(gameOption.equals("NEW_GAME")){

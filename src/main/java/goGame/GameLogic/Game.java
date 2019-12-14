@@ -69,6 +69,23 @@ public class Game {
         return checkIsGroupIsOutOfBreaths(stone);
     }
 
+    public boolean checkIfCommitedKillForTwo(Stone stone1, Stone stone2){
+        int location = calcPos(stone1.getPosX(), stone1.getPosY());
+
+        boolean mockChecking = false,
+                commitedKill;
+        if(_board[location].getColor().equals("Empty")){
+            mockChecking = true;
+            _board[location] = stone1;
+        }
+        commitedKill = checkIfCommitedKill(stone2);
+
+        if(mockChecking)
+            _board[location] = new Stone(stone1.getPosX(), stone1.getPosY(), "Empty");
+
+        return commitedKill;
+    }
+
     public boolean checkIfCommitedKill(Stone stone){
         _killGroups.clear();
         int location = calcPos(stone.getPosX(), stone.getPosY());

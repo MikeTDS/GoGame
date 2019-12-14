@@ -21,8 +21,6 @@ public abstract class MoveState implements IMoveState {
             _pointsBoard[i] = 0;
     }
 
-    @Override
-    public void decideIfPass(){ }
 
     int chooseBestField() {
         Random random = new Random();
