@@ -1,16 +1,12 @@
 package goGame.Client;
 
-import goGame.GameLogic.Game;
-
 import javax.swing.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ServerComunicator {
+public class ServerCommunicator implements IServerCommunicator{
     private String _serverAddress;
     private int _port;
 
@@ -21,23 +17,22 @@ public class ServerComunicator {
     private Scanner _in;
     private PrintWriter _out;
     private Object[] _newServerFields;
-    private static ServerComunicator serverCommunicator;
+    private static ServerCommunicator serverCommunicator;
 
-    private ServerComunicator(String serverAddress, int port){
+    private ServerCommunicator(String serverAddress, int port){
         _serverAddress = serverAddress;
         _port = port;
 
         initializeFields();
     }
 
-    public static ServerComunicator getInstance(String serverAddress, int port){
+    public static ServerCommunicator getInstance(String serverAddress, int port){
         if(serverCommunicator ==null){
-            serverCommunicator = new ServerComunicator(serverAddress, port);
+            serverCommunicator = new ServerCommunicator(serverAddress, port);
         }
         return serverCommunicator;
     }
-
-    public static ServerComunicator getInstance(){
+    public static ServerCommunicator getInstance(){
         if(serverCommunicator !=null){
             return serverCommunicator;
         }
@@ -53,7 +48,7 @@ public class ServerComunicator {
                 "Port:", _tfServerPort
         };
     }
-
+    @Override
     public void connectToServer() throws IOException {
         int input = JOptionPane.showConfirmDialog(null, _newServerFields, "Łączenie z serwerem", JOptionPane.OK_CANCEL_OPTION);
         _serverAddress="";

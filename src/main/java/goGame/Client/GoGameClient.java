@@ -14,7 +14,7 @@ public class GoGameClient {
                              HEIGHT = 900,
                              DEFAULT_SERVER_PORT = 59090;
 
-    private static ServerComunicator _serverComunicator;
+    private static ServerCommunicator _serverCommunicator;
     private static GuiFrame _clientFrame;
     private static GoBoard _goBoard;
     private static ScoreBoard _scoreBoard;
@@ -30,7 +30,7 @@ public class GoGameClient {
     private static void chooseGame(){
         String chosenGame = chooseMenu();
         if(chosenGame.equals("New game")){
-            _serverComunicator.getPrintWriter().println("NEW_GAME");
+            _serverCommunicator.getPrintWriter().println("NEW_GAME");
             initializeGame();
             try {
                 play();
@@ -39,7 +39,7 @@ public class GoGameClient {
             }
         }
         else if(chosenGame.equals("Join game")){
-            _serverComunicator.getPrintWriter().println("JOIN_GAME");
+            _serverCommunicator.getPrintWriter().println("JOIN_GAME");
             connectToLobby();
             launchingGame();
         }
@@ -57,7 +57,7 @@ public class GoGameClient {
 
     private static void launchingGame(){
         String response = getResponse();
-        while(response.equals("Game is full.")){
+        while(response.equals("Game is full or no game chosen.")){
             JOptionPane.showMessageDialog(null, response);
             response = getResponse();
         }
@@ -74,9 +74,9 @@ public class GoGameClient {
     }
 
     private static void connectToServer(){
-        _serverComunicator = ServerComunicator.getInstance(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
+        _serverCommunicator = ServerCommunicator.getInstance(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
         try {
-            _serverComunicator.connectToServer();
+            _serverCommunicator.connectToServer();
         }catch (Exception e){ System.out.println(e.getMessage()); }
     }
 
@@ -86,28 +86,25 @@ public class GoGameClient {
     }
 
     private static void showGames(){
-        if(_serverComunicator.getScanner().hasNextLine()){
-            if(_serverComunicator.getScanner().nextLine().equals("GAME_LIST")){
-                while(_serverComunicator.getScanner().hasNextLine()){
-                    String response = _serverComunicator.getScanner().nextLine();
+        if(_serverCommunicator.getScanner().hasNextLine()){
+            if(_serverCommunicator.getScanner().nextLine().equals("GAME_LIST")){
+                while(_serverCommunicator.getScanner().hasNextLine()){
+                    String response = _serverCommunicator.getScanner().nextLine();
                     if(response.equals("NO_MORE_GAMES"))
                         break;
                     _menuFrame.addGamesToList(response);
                 }
             }
         }
-        else{
-            System.out.println("No games found.");
-        }
     }
 
     public static void sendChosenGame(int game){
-        _serverComunicator.getPrintWriter().println(game);
+        _serverCommunicator.getPrintWriter().println(game);
     }
     private static String getResponse() {
-        String response = null;
-        while (_serverComunicator.getScanner().hasNextLine()){
-            response = _serverComunicator.getScanner().nextLine();
+        String response = "null";
+        while (_serverCommunicator.getScanner().hasNextLine()){
+            response = _serverCommunicator.getScanner().nextLine();
             if(response != null)
                 break;
         }
@@ -144,24 +141,24 @@ public class GoGameClient {
         String response;
         try {
             setupClient();
-            while (_serverComunicator.getScanner().hasNext()){
-                response = _serverComunicator.getScanner().nextLine();
+            while (_serverCommunicator.getScanner().hasNext()){
+                response = _serverCommunicator.getScanner().nextLine();
                 performActionFromResponse(response);
             }
-            _serverComunicator.getPrintWriter().println("QUIT");
+            _serverCommunicator.getPrintWriter().println("QUIT");
         } catch (Exception e) {
             e.printStackTrace();
         }
         finally {
             System.out.println("quited");
             if(!closedSocket)
-                _serverComunicator.getSocket().close();
+                _serverCommunicator.getSocket().close();
             _clientFrame.dispose();
         }
     }
 
     private static void setupClient() {
-        color = _serverComunicator.getScanner().nextLine();;
+        color = _serverCommunicator.getScanner().nextLine();;
         opponentColor = color.equals("Black") ? "White" : "Black";
         if(color.equals("Black")){
             _clientFrame.chooseOpponent();
@@ -173,10 +170,10 @@ public class GoGameClient {
         int x, y;
         switch (response){
             case "VALID_MOVE":
-                response = _serverComunicator.getScanner().nextLine();
+                response = _serverCommunicator.getScanner().nextLine();
                 x = convertToInt(response);
 
-                response = _serverComunicator.getScanner().nextLine();
+                response = _serverCommunicator.getScanner().nextLine();
                 y = convertToInt(response);
 
                 _goBoard.setStone(x, y, color);
@@ -184,10 +181,10 @@ public class GoGameClient {
                 _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
                 break;
             case "OPPONENT_MOVED":
-                response = _serverComunicator.getScanner().nextLine();
+                response = _serverCommunicator.getScanner().nextLine();
                 x = convertToInt(response);
 
-                response = _serverComunicator.getScanner().nextLine();
+                response = _serverCommunicator.getScanner().nextLine();
                 y = convertToInt(response);
 
                 _goBoard.setStone(x, y, opponentColor);
@@ -195,34 +192,34 @@ public class GoGameClient {
                 _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
                 break;
             case "KILL":
-                response = _serverComunicator.getScanner().nextLine();
+                response = _serverCommunicator.getScanner().nextLine();
                 while (!response.equals("KILL_STOP")){
                     x = convertToInt(response);
 
-                    response = _serverComunicator.getScanner().nextLine();
+                    response = _serverCommunicator.getScanner().nextLine();
                     y = convertToInt(response);
-                    response = _serverComunicator.getScanner().nextLine();
+                    response = _serverCommunicator.getScanner().nextLine();
                     _goBoard.removeStone(x, y, response);
-                    response = _serverComunicator.getScanner().nextLine();
+                    response = _serverCommunicator.getScanner().nextLine();
                 }
                 _goBoard.repaint();
                 _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
                 break;
             case "SURRENDER":
                 JOptionPane.showMessageDialog(_clientFrame, "You surrendered the game. Shame!");
-                _serverComunicator.getSocket().close();
+                _serverCommunicator.getSocket().close();
                 closedSocket=true;
                 _clientFrame.dispose();
                 break;
             case "SURRENDER_WIN":
                 JOptionPane.showMessageDialog(_clientFrame, "You won, because your opponent surrendered.");
-                _serverComunicator.getSocket().close();
+                _serverCommunicator.getSocket().close();
                 closedSocket=true;
                 _clientFrame.dispose();
                 break;
             case "NORMAL_EXIT":
                 JOptionPane.showMessageDialog(_clientFrame, "See you!");
-                _serverComunicator.getSocket().close();
+                _serverCommunicator.getSocket().close();
                 closedSocket=true;
                 _clientFrame.dispose();
                 break;
@@ -239,7 +236,7 @@ public class GoGameClient {
                 JOptionPane.showMessageDialog(_clientFrame, "Opponent passed. Your move.");
                 break;
             case "POINTS":
-                int points = Integer.parseInt(_serverComunicator.getScanner().nextLine());
+                int points = Integer.parseInt(_serverCommunicator.getScanner().nextLine());
                 ScoreBoard.showPoints(points);
         }
     }

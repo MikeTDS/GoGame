@@ -1,8 +1,6 @@
 package goGame.Server;
 
 import goGame.GameLogic.Game;
-import goGame.GameLogic.Player;
-
 import javax.swing.*;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,20 +30,20 @@ public class GoGameServer {
         }catch (Exception ignored){ }
     }
 
-    private static void initializeServer() throws Exception{
+    public static void initializeServer() throws Exception{
         System.out.println("Server is Running :)");
          _pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_GAMES*2);
         _serverSocket = new ServerSocket(PORT);
 
     }
-    private static void listenForClients() {
+    public static void listenForClients() {
         while (true) {
             Socket acceptedSocket;
             try {
                 acceptedSocket = _serverSocket.accept();
                 Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
                 PrintWriter acceptedSocketWriter = new PrintWriter(acceptedSocket.getOutputStream(), true);
-
+                checkIfGameFinished();
                 String gameOption = getGameOption(acceptedSocketScanner);
                 if(gameOption!=null){
                     if(gameOption.equals("NEW_GAME")){
@@ -76,7 +74,7 @@ public class GoGameServer {
 
     private static boolean checkIfChosenGameIsCorrect(int chosenGame, PrintWriter acceptedSocketWriter) {
         if(chosenGame>=_games.size() || chosenGame<0 || _players[chosenGame][1]){
-            acceptedSocketWriter.println("Game is full.");
+            acceptedSocketWriter.println("Game is full or no game chosen.");
             return false;
         }
         return true;
@@ -121,7 +119,7 @@ public class GoGameServer {
         _players[gameNumber][1] = true;
     }
     private static void sendGameList(PrintWriter writer) {
-        if (_games.get(0) != null) {
+        if (_games.size() > 0) {
             writer.println("GAME_LIST");
             for (int i=0; i<_games.size(); i++) {
                 if(_games.get(i).getCurrentPlayer()!=null && _games.get(i).getCurrentPlayer().getOpponent()!=null){
@@ -155,9 +153,7 @@ public class GoGameServer {
             num = Integer.parseInt(str);
         }catch (Exception e){
             System.out.println(e.getMessage());
-            System.exit(-1);
         }
-
         return num;
     }
     public void setBoardSize(int n){
@@ -166,5 +162,11 @@ public class GoGameServer {
     public static void presetGameList(){
         _games = new ArrayList<>();
         _players = new boolean[MAX_GAMES][2];
+    }
+    private static void checkIfGameFinished(){
+        for(Game game : _games){
+            if(game._finished)
+                _games.remove(game);
+        }
     }
 }

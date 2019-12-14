@@ -1,4 +1,4 @@
-package goGame;
+package goGame.TestServer;
 
 import com.sun.tools.javac.Main;
 import goGame.Client.GoGameClient;

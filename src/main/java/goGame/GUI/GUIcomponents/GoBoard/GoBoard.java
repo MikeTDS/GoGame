@@ -1,6 +1,6 @@
 package goGame.GUI.GUIcomponents.GoBoard;
 
-import goGame.Client.ServerComunicator;
+import goGame.Client.ServerCommunicator;
 import goGame.GUI.GUIcomponents.Stone.Stone;
 
 import javax.swing.*;
@@ -13,11 +13,11 @@ public class GoBoard extends JPanel implements IGoBoard, MouseListener {
     private static int _size, _xSize, _ySize, _margin, _gap, WIDTH=800, HEIGHT=800;
     private ArrayList<FieldButton> fieldButtonArrayList;
     private ArrayList<Stone> whitePlayer, blackPlayer;
-    private ServerComunicator _serverComunitator;
+    private ServerCommunicator _serverComunitator;
 
     public GoBoard(int size){
         _size=size;
-        _serverComunitator = ServerComunicator.getInstance();
+        _serverComunitator = ServerCommunicator.getInstance();
         initializeBoard(WIDTH,HEIGHT);
     }
 

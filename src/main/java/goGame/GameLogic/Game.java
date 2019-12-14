@@ -14,7 +14,7 @@ public class Game {
     private int _currentTerritory;
     private volatile int _blockedField;
     private boolean _canBeUnlocked;
-    boolean _finished;
+    public boolean _finished;
     private String _name;
 
     volatile IPlayer currentPlayer;

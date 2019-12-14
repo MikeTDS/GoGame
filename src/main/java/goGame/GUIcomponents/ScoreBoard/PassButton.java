@@ -2,7 +2,7 @@ package goGame.GUIcomponents.ScoreBoard;
 
 //import goGame.ClientGUI;
 
-import goGame.Client.ServerComunicator;
+import goGame.Client.ServerCommunicator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +18,6 @@ public class PassButton extends JButton implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e){
-        ServerComunicator.getInstance().getPrintWriter().println("PASS");
+        ServerCommunicator.getInstance().getPrintWriter().println("PASS");
     }
 }

@@ -1,6 +1,6 @@
 package goGame.GUI;
 import goGame.Client.GoGameClient;
-import goGame.Client.ServerComunicator;
+import goGame.Client.ServerCommunicator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ public class GuiFrame extends JFrame implements IGuiFrame{
                 int returnValue=0;
                 returnValue = JOptionPane.showConfirmDialog(GoGameClient.getGuiFrame(), "Are you sure?", "Exit", JOptionPane.YES_NO_OPTION);
                 if(returnValue==YES_OPTION) {
-                    ServerComunicator.getInstance().getPrintWriter().println("EXIT");
+                    ServerCommunicator.getInstance().getPrintWriter().println("EXIT");
                 }
             }
         });
@@ -40,10 +40,10 @@ public class GuiFrame extends JFrame implements IGuiFrame{
         int returnValue=0;
         returnValue = getOption();
         if(returnValue==0){
-            ServerComunicator.getInstance().getPrintWriter().println("PLAY_WITH_BOT");
+            ServerCommunicator.getInstance().getPrintWriter().println("PLAY_WITH_BOT");
         }
         else if(returnValue==1){
-            ServerComunicator.getInstance().getPrintWriter().println("DONT_PLAY_WITH_BOT");
+            ServerCommunicator.getInstance().getPrintWriter().println("DONT_PLAY_WITH_BOT");
         }
         else{
             System.exit(0);

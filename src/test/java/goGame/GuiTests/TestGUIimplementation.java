@@ -1,4 +1,4 @@
-package goGame;
+package goGame.GuiTests;
 
 import goGame.GUI.GUIcomponents.GoBoard.GoBoard;
 import goGame.GUI.GuiFrame;

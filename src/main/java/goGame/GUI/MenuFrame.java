@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class MenuFrame extends JFrame implements IMenuFrame{
     private List _gamesToChoose;
@@ -44,5 +45,8 @@ public class MenuFrame extends JFrame implements IMenuFrame{
         _gamesToChoose = new List();
         _gamesToChoose.setSize(new Dimension(600, 300));
         add(_gamesToChoose, BorderLayout.PAGE_START);
+    }
+    public List getGamesList(){
+        return _gamesToChoose;
     }
 }

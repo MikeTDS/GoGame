@@ -1,7 +1,7 @@
 package goGame.GUIcomponents.ScoreBoard;
 
 import goGame.Client.GoGameClient;
-import goGame.Client.ServerComunicator;
+import goGame.Client.ServerCommunicator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,7 @@ public class ExitButton extends JButton implements ActionListener {
         int returnValue=0;
         returnValue = JOptionPane.showConfirmDialog(GoGameClient.getGuiFrame(), "Are you sure?", "Exit", JOptionPane.YES_NO_OPTION);
         if(returnValue==YES_OPTION){
-            ServerComunicator.getInstance().getPrintWriter().println("EXIT");
+            ServerCommunicator.getInstance().getPrintWriter().println("EXIT");
         }
     }
 }

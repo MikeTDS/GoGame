@@ -1,4 +1,4 @@
-package goGame;
+package goGame.GuiTests;
 
 import goGame.GUI.GuiFrame;
 import org.junit.Before;

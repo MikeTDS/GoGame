@@ -60,6 +60,7 @@ public class Player extends AbstractPlayer implements Runnable {
                     _output.println("SURRENDER");
                     if(_opponent!=null)
                         _opponent.getOutput().println("SURRENDER_WIN");
+                    _game._finished=true;
                 }
                 else{
                     _output.println("NORMAL_EXIT");
