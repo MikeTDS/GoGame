@@ -20,25 +20,6 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         _color = color;
         _game = game;
         _socket = socket;
-        setPointsSystem();
-
-        _brain = new BotBrain(_game, _game.getBoardSize());
-        _pointsBoard = new int[_brain.getBoardSize()*_brain.getBoardSize()];
-    }
-
-    private void setPointsSystem() {
-        _pointsMap.put("kill", 1300);
-        _pointsMap.put("chain", 100);
-        _pointsMap.put("enemyHug", 200);
-        _pointsMap.put("friendHug", 15);
-        _pointsMap.put("territoryExpansion", 500);
-        _pointsMap.put("enemyOutnumber", 150);
-        _pointsMap.put("enemyEqualization", 180);
-        _pointsMap.put("enemyKillProtection", 700);
-        _pointsMap.put("semiSuicideMove", -700);
-        _pointsMap.put("enemyNeighbour", -50);
-        _pointsMap.put("wrongMove", -100000);
-        _pointsMap.put("territoryShrink", -400);
     }
 
     @Override
@@ -57,7 +38,26 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         _opponent = _game.getCurrentPlayer();
         _opponent.setOpponent(this);
         _opponent.getOpponent().getOutput().println("MESSAGE Your move");
+        _brain = new BotBrain(_game, _game.getBoardSize(), _color, _opponent.getColor());
+
+        _pointsBoard = new int[_brain.getBoardSize()*_brain.getBoardSize()];
+        setPointsSystem();
         resetPointsBoard();
+    }
+
+    private void setPointsSystem() {
+        _pointsMap.put("kill", 1300);
+        _pointsMap.put("chain", 100);
+        _pointsMap.put("enemyHug", 200);
+        _pointsMap.put("friendHug", 15);
+        _pointsMap.put("territoryExpansion", 500);
+        _pointsMap.put("enemyOutnumber", 150);
+        _pointsMap.put("enemyEqualization", 180);
+        _pointsMap.put("enemyKillProtection", 700);
+        _pointsMap.put("semiSuicideMove", -700);
+        _pointsMap.put("enemyNeighbour", -50);
+        _pointsMap.put("wrongMove", -100000);
+        _pointsMap.put("territoryShrink", -400);
     }
 
     private void processMoveCommand(int x, int y) {
@@ -79,28 +79,24 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         for(int i=0; i< _brain.getBoardSize()*_brain.getBoardSize(); i++){
             Stone allyStone = new Stone(getXFromBoard(i), getYFromBoard(i), _color);
             Stone enemyTestStone = new Stone(getXFromBoard(i), getYFromBoard(i), _opponent.getColor());
-            if(checkForKill(allyStone)) _pointsBoard[i] += _pointsMap.get("kill") * _game.getSizeOfKillGroups();
-            if(checkForKill(enemyTestStone)) _pointsBoard[i] += _pointsMap.get("enemyKillProtection") * _game.getSizeOfKillGroups();;
-            if(checkForTerritoryExpansion(allyStone)){
+            if(_brain.checkForKill(allyStone)) _pointsBoard[i] += _pointsMap.get("kill") * _game.getSizeOfKillGroups();
+            if(_brain.checkForKill(enemyTestStone)) _pointsBoard[i] += _pointsMap.get("enemyKillProtection") * _game.getSizeOfKillGroups();;
+            if(_brain.checkForTerritoryExpansion(allyStone)){
                 _pointsBoard[i] += _pointsMap.get("territoryExpansion") * (_brain.calculateTerritoryWithNewStone(allyStone) - _game.calculateTerritory(_color));
             }
-            if(checkForChain(allyStone)) _pointsBoard[i] += _pointsMap.get("chain");
-            if(checkForFriendHug(allyStone)) _pointsBoard[i] += _pointsMap.get("friendHug");
-            if(checkForEnemyOutnumber(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyOutnumber");
-            if(checkForEnemyEqualization(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyEqualization");
-            if(checkForTerritoryShrink(allyStone)) _pointsBoard[i] += _pointsMap.get("territoryShrink") * (_game.calculateTerritory(_color) - _brain.calculateTerritoryWithNewStone(allyStone));
-            if(!checkForCorrectMove(allyStone)) _pointsBoard[i] += _pointsMap.get("wrongMove");
-            //if(checkForSemiSuicuidalMove(allyStone)) _pointsBoard[i] += _pointsMap.get("semiSuicideMove");
+            if(_brain.checkForChain(allyStone)) _pointsBoard[i] += _pointsMap.get("chain");
+            if(_brain.checkForFriendHug(allyStone)) _pointsBoard[i] += _pointsMap.get("friendHug");
+            if(_brain.checkForEnemyOutnumber(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyOutnumber");
+            if(_brain.checkForEnemyEqualization(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyEqualization");
+            if(_brain.checkForTerritoryShrink(allyStone)) _pointsBoard[i] += _pointsMap.get("territoryShrink") * (_game.calculateTerritory(_color) - _brain.calculateTerritoryWithNewStone(allyStone));
+            if(!_brain.checkForCorrectMove(allyStone, this)) _pointsBoard[i] += _pointsMap.get("wrongMove");
+            //if(_brain.checkForSemiSuicuidalMove(allyStone)) _pointsBoard[i] += _pointsMap.get("semiSuicideMove");
 
-            _pointsBoard[i] += _pointsMap.get("enemyHug")*countEnemyHugs(allyStone);
-            _pointsBoard[i] += _pointsMap.get("enemyNeighbour")*countEnemyNeighbours(allyStone);
+            _pointsBoard[i] += _pointsMap.get("enemyHug")*_brain.countEnemyHugs(allyStone);
+            _pointsBoard[i] += _pointsMap.get("enemyNeighbour")*_brain.countEnemyNeighbours(allyStone);
         }
         int choosenField = chooseBestField();
         processMoveCommand(getXFromBoard(choosenField), getYFromBoard(choosenField));
-    }
-
-    private boolean checkForSemiSuicuidalMove(Stone allyStone) {
-        return false;
     }
 
     private void resetPointsBoard() {
@@ -120,78 +116,6 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         return potentialFields.get(randomedField);
     }
 
-    private int countEnemyHugs(Stone stone) {
-        Stone[] neighbours = _game.getNeighbours(stone);
-        Stone[] cornerNeighbours = _brain.getCornerNeighbours(stone);
-        int cornerJumper = 0,
-            hugCounter = 0;
-        for(Stone s : neighbours){
-            if(s != null)
-                if(s.getColor().equals(_opponent.getColor())){
-                    if(cornerNeighbours[cornerJumper%4] != null)
-                        if(cornerNeighbours[cornerJumper%4].getColor().equals(_color))
-                            hugCounter++;
-                    if(cornerNeighbours[(cornerJumper+1)%4] != null)
-                        if(cornerNeighbours[(cornerJumper+1)%4].getColor().equals(_color))
-                            hugCounter++;
-            }
-            cornerJumper++;
-        }
-
-        return hugCounter;
-    }
-
-    private int countEnemyNeighbours(Stone stone) {
-        int countEnemy = 0;
-        Stone[] neighbours = _game.getNeighbours(stone);
-        for(Stone s : neighbours){
-            if(s != null)
-                if(s.getColor().equals(_opponent.getColor()))
-                    countEnemy++;
-        }
-
-        return countEnemy;
-    }
-
-    private boolean checkForKill(Stone stone) { return _game.checkIfCommitedKill(stone); }
-    private boolean checkForCorrectMove(Stone stone) { return _brain.checkForCorrectMove(stone, this); }
-    private boolean checkForChain(Stone stone) { return countStonesOfGivenColorAround(stone, _color) == 1; }
-    private boolean checkForFriendHug(Stone stone) { return countStonesOfGivenColorAround(stone, _color) > 1; }
-    private boolean checkForEnemyEqualization(Stone stone) { return ((countStonesOfGivenColorAround(stone, _color)) + 1)== countStonesOfGivenColorAround(stone, _opponent.getColor())
-                                                             && countStonesOfGivenColorAround(stone, _color) > 0
-                                                             && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 0; }
-    private boolean checkForEnemyOutnumber(Stone stone) { return ((countStonesOfGivenColorAround(stone, _color)) + 1) > countStonesOfGivenColorAround(stone, _opponent.getColor())
-                                                          && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 0 && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 1; }
-    private int countStonesOfGivenColorAround(Stone stone, String clr) {
-        Stone[] neighbours = _game.getNeighbours(stone);
-        Stone[] cornerNeighbours = _brain.getCornerNeighbours(stone);
-        int countClr = 0;
-        for(Stone s : neighbours){
-            if(s != null)
-                if(s.getColor().equals(clr))
-                    countClr++;
-        }
-        for(Stone s : cornerNeighbours){
-            if(s != null)
-                if(s.getColor().equals(clr))
-                    countClr++;
-        }
-        return countClr;
-    }
-
-    private boolean checkForTerritoryExpansion(Stone stone) {
-        int currentTerritory = _game.calculateTerritory(stone.getColor());
-        int newTerritory = _brain.calculateTerritoryWithNewStone(stone);
-
-        return newTerritory > currentTerritory;
-    }
-
-    private boolean checkForTerritoryShrink(Stone stone) {
-        int currentTerritory = _game.calculateTerritory(stone.getColor());
-        int newTerritory = _brain.calculateTerritoryWithNewStone(stone);
-
-        return newTerritory < currentTerritory && newTerritory != 0;
-    }
     @Override
     public void sendOutput(String out) { }
 

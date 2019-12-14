@@ -12,12 +12,12 @@ public class Game {
     private ArrayList<Stone> _currentCheckGroup;
     private ArrayList<ArrayList<Stone>> _killGroups;
     private int _currentTerritory;
-    private int _blockedField;
+    private volatile int _blockedField;
     private boolean _canBeUnlocked;
-    public boolean _finished;
+    boolean _finished;
     private String _name;
 
-    public volatile IPlayer currentPlayer;
+    volatile IPlayer currentPlayer;
 
     public Game(int size){
         _currentCheckGroup = new ArrayList<>();
@@ -66,9 +66,7 @@ public class Game {
     private void unlockBlockedField() { _blockedField = -1; }
     public synchronized boolean checkForSuicide(Stone stone){
         if(checkIfCommitedKill(stone)){ return false; }
-        if(checkIsGroupIsOutOfBreaths(stone)){ return true; }
-
-        return false;
+        return checkIsGroupIsOutOfBreaths(stone);
     }
 
     public boolean checkIfCommitedKill(Stone stone){
@@ -110,18 +108,18 @@ public class Game {
 
     private void sendKillSignalToKillGroups(){
         sendOutputToBothPlayers("KILL");
-        for(ArrayList<Stone> currentCheckGroup : _killGroups)
+        for(ArrayList<Stone> currentCheckGroup : _killGroups){
             for(Stone stone : currentCheckGroup){
                 sendOutputToBothPlayers(String.valueOf(stone.getPosX()));
                 sendOutputToBothPlayers(String.valueOf(stone.getPosY()));
                 sendOutputToBothPlayers(String.valueOf(stone.getColor()));
                 _board[calcPos(stone.getPosX(), stone.getPosY())] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
                 currentPlayer.addKillPoints(1);
-
-                if(_currentCheckGroup.size() == 1){
-                    _blockedField = calcPos(_currentCheckGroup.get(0).getPosX(), _currentCheckGroup.get(0).getPosY());
-                    _canBeUnlocked = false;
-                }
+            }
+            if(currentCheckGroup.size() == 1){
+                _blockedField = calcPos(currentCheckGroup.get(0).getPosX(), currentCheckGroup.get(0).getPosY());
+                _canBeUnlocked = false;
+            }
         }
         sendOutputToBothPlayers("KILL_STOP");
     }
@@ -242,7 +240,8 @@ public class Game {
         }
     }
 
-    private int calcPos(int x, int y){ return x + y*_boardSize; }
+    private int calcPos(int x, int y){
+        return x + y*_boardSize; }
     public int getBoardSize(){ return _boardSize; }
     public int getSizeOfKillGroups() { return _killGroups.size(); }
     public IPlayer getCurrentPlayer(){return currentPlayer;}
