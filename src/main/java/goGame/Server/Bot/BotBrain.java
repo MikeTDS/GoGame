@@ -2,7 +2,6 @@ package goGame.Server.Bot;
 
 import goGame.GameLogic.Game;
 import goGame.GameLogic.IPlayer;
-import goGame.GameLogic.Player;
 import goGame.GameLogic.Stone;
 
 public class BotBrain {
@@ -12,34 +11,34 @@ public class BotBrain {
     private int _boardSize;
     private String _color, _opponentColor;
 
-    BotBrain(Game game, int boardsize, String color, String opponentColor){
+    BotBrain(Game game, String color, String opponentColor){
         _game = game;
-        _boardSize = boardsize;
+        _boardSize = _game.getBoardSize();
         _color = color;
         _opponentColor = opponentColor;
     }
 
-    void setBrainForRound(Stone[] board, int blockedFiled){
-        _board = board;
-        _blockedField = blockedFiled;
+    void setBrainForRound(){
+        _board = _game.getBoard();
+        _blockedField = _game.getBlockedField();
     }
 
-    boolean checkForCorrectMove(Stone newStone, IPlayer player) {
+    boolean checkForWrongMove(Stone newStone, IPlayer player) {
         int location = calcPos(newStone.getPosX(), newStone.getPosY());
 
         if (player != _game.getCurrentPlayer() || player.getOpponent() == null ||
                 !_board[location].getColor().equals("Empty") || location == _blockedField )
-            return false;
+            return true;
 
         _board[location] = newStone;
 
         if(_game.checkForSuicide(newStone)){
             _board[location] = new Stone(newStone.getPosX(), newStone.getPosY(), "Empty");
-            return false;
+            return true;
         }
 
         _board[location] = new Stone(newStone.getPosX(), newStone.getPosY(), "Empty");
-        return true;
+        return false;
     }
 
     private Stone[] getCornerNeighbours(Stone stone){
@@ -72,6 +71,7 @@ public class BotBrain {
 
         return newTerritory;
     }
+
     int countEnemyHugs(Stone stone) {
         Stone[] neighbours = _game.getNeighbours(stone);
         Stone[] cornerNeighbours = getCornerNeighbours(stone);
@@ -106,7 +106,6 @@ public class BotBrain {
     }
 
     boolean checkForKill(Stone stone) { return _game.checkIfCommitedKill(stone); }
-    private boolean checkForCorrectMove(Stone stone, Bot bot) { return checkForCorrectMove(stone, bot); }
     boolean checkForChain(Stone stone) { return countStonesOfGivenColorAround(stone, _color) == 1; }
     boolean checkForFriendHug(Stone stone) { return countStonesOfGivenColorAround(stone, _color) > 1; }
     boolean checkForEnemyEqualization(Stone stone) {
@@ -151,6 +150,29 @@ public class BotBrain {
         return false;
     }
 
+    int getXFromBoard(int i){
+        if(i == 0)
+            return 0;
+        else
+            return i%_game.getBoardSize();
+    }
+    int getYFromBoard(int i) {
+        if (i == 0)
+            return 0;
+        else
+            return i / _game.getBoardSize();
+    }
+
     private int calcPos(int x, int y){ return x + y*_boardSize; }
     int getBoardSize() { return _boardSize; }
+    int getSizeOfKillGroups() { return _game.getSizeOfKillGroups(); }
+    int calculateTerritory(String color) { return _game.calculateTerritory(color); }
+    int calculateStonesOnTheBoard(){
+        int counter = 0;
+        for(Stone stone : _board)
+            if(!stone.getColor().equals("Empty"))
+                counter++;
+
+        return counter;
+    }
 }

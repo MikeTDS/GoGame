@@ -10,11 +10,10 @@ import java.net.Socket;
 import java.util.*;
 
 
-public class Bot extends AbstractPlayer implements Runnable, IBot {
+public class Bot extends AbstractPlayer implements Runnable {
 
-    private int[] _pointsBoard;
-    private Map<String, Integer> _pointsMap = new HashMap<>();
-    private BotBrain _brain;
+    private MoveOrganizer _moveOrganizer;
+    private BotBrain _botBrain;
 
     public Bot(Socket socket, String color, Game game) {
         _color = color;
@@ -38,26 +37,9 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         _opponent = _game.getCurrentPlayer();
         _opponent.setOpponent(this);
         _opponent.getOpponent().getOutput().println("MESSAGE Your move");
-        _brain = new BotBrain(_game, _game.getBoardSize(), _color, _opponent.getColor());
-
-        _pointsBoard = new int[_brain.getBoardSize()*_brain.getBoardSize()];
-        setPointsSystem();
-        resetPointsBoard();
-    }
-
-    private void setPointsSystem() {
-        _pointsMap.put("kill", 1300);
-        _pointsMap.put("chain", 100);
-        _pointsMap.put("enemyHug", 200);
-        _pointsMap.put("friendHug", 15);
-        _pointsMap.put("territoryExpansion", 500);
-        _pointsMap.put("enemyOutnumber", 150);
-        _pointsMap.put("enemyEqualization", 180);
-        _pointsMap.put("enemyKillProtection", 700);
-        _pointsMap.put("semiSuicideMove", -700);
-        _pointsMap.put("enemyNeighbour", -50);
-        _pointsMap.put("wrongMove", -100000);
-        _pointsMap.put("territoryShrink", -400);
+        _moveOrganizer = new MoveOrganizer();
+        _botBrain = new BotBrain(_game, _color, _opponent.getColor());
+        _moveOrganizer.setMoveState(new EarlyMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
     }
 
     private void processMoveCommand(int x, int y) {
@@ -71,89 +53,21 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
             System.out.println( e.getMessage());
         }
     }
-    //IBot
-    @Override
-    public void findBestField(){
-        resetPointsBoard();
-        _brain.setBrainForRound(_game.getBoard(), _game.getBlockedField());
-        for(int i=0; i< _brain.getBoardSize()*_brain.getBoardSize(); i++){
-            Stone allyStone = new Stone(getXFromBoard(i), getYFromBoard(i), _color);
-            Stone enemyTestStone = new Stone(getXFromBoard(i), getYFromBoard(i), _opponent.getColor());
-            if(_brain.checkForKill(allyStone)) _pointsBoard[i] += _pointsMap.get("kill") * _game.getSizeOfKillGroups();
-            if(_brain.checkForKill(enemyTestStone)) _pointsBoard[i] += _pointsMap.get("enemyKillProtection") * _game.getSizeOfKillGroups();;
-            if(_brain.checkForTerritoryExpansion(allyStone)){
-                _pointsBoard[i] += _pointsMap.get("territoryExpansion") * (_brain.calculateTerritoryWithNewStone(allyStone) - _game.calculateTerritory(_color));
-            }
-            if(_brain.checkForChain(allyStone)) _pointsBoard[i] += _pointsMap.get("chain");
-            if(_brain.checkForFriendHug(allyStone)) _pointsBoard[i] += _pointsMap.get("friendHug");
-            if(_brain.checkForEnemyOutnumber(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyOutnumber");
-            if(_brain.checkForEnemyEqualization(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyEqualization");
-            if(_brain.checkForTerritoryShrink(allyStone)) _pointsBoard[i] += _pointsMap.get("territoryShrink") * (_game.calculateTerritory(_color) - _brain.calculateTerritoryWithNewStone(allyStone));
-            if(!_brain.checkForCorrectMove(allyStone, this)) _pointsBoard[i] += _pointsMap.get("wrongMove");
-            //if(_brain.checkForSemiSuicuidalMove(allyStone)) _pointsBoard[i] += _pointsMap.get("semiSuicideMove");
-
-            _pointsBoard[i] += _pointsMap.get("enemyHug")*_brain.countEnemyHugs(allyStone);
-            _pointsBoard[i] += _pointsMap.get("enemyNeighbour")*_brain.countEnemyNeighbours(allyStone);
-        }
-        int choosenField = chooseBestField();
-        processMoveCommand(getXFromBoard(choosenField), getYFromBoard(choosenField));
-    }
-
-    private void resetPointsBoard() {
-        for(int i=0; i < _pointsBoard.length; i++)
-            _pointsBoard[i] = 0;
-    }
-
-    private int chooseBestField() {
-        Random random = new Random();
-        int max = Arrays.stream(_pointsBoard).max().getAsInt(),
-            randomedField;
-        List<Integer> potentialFields = new ArrayList<>();
-        for(int i=0; i < _brain.getBoardSize()*_brain.getBoardSize(); i++)
-            if(_pointsBoard[i] == max)
-                potentialFields.add(i);
-        randomedField = random.nextInt(potentialFields.size());
-        return potentialFields.get(randomedField);
-    }
 
     @Override
     public void sendOutput(String out) { }
-
-    @Override
-    public void makeMove(int x, int y) {
-
-    }
-
-    @Override
-    public void decideIfPass() {
-
-    }
 
     private void play(){
         while(true){
             if(_game.getCurrentPlayer().equals(this)){
                 updatePoints();
-               findBestField();
+                _botBrain.setBrainForRound();
+                if(_botBrain.calculateStonesOnTheBoard() == 5)
+                    _moveOrganizer.setMoveState(new MidMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
+
+                int choosenField = _moveOrganizer.getBestField(this);
+                processMoveCommand(_botBrain.getXFromBoard(choosenField), _botBrain.getYFromBoard(choosenField));
             }
         }
-    }
-    private int getXFromBoard(int i){
-        if(i == 0)
-            return 0;
-        else
-            return i%_game.getBoardSize();
-    }
-    private int getYFromBoard(int i){
-        if(i == 0)
-            return 0;
-        else
-            return i/_game.getBoardSize();
-    }
-
-    private void setPointsBoard(){
-
-    }
-    private void calculateBoard(){
-
     }
 }
