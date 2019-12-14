@@ -12,7 +12,7 @@ public class Game {
     private ArrayList<Stone> _currentCheckGroup;
     private ArrayList<ArrayList<Stone>> _killGroups;
     private int _currentTerritory;
-    private int _blockedFiled;
+    private int _blockedField;
     private boolean _canBeUnlocked;
     public boolean _finished;
     private String _name;
@@ -24,7 +24,7 @@ public class Game {
         _killGroups = new ArrayList<>();
         _board = new Stone[size*size];
         _boardSize = size;
-        _blockedFiled = -1;
+        _blockedField = -1;
         _finished = false;
         _name = "Defualt Game.";
         resetBoard();
@@ -34,14 +34,14 @@ public class Game {
         int location = calcPos(x, y);
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
-        calculateTerritoryWithNewStone(newStone);
+
         if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
             throw new IllegalStateException("Opponent not present");
         } else if (!_board[location].getColor().equals("Empty")) {
             throw new IllegalStateException("Field occupied");
-        } else if (location == _blockedFiled){
+        } else if (location == _blockedField){
             throw new IllegalStateException("Field is blocked");
         }
 
@@ -59,29 +59,11 @@ public class Game {
         }
         currentPlayer.updatePoints();
         currentPlayer.sendPoints();
-        //System.out.println("Territory: " + currentPlayer.getColor() + " " + calculateTerritory(currentPlayer.getColor()));
+
         currentPlayer = currentPlayer.getOpponent();
     }
 
-    public synchronized boolean checkForCorrectMove(Stone newStone, IPlayer player) {
-        int location = calcPos(newStone.getPosX(), newStone.getPosY());
-
-        if (player != currentPlayer || player.getOpponent() == null ||
-            !_board[location].getColor().equals("Empty") || location == _blockedFiled )
-                return false;
-
-        _board[location] = newStone;
-
-        if(checkForSuicide(newStone)){
-            _board[location] = new Stone(getXFromBoard(location), getYFromBoard(location), "Empty");
-            return false;
-        }
-
-        _board[location] = new Stone(getXFromBoard(location), getYFromBoard(location), "Empty");
-        return true;
-    }
-
-    private void unlockBlockedField() { _blockedFiled = -1; }
+    private void unlockBlockedField() { _blockedField = -1; }
     public synchronized boolean checkForSuicide(Stone stone){
         if(checkIfCommitedKill(stone)){ return false; }
         if(checkIsGroupIsOutOfBreaths(stone)){ return true; }
@@ -98,7 +80,6 @@ public class Game {
             mockChecking = true;
             _board[location] = stone;
         }
-
         resetCheckStatus();
         Stone[] neighbours = getNeighbours(stone);
         for(Stone s : neighbours)
@@ -138,7 +119,7 @@ public class Game {
                 currentPlayer.addKillPoints(1);
 
                 if(_currentCheckGroup.size() == 1){
-                    _blockedFiled = calcPos(_currentCheckGroup.get(0).getPosX(), _currentCheckGroup.get(0).getPosY());
+                    _blockedField = calcPos(_currentCheckGroup.get(0).getPosX(), _currentCheckGroup.get(0).getPosY());
                     _canBeUnlocked = false;
                 }
         }
@@ -215,37 +196,6 @@ public class Game {
         return neighbours;
     }
 
-    public Stone[] getCornerNeighbours(Stone stone){
-        Stone[] neighbours = new Stone[4];
-        int x = stone.getPosX(),
-                y = stone.getPosY();
-        if(y+1 >= _boardSize || x-1 < 0) neighbours[1] = new Stone(x-1, y+1, "Wall");
-        else neighbours[0] = _board[calcPos(x-1, y+1)];
-
-        if(x-1 < 0 || y-1 < 0) neighbours[0] = new Stone(x-1, y-1, "Wall");
-        else neighbours[1] = _board[calcPos(x-1, y-1)];
-
-        if(y-1 < 0 || x+1 >= _boardSize) neighbours[1] = new Stone(x+1, y-1, "Wall");
-        else neighbours[2] = _board[calcPos(x+1, y-1)];
-
-        if(x+1 >= _boardSize || y+1 >= _boardSize) neighbours[2] = new Stone(x+1, y+1, "Wall");
-        else neighbours[3] = _board[calcPos(x+1, y+1)];
-
-        return neighbours;
-    }
-
-    public int calculateTerritoryWithNewStone(Stone stone){
-        int location = calcPos(stone.getPosX(), stone.getPosY()),
-            newTerritory = 0;
-        if(_board[location].getColor().equals("Empty")){
-            _board[location] = stone;
-            newTerritory = calculateTerritory(stone.getColor());
-            _board[location] = new Stone(stone.getPosX(), stone.getPosY(), "Empty");
-        }
-
-        return newTerritory;
-    }
-
     public int calculateTerritory(String color){
         resetCheckStatus();
         int wholeTerritory=0;
@@ -313,4 +263,6 @@ public class Game {
     public void skipMove(){
         currentPlayer=currentPlayer.getOpponent();
     }
+    public Stone[] getBoard() { return _board; }
+    public int getBlockedField(){ return _blockedField; }
 }

@@ -124,7 +124,7 @@ public class GoGameServer {
         if (_games.get(0) != null) {
             writer.println("GAME_LIST");
             for (int i=0; i<_games.size(); i++) {
-                if(_games.get(i).currentPlayer!=null && _games.get(i).currentPlayer.getOpponent()!=null){
+                if(_games.get(i).getCurrentPlayer()!=null && _games.get(i).getCurrentPlayer().getOpponent()!=null){
                     writer.println(i + ". " + _games.get(i).getName() + "2/2");
                 }
                 else{

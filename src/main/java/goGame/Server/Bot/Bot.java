@@ -14,26 +14,28 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
 
     private int[] _pointsBoard;
     private Map<String, Integer> _pointsMap = new HashMap<>();
-    private int _boardsize;
+    private BotBrain _brain;
 
     public Bot(Socket socket, String color, Game game) {
         _color = color;
         _game = game;
         _socket = socket;
-        _boardsize = _game.getBoardSize();
-        _pointsBoard = new int[_boardsize*_boardsize];
         setPointsSystem();
+
+        _brain = new BotBrain(_game, _game.getBoardSize());
+        _pointsBoard = new int[_brain.getBoardSize()*_brain.getBoardSize()];
     }
 
     private void setPointsSystem() {
         _pointsMap.put("kill", 1300);
-        _pointsMap.put("chain", 50);
+        _pointsMap.put("chain", 100);
         _pointsMap.put("enemyHug", 200);
         _pointsMap.put("friendHug", 15);
         _pointsMap.put("territoryExpansion", 500);
         _pointsMap.put("enemyOutnumber", 150);
         _pointsMap.put("enemyEqualization", 180);
         _pointsMap.put("enemyKillProtection", 700);
+        _pointsMap.put("semiSuicideMove", -700);
         _pointsMap.put("enemyNeighbour", -50);
         _pointsMap.put("wrongMove", -100000);
         _pointsMap.put("territoryShrink", -400);
@@ -55,7 +57,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         _opponent = _game.getCurrentPlayer();
         _opponent.setOpponent(this);
         _opponent.getOpponent().getOutput().println("MESSAGE Your move");
-        resetPoints();
+        resetPointsBoard();
     }
 
     private void processMoveCommand(int x, int y) {
@@ -72,19 +74,23 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
     //IBot
     @Override
     public void findBestField(){
-        resetPoints();
-        for(int i=0; i< _boardsize*_boardsize; i++){
+        resetPointsBoard();
+        _brain.setBrainForRound(_game.getBoard(), _game.getBlockedField());
+        for(int i=0; i< _brain.getBoardSize()*_brain.getBoardSize(); i++){
             Stone allyStone = new Stone(getXFromBoard(i), getYFromBoard(i), _color);
             Stone enemyTestStone = new Stone(getXFromBoard(i), getYFromBoard(i), _opponent.getColor());
             if(checkForKill(allyStone)) _pointsBoard[i] += _pointsMap.get("kill") * _game.getSizeOfKillGroups();
-            if(checkForKill(enemyTestStone)) _pointsBoard[i] += _pointsMap.get("enemyKillProtection");
-            if(checkForTerritoryExpansion(allyStone)) _pointsBoard[i] += _pointsMap.get("territoryExpansion");
+            if(checkForKill(enemyTestStone)) _pointsBoard[i] += _pointsMap.get("enemyKillProtection") * _game.getSizeOfKillGroups();;
+            if(checkForTerritoryExpansion(allyStone)){
+                _pointsBoard[i] += _pointsMap.get("territoryExpansion") * (_brain.calculateTerritoryWithNewStone(allyStone) - _game.calculateTerritory(_color));
+            }
             if(checkForChain(allyStone)) _pointsBoard[i] += _pointsMap.get("chain");
             if(checkForFriendHug(allyStone)) _pointsBoard[i] += _pointsMap.get("friendHug");
             if(checkForEnemyOutnumber(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyOutnumber");
             if(checkForEnemyEqualization(allyStone)) _pointsBoard[i] += _pointsMap.get("enemyEqualization");
-            if(checkForTerritoryShrink(allyStone)) _pointsBoard[i] += _pointsMap.get("territoryShrink");
+            if(checkForTerritoryShrink(allyStone)) _pointsBoard[i] += _pointsMap.get("territoryShrink") * (_game.calculateTerritory(_color) - _brain.calculateTerritoryWithNewStone(allyStone));
             if(!checkForCorrectMove(allyStone)) _pointsBoard[i] += _pointsMap.get("wrongMove");
+            //if(checkForSemiSuicuidalMove(allyStone)) _pointsBoard[i] += _pointsMap.get("semiSuicideMove");
 
             _pointsBoard[i] += _pointsMap.get("enemyHug")*countEnemyHugs(allyStone);
             _pointsBoard[i] += _pointsMap.get("enemyNeighbour")*countEnemyNeighbours(allyStone);
@@ -93,12 +99,21 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
         processMoveCommand(getXFromBoard(choosenField), getYFromBoard(choosenField));
     }
 
+    private boolean checkForSemiSuicuidalMove(Stone allyStone) {
+        return false;
+    }
+
+    private void resetPointsBoard() {
+        for(int i=0; i < _pointsBoard.length; i++)
+            _pointsBoard[i] = 0;
+    }
+
     private int chooseBestField() {
         Random random = new Random();
         int max = Arrays.stream(_pointsBoard).max().getAsInt(),
             randomedField;
         List<Integer> potentialFields = new ArrayList<>();
-        for(int i=0; i < _boardsize*_boardsize; i++)
+        for(int i=0; i < _brain.getBoardSize()*_brain.getBoardSize(); i++)
             if(_pointsBoard[i] == max)
                 potentialFields.add(i);
         randomedField = random.nextInt(potentialFields.size());
@@ -107,7 +122,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
 
     private int countEnemyHugs(Stone stone) {
         Stone[] neighbours = _game.getNeighbours(stone);
-        Stone[] cornerNeighbours = _game.getCornerNeighbours(stone);
+        Stone[] cornerNeighbours = _brain.getCornerNeighbours(stone);
         int cornerJumper = 0,
             hugCounter = 0;
         for(Stone s : neighbours){
@@ -139,7 +154,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
     }
 
     private boolean checkForKill(Stone stone) { return _game.checkIfCommitedKill(stone); }
-    private boolean checkForCorrectMove(Stone stone) { return _game.checkForCorrectMove(stone, this); }
+    private boolean checkForCorrectMove(Stone stone) { return _brain.checkForCorrectMove(stone, this); }
     private boolean checkForChain(Stone stone) { return countStonesOfGivenColorAround(stone, _color) == 1; }
     private boolean checkForFriendHug(Stone stone) { return countStonesOfGivenColorAround(stone, _color) > 1; }
     private boolean checkForEnemyEqualization(Stone stone) { return ((countStonesOfGivenColorAround(stone, _color)) + 1)== countStonesOfGivenColorAround(stone, _opponent.getColor())
@@ -149,7 +164,7 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
                                                           && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 0 && countStonesOfGivenColorAround(stone, _opponent.getColor()) > 1; }
     private int countStonesOfGivenColorAround(Stone stone, String clr) {
         Stone[] neighbours = _game.getNeighbours(stone);
-        Stone[] cornerNeighbours = _game.getCornerNeighbours(stone);
+        Stone[] cornerNeighbours = _brain.getCornerNeighbours(stone);
         int countClr = 0;
         for(Stone s : neighbours){
             if(s != null)
@@ -166,14 +181,14 @@ public class Bot extends AbstractPlayer implements Runnable, IBot {
 
     private boolean checkForTerritoryExpansion(Stone stone) {
         int currentTerritory = _game.calculateTerritory(stone.getColor());
-        int newTerritory = _game.calculateTerritoryWithNewStone(stone);
+        int newTerritory = _brain.calculateTerritoryWithNewStone(stone);
 
         return newTerritory > currentTerritory;
     }
 
     private boolean checkForTerritoryShrink(Stone stone) {
         int currentTerritory = _game.calculateTerritory(stone.getColor());
-        int newTerritory = _game.calculateTerritoryWithNewStone(stone);
+        int newTerritory = _brain.calculateTerritoryWithNewStone(stone);
 
         return newTerritory < currentTerritory && newTerritory != 0;
     }
