@@ -11,7 +11,7 @@ public class AbstractPlayer implements IPlayer{
     protected PrintWriter _output;
     protected String _color;
     protected boolean _lastMovePass;
-    protected Game _game;
+    protected volatile Game _game;
     protected volatile Socket _socket;
     protected int killPoints;
     protected int territoryPoints;

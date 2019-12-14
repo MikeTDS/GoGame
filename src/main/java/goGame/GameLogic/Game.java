@@ -253,9 +253,11 @@ public class Game {
             _board[i] = new Stone(getXFromBoard(i), getYFromBoard(i), "Empty");
         }
     }
-    public IPlayer createPlayer(Socket socket, String color){
+    public synchronized IPlayer createPlayer(Socket socket, String color){
         if(color.equalsIgnoreCase("Bot"))
-            return new Bot(socket, "White", this);
+            synchronized (this){
+                return new Bot(socket, "White", this);
+            }
         else
             return new Player(socket, color, this);
     }
