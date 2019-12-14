@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="0.8611111111110858" y="478.0">goGame.Client.ServerCommunicator</node>
+    <node x="41.02777777777777" y="152.0">goGame.GameLogic.Game</node>
+    <node x="0.0" y="76.0">goGame.GameLogic.Player</node>
+    <node x="13.027777777777771" y="228.0">goGame.Server.GoGameServer</node>
+    <node x="-20.138888888888914" y="402.0">goGame.Client.GoGameClient</node>
+    <node x="-23.638888888888914" y="326.0">goGame.Client.IServerCommunicator</node>
+    <node x="39.11111111111111" y="0.0">goGame.GameLogic.IPlayer</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="goGame.Server.GoGameServer" target="goGame.GameLogic.Game">
+      <point x="43.33333333333334" y="-13.0" />
+      <point x="121.36111111111111" y="203.0" />
+      <point x="102.69444444444444" y="203.0" />
+      <point x="24.66666666666667" y="13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.Game" target="goGame.GameLogic.Player">
+      <point x="-27.75" y="-13.0" />
+      <point x="50.27777777777777" y="127.0" />
+      <point x="22.0" y="127.0" />
+      <point x="-22.0" y="13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.Player" target="goGame.GameLogic.IPlayer">
+      <point x="0.0" y="-13.0" />
+      <point x="44.0" y="51.0" />
+      <point x="54.944444444444436" y="51.0" />
+      <point x="-31.66666666666667" y="13.0" />
+    </edge>
+    <edge source="goGame.Client.ServerCommunicator" target="goGame.Client.IServerCommunicator">
+      <point x="0.0" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.Player" target="goGame.GameLogic.Game">
+      <point x="22.0" y="13.0" />
+      <point x="66.0" y="127.0" />
+      <point x="68.77777777777777" y="127.0" />
+      <point x="-9.25" y="-13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.Game" target="goGame.GameLogic.IPlayer">
+      <point x="9.25" y="-13.0" />
+      <point x="87.27777777777777" y="127.0" />
+      <point x="98.5" y="127.0" />
+      <point x="98.5" y="51.0" />
+      <point x="86.61111111111111" y="51.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Client.GoGameClient" target="goGame.Client.ServerCommunicator">
+      <point x="-32.5" y="-13.0" />
+      <point x="249.3611111111111" y="127.0" />
+      <point x="238.8611111111111" y="127.0" />
+      <point x="-43.0" y="13.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="391.0" y="138.0" />
+  <SelectedNodes>
+    <node>goGame.Client.ServerCommunicator</node>
+    <node>goGame.Client.GoGameClient</node>
+    <node>goGame.Client.IServerCommunicator</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

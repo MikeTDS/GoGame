@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="0.0" y="294.0">goGame.GameLogic.Stone</node>
+    <node x="8.0" y="76.0">goGame.GameLogic.AbstractPlayer</node>
+    <node x="126.0" y="294.0">goGame.GameLogic.Game</node>
+    <node x="0.0" y="152.0">goGame.GameLogic.Player</node>
+    <node x="175.0" y="223.0">goGame.Server.Bot.BotBrain</node>
+    <node x="0.0" y="223.0">goGame.Server.GoGameServer</node>
+    <node x="158.75" y="152.0">goGame.Server.Bot.Bot</node>
+    <node x="172.0" y="76.0">goGame.Server.Bot.IBot</node>
+    <node x="32.5" y="0.0">goGame.GameLogic.IPlayer</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="goGame.GameLogic.Player" target="goGame.GameLogic.AbstractPlayer">
+      <point x="0.0" y="-13.0" />
+      <point x="-36.0" y="13.0" />
+    </edge>
+    <edge source="goGame.GameLogic.AbstractPlayer" target="goGame.GameLogic.IPlayer">
+      <point x="0.0" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.Bot" target="goGame.Server.Bot.IBot">
+      <point x="16.75" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Server.Bot.Bot" target="goGame.GameLogic.AbstractPlayer">
+      <point x="-16.75" y="-13.0" />
+      <point x="175.5" y="127.0" />
+      <point x="116.0" y="127.0" />
+      <point x="36.0" y="13.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="391.0" y="138.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

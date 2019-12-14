@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="3.5" y="76.0">goGame.Client.ServerCommunicator</node>
+    <node x="227.5" y="76.0">goGame.GUI.MenuFrame</node>
+    <node x="154.0" y="147.0">goGame.GUI.GUIcomponents.GoBoard.IGoBoard</node>
+    <node x="0.0" y="147.0">goGame.GUI.IGuiFrame</node>
+    <node x="3.5" y="223.0">goGame.GUI.GuiFrame</node>
+    <node x="0.0" y="294.0">goGame.Client.GoGameClient</node>
+    <node x="224.0" y="0.0">goGame.GUI.IMenuFrame</node>
+    <node x="0.0" y="0.0">goGame.Client.IServerCommunicator</node>
+    <node x="157.5" y="223.0">goGame.GUI.GUIcomponents.GoBoard.GoBoard</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="goGame.GUI.GUIcomponents.GoBoard.GoBoard" target="goGame.GUI.GUIcomponents.GoBoard.IGoBoard">
+      <point x="0.0" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.Client.ServerCommunicator" target="goGame.Client.IServerCommunicator">
+      <point x="0.0" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.GUI.GuiFrame" target="goGame.GUI.IGuiFrame">
+      <point x="0.0" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+    <edge source="goGame.GUI.MenuFrame" target="goGame.GUI.IMenuFrame">
+      <point x="0.0" y="-13.0" />
+      <point x="0.0" y="13.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="391.0" y="138.0" />
+  <SelectedNodes>
+    <node>goGame.GUI.IMenuFrame</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
