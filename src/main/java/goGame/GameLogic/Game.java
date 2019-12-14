@@ -10,6 +10,7 @@ public class Game {
     private volatile Stone[] _board;
     private int _boardSize;
     private ArrayList<Stone> _currentCheckGroup;
+    private int _currentCheckGroupBreaths;
     private ArrayList<ArrayList<Stone>> _killGroups;
     private int _currentTerritory;
     private volatile int _blockedField;
@@ -17,7 +18,7 @@ public class Game {
     public boolean _finished;
     private String _name;
 
-    volatile IPlayer currentPlayer;
+    IPlayer currentPlayer;
 
     public Game(int size){
         _currentCheckGroup = new ArrayList<>();
@@ -52,7 +53,8 @@ public class Game {
             throw new IllegalStateException("Suicide move");
         }
 
-        if(checkIfCommitedKill(newStone)){ sendKillSignalToKillGroups(); }
+        if(checkIfCommitedKill(newStone)){
+            sendKillSignalToKillGroups(); }
 
         if(_canBeUnlocked){
             unlockBlockedField();
@@ -66,7 +68,7 @@ public class Game {
     private void unlockBlockedField() { _blockedField = -1; }
     public synchronized boolean checkForSuicide(Stone stone){
         if(checkIfCommitedKill(stone)){ return false; }
-        return checkIsGroupIsOutOfBreaths(stone);
+        return checkIfGroupIsOutOfBreaths(stone);
     }
 
     public boolean checkIfCommitedKillForTwo(Stone stone1, Stone stone2){
@@ -95,13 +97,14 @@ public class Game {
             mockChecking = true;
             _board[location] = stone;
         }
+
         resetCheckStatus();
         Stone[] neighbours = getNeighbours(stone);
         for(Stone s : neighbours)
             if(!s.getColor().equals("Empty"))
                 if(s.wasntChecked() && !s.getColor().equals("Wall") && !s.getColor().equals(stone.getColor())){
                     resetCheckStatus();
-                    if(checkIsGroupIsOutOfBreaths(s)){
+                    if(checkIfGroupIsOutOfBreaths(s)){
                         commitedKill = true;
                         ArrayList<Stone> gck = (ArrayList<Stone>)_currentCheckGroup.clone();
                         _killGroups.add(gck);
@@ -112,12 +115,11 @@ public class Game {
         return commitedKill;
     }
 
-    private void resetCheckStatus(){
+    public void resetCheckStatus(){
         for(Stone stone : _board){
-            if(!stone.getColor().equals("Empty")){
+            if(!stone.getColor().equals("Empty"))
                 stone.setWasChecked(false);
-                stone.setIsSafe(false);
-            }
+
             stone.setWasCheckedTerritory(false);
             stone.setIsPartOfTerritory(true);
         }
@@ -146,47 +148,26 @@ public class Game {
         currentPlayer.getOpponent().sendOutput(out);
     }
 
-    private boolean checkIsGroupIsOutOfBreaths(Stone stone){
+    public boolean checkIfGroupIsOutOfBreaths(Stone stone){
+        _currentCheckGroupBreaths = 0;
         _currentCheckGroup.clear();
-        boolean test = scoutForBreath(stone);
-
-        return  !test;
+        scoutForBreath(stone);
+        return _currentCheckGroupBreaths == 0;
     }
 
-    private boolean scoutForBreath(Stone stone){
+    private void scoutForBreath(Stone stone){
         _currentCheckGroup.add(stone);
         Stone[] neighbours = getNeighbours(stone);
         stone.setWasChecked(true);
-        boolean foundBreath = false;
 
         for(Stone s : neighbours) {
             if(!s.getColor().equals("Empty")){
                 if(stone.getColor().equals(s.getColor()) && s.wasntChecked()){
                     s.setWasChecked(true);
-                    foundBreath = foundBreath || scoutForBreath(s);
+                    scoutForBreath(s);
                 }
-
             }else{
-                stone.setIsSafe(true);
-                setNeighboursToSafe(stone);
-                return true;
-            }
-        }
-        if(foundBreath){
-            stone.setIsSafe(true);
-            setNeighboursToSafe(stone);
-        }
-        return foundBreath;
-    }
-
-    private void setNeighboursToSafe(Stone stone){
-        Stone[] neighbours = getNeighbours(stone);
-        for(Stone s : neighbours) {
-            if(!s.getColor().equals("Empty")){
-                if(stone.getColor().equals(s.getColor()) && !s.isSafe()){
-                    s.setIsSafe(true);
-                    setNeighboursToSafe(s);
-                }
+                _currentCheckGroupBreaths++;
             }
         }
     }
@@ -257,19 +238,20 @@ public class Game {
         }
     }
 
-    private int calcPos(int x, int y){
-        return x + y*_boardSize; }
-    public int getBoardSize(){ return _boardSize; }
-    public int getSizeOfKillGroups() { return _killGroups.size(); }
-    public IPlayer getCurrentPlayer(){return currentPlayer;}
-    private int getXFromBoard(int i){return i%_boardSize;}
-    private int getYFromBoard(int i){return i/_boardSize;}
-    public String getName(){return _name;}
+    public int getNumberOfStonesInKillGroups() {
+        int counter = 0;
+        for(ArrayList<Stone> group : _killGroups)
+            counter += group.size();
+        return counter; }
+
     private void resetBoard(){
         for(int i=0; i<_boardSize*_boardSize; i++){
             _board[i] = new Stone(getXFromBoard(i), getYFromBoard(i), "Empty");
         }
     }
+
+    void skipMove(){ currentPlayer=currentPlayer.getOpponent(); }
+
     public synchronized IPlayer createPlayer(Socket socket, String color){
         if(color.equalsIgnoreCase("Bot"))
             synchronized (this){
@@ -278,9 +260,14 @@ public class Game {
         else
             return new Player(socket, color, this);
     }
-    public void skipMove(){
-        currentPlayer=currentPlayer.getOpponent();
-    }
+
+    public String getName(){return _name;}
     public Stone[] getBoard() { return _board; }
     public int getBlockedField(){ return _blockedField; }
+    public int getCurrentCheckGroupBreaths() { return _currentCheckGroupBreaths; }
+    public int getBoardSize(){ return _boardSize; }
+    public IPlayer getCurrentPlayer(){return currentPlayer;}
+    private int calcPos(int x, int y){ return x + y*_boardSize; }
+    private int getXFromBoard(int i){return i%_boardSize;}
+    private int getYFromBoard(int i){return i/_boardSize;}
 }

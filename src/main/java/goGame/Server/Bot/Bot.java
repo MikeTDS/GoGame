@@ -62,11 +62,12 @@ public class Bot extends AbstractPlayer implements Runnable {
             if(_game.getCurrentPlayer().equals(this)){
                 updatePoints();
                 _botBrain.setBrainForRound();
-                if(_botBrain.calculateStonesOnTheBoard() == 5)
+                if(_botBrain.calculateStonesOnTheBoard() == 7)
                     _moveOrganizer.setMoveState(new MidMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
 
                 int choosenField = _moveOrganizer.getBestField(this);
                 processMoveCommand(_botBrain.getXFromBoard(choosenField), _botBrain.getYFromBoard(choosenField));
+                System.out.println(totalPoints);
             }
         }
     }
