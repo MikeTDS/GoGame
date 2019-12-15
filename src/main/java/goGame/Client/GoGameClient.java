@@ -27,7 +27,7 @@ public class GoGameClient {
             chooseGame();
     }
 
-    private static void chooseGame(){
+    public static void chooseGame(){
         String chosenGame = chooseMenu();
         if(chosenGame.equals("New game")){
             _serverCommunicator.getPrintWriter().println("NEW_GAME");
@@ -45,7 +45,7 @@ public class GoGameClient {
         }
     }
 
-    private static void initializeGame(){
+    public static void initializeGame(){
         int goBoardSize = convertToInt(getResponse());
         _goBoard = new GoBoard(goBoardSize);
         _scoreBoard = new ScoreBoard();
@@ -73,7 +73,7 @@ public class GoGameClient {
         }
     }
 
-    private static void connectToServer(){
+    public static void connectToServer(){
         _serverCommunicator = ServerCommunicator.getInstance(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
         try {
             _serverCommunicator.connectToServer();
@@ -101,7 +101,7 @@ public class GoGameClient {
     public static void sendChosenGame(int game){
         _serverCommunicator.getPrintWriter().println(game);
     }
-    private static String getResponse() {
+    public static String getResponse() {
         String response = "null";
         while (_serverCommunicator.getScanner().hasNextLine()){
             response = _serverCommunicator.getScanner().nextLine();
@@ -262,5 +262,11 @@ public class GoGameClient {
 
     public static GuiFrame getGuiFrame(){
         return _clientFrame;
+    }
+    public ServerCommunicator getServerCommunicator(){
+        return _serverCommunicator;
+    }
+    public static MenuFrame getMenuFrame(){
+        return _menuFrame;
     }
 }

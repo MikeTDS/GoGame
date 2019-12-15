@@ -20,4 +20,7 @@ public class TestingServer implements Runnable{
         GoGameServer.initializeServer();
         GoGameServer.listenForClients();
     }
+    public int getBoardSize(){
+        return goGameServer.getPreviouslySetBoardSize();
+    }
 }

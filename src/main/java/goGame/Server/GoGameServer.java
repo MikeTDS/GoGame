@@ -184,4 +184,7 @@ public class GoGameServer {
         _games.removeAll(_gamesToRemove);
         _gamesToRemove.clear();
     }
+    public int getPreviouslySetBoardSize(){
+        return _boardSize;
+    }
 }

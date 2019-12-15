@@ -1,7 +1,6 @@
 package goGame.ClientTests;
 
 import goGame.Client.ServerCommunicator;
-import goGame.GUIcomponents.ScoreBoard.ExitButton;
 import goGame.Presets.TestingServer;
 import org.junit.Before;
 import org.junit.Test;
