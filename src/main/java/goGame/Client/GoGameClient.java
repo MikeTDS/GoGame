@@ -238,6 +238,25 @@ public class GoGameClient {
             case "POINTS":
                 int points = Integer.parseInt(_serverCommunicator.getScanner().nextLine());
                 ScoreBoard.showPoints(points);
+                break;
+            case "WINNER":
+                JOptionPane.showMessageDialog(_clientFrame, "You won.");
+                _serverCommunicator.getSocket().close();
+                closedSocket=true;
+                _clientFrame.dispose();
+                break;
+            case "LOSER":
+                JOptionPane.showMessageDialog(_clientFrame, "You lost.");
+                _serverCommunicator.getSocket().close();
+                closedSocket=true;
+                _clientFrame.dispose();
+                break;
+            case "DRAW":
+                JOptionPane.showMessageDialog(_clientFrame, "Draw.");
+                _serverCommunicator.getSocket().close();
+                closedSocket=true;
+                _clientFrame.dispose();
+                break;
         }
     }
 

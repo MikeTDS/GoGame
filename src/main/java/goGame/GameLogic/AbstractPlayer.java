@@ -57,4 +57,9 @@ public class AbstractPlayer implements IPlayer{
     }
     @Override
     public void sendPoints(){}
+
+    @Override
+    public int getTotalPoints(){
+        return totalPoints;
+    }
 }

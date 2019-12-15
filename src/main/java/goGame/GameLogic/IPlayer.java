@@ -17,4 +17,5 @@ public interface IPlayer {
     void resetPoints();
     void updatePoints();
     void sendPoints();
+    int getTotalPoints();
 }
