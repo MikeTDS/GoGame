@@ -250,7 +250,7 @@ public class Game {
         }
     }
 
-    void skipMove(){ currentPlayer=currentPlayer.getOpponent(); }
+    public void skipMove(){ currentPlayer=currentPlayer.getOpponent(); }
 
     public synchronized IPlayer createPlayer(Socket socket, String color){
         if(color.equalsIgnoreCase("Bot"))
