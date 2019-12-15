@@ -14,6 +14,7 @@ public class Bot extends AbstractPlayer implements Runnable {
 
     private MoveOrganizer _moveOrganizer;
     private BotBrain _botBrain;
+    private static int _midTrigger, _lateTrigger;
 
     public Bot(Socket socket, String color, Game game) {
         _color = color;
@@ -43,6 +44,11 @@ public class Bot extends AbstractPlayer implements Runnable {
         _moveOrganizer = new MoveOrganizer();
         _botBrain = new BotBrain(_game, _color, _opponent.getColor());
         _moveOrganizer.setMoveState(new EarlyMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
+
+        _midTrigger = 7;
+        _lateTrigger = _botBrain.getBoardSize() * _botBrain.getBoardSize() * 50 / 100;
+        if(_lateTrigger % 2 == 0)
+            _lateTrigger++;
     }
 
     private void processMoveCommand(int x, int y) {
@@ -65,12 +71,32 @@ public class Bot extends AbstractPlayer implements Runnable {
             if(_game.getCurrentPlayer().equals(this)){
                 updatePoints();
                 _botBrain.setBrainForRound();
-                if(_botBrain.calculateStonesOnTheBoard() == 7)
+                if(_botBrain.calculateStonesOnTheBoard() == _midTrigger)
                     _moveOrganizer.setMoveState(new MidMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
+                if(_botBrain.calculateStonesOnTheBoard() == _lateTrigger)
+                    _moveOrganizer.setMoveState(new LateMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
 
-                int choosenField = _moveOrganizer.getBestField(this);
-                processMoveCommand(_botBrain.getXFromBoard(choosenField), _botBrain.getYFromBoard(choosenField));
-                System.out.println(totalPoints);
+                int chosenField = _moveOrganizer.getBestField(this);
+                if(chosenField == -1){
+                    if(_opponent==null || _game.getCurrentPlayer()!=this){
+                        System.out.println("ERROR_PASS");
+                    }
+                    else{
+                        if(_opponent.getPass()){
+                            _opponent.getOutput().println("QUIT_PASS");
+                            _game._finished=true;
+                        }
+                        else{
+                            _opponent.getOutput().println("OPPONENT_PASS");
+                            _lastMovePass=true;
+                            _game.skipMove();
+                        }
+                    }
+                }
+                else {
+                    processMoveCommand(_botBrain.getXFromBoard(chosenField), _botBrain.getYFromBoard(chosenField));
+                    System.out.println(totalPoints);
+                }
             }
         }
     }
