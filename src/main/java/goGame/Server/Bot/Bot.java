@@ -31,10 +31,13 @@ public class Bot extends AbstractPlayer implements Runnable {
         }
     }
 
-    private void setup() throws IOException {
+    private void setup() throws IOException, InterruptedException {
         _input = new Scanner(_socket.getInputStream());
         _output = new PrintWriter(_socket.getOutputStream(), true);
-        _opponent = _game.getCurrentPlayer();
+        while (_opponent == null){
+            _opponent = _game.getCurrentPlayer();
+            Thread.sleep(10);
+        }
         _opponent.setOpponent(this);
         _opponent.getOpponent().getOutput().println("MESSAGE Your move");
         _moveOrganizer = new MoveOrganizer();
