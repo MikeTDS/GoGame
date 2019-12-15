@@ -20,9 +20,7 @@ public class ServerCommunicator implements IServerCommunicator{
     private static ServerCommunicator serverCommunicator;
 
     private ServerCommunicator(String serverAddress, int port){
-        _serverAddress = serverAddress;
-        _port = port;
-
+        setConnectionData(serverAddress, port);
         initializeFields();
     }
 
@@ -66,16 +64,17 @@ public class ServerCommunicator implements IServerCommunicator{
         _out = new PrintWriter(_socket.getOutputStream(), true);
     };
 
-    private int convertToInt(String str){
+    public int convertToInt(String str) throws NumberFormatException{
         int num = 0;
-        try{
-            num = Integer.parseInt(str);
-        }catch (Exception e){ System.out.println(e.getMessage()); }
-
+        num = Integer.parseInt(str);
         return num;
     }
 
     public Scanner getScanner(){ return _in; }
     public PrintWriter getPrintWriter(){ return _out; }
     public Socket getSocket() { return _socket; }
+    private void setConnectionData(String serverAddress, int port){
+        _serverAddress = serverAddress;
+        _port = port;
+    }
 }

@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class GoGameServer {
     private static final int MAX_GAMES = 15;
-    private static final int PORT = 59090;
+    private static int PORT = 59090;
     private static int _boardSize;
     private static ServerSocket _serverSocket;
     private static ThreadPoolExecutor _pool;
@@ -140,14 +140,21 @@ public class GoGameServer {
 
     public static int getBoardSize() {
         String[] options = {"9", "13", "19"};
-        return convertToInt((String) JOptionPane.showInputDialog(
+        String response =(String)JOptionPane.showInputDialog(
                 null,
                 "Podaj rozmiar Planszy",
                 "Game of Go",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
-                options[0]));
+                options[0]);
+        if(response!=null){
+            return convertToInt(response);
+        }
+        else{
+            System.exit(0);
+            return 0;
+        }
     }
 
     private static int convertToInt(String str){

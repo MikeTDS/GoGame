@@ -3,19 +3,21 @@ package goGame.Presets;
 import goGame.Server.GoGameServer;
 import org.junit.Test;
 
-public class TestingServer {
+public class TestingServer implements Runnable{
     GoGameServer goGameServer;
-    int size=19;
-    @Test
-    public void setServer(){
-        goGameServer = new GoGameServer();
-        goGameServer.setBoardSize(size);
-        GoGameServer.presetGameList();
-        try{
-            GoGameServer.initializeServer();
-            GoGameServer.listenForClients();
+    @Override
+    public void run() {
+        try {
+            setup();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public void setup() throws Exception {
+        goGameServer = new GoGameServer();
+        goGameServer.setBoardSize(19);
+        GoGameServer.presetGameList();
+        GoGameServer.initializeServer();
+        GoGameServer.listenForClients();
     }
 }
