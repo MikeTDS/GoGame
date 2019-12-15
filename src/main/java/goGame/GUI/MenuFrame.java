@@ -21,6 +21,7 @@ public class MenuFrame extends JFrame implements IMenuFrame{
         setTitle("Game of Go : Lobby");
         setSize(new Dimension(300,300));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
         setLayout(new BorderLayout());
         setGamesList();
         setButton();

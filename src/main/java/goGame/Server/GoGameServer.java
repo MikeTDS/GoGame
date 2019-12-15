@@ -18,6 +18,7 @@ public class GoGameServer {
     private static ServerSocket _serverSocket;
     private static ThreadPoolExecutor _pool;
     private static ArrayList<Game> _games;
+    private static ArrayList<Game> _gamesToRemove;
     private static boolean[][] _players;
 
     public static void main(String[] args) {
@@ -43,20 +44,22 @@ public class GoGameServer {
                 acceptedSocket = _serverSocket.accept();
                 Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
                 PrintWriter acceptedSocketWriter = new PrintWriter(acceptedSocket.getOutputStream(), true);
-                //checkIfGameFinished();
                 String gameOption = getGameOption(acceptedSocketScanner);
                 if(gameOption!=null){
                     if(gameOption.equals("NEW_GAME")){
                         createNewGame(acceptedSocket, acceptedSocketScanner, acceptedSocketWriter);
                     }
                     else if(gameOption.equals(("JOIN_GAME"))){
+                        checkIfGamesFinished();
                         sendGameList(acceptedSocketWriter);
                         String chosenGame = getGameOption(acceptedSocketScanner);
-                        while(!checkIfChosenGameIsCorrect(convertToInt(chosenGame), acceptedSocketWriter)){
-                            chosenGame = getGameOption(acceptedSocketScanner);
+                        if(chosenGame!=null){
+                            while(!checkIfChosenGameIsCorrect(convertToInt(chosenGame), acceptedSocketWriter)){
+                                chosenGame = getGameOption(acceptedSocketScanner);
+                            }
+                            acceptedSocketWriter.println("Connected to game: " + chosenGame);
+                            connectToChosenGame(acceptedSocket, convertToInt(chosenGame), acceptedSocketWriter);
                         }
-                        acceptedSocketWriter.println("Connected to game: " + chosenGame);
-                        connectToChosenGame(acceptedSocket, convertToInt(chosenGame), acceptedSocketWriter);
                     }
                     else{
                         System.out.println("Error occurred while choosing game option.");
@@ -98,10 +101,10 @@ public class GoGameServer {
         while(playerScanner.hasNextLine()){
             String response = playerScanner.nextLine();
             if(response.equals("PLAY_WITH_BOT")){
-                _pool.execute((Runnable)game.createPlayer(playerSocket,"Black"));
-                _players[_games.indexOf(game)][0] = true;
-                _pool.execute((Runnable)game.createPlayer(playerSocket, "Bot"));
-                _players[_games.indexOf(game)][1] = true;
+                    _pool.execute((Runnable)game.createPlayer(playerSocket,"Black"));
+                    _players[_games.indexOf(game)][0] = true;
+                    _pool.execute((Runnable)game.createPlayer(playerSocket, "Bot"));
+                    _players[_games.indexOf(game)][1] = true;
                 break;
             }
             else if(response.equals("DONT_PLAY_WITH_BOT")){
@@ -162,11 +165,16 @@ public class GoGameServer {
     public static void presetGameList(){
         _games = new ArrayList<>();
         _players = new boolean[MAX_GAMES][2];
+        _gamesToRemove = new ArrayList<>();
     }
-    private static void checkIfGameFinished(){
-        for(Game game : _games){
-            if(game._finished)
-                _games.remove(game);
+    private synchronized static void checkIfGamesFinished(){
+        for(int i=0; i<_games.size(); i++){
+            if(_games.get(i)._finished)
+                _gamesToRemove.add(_games.get(i));
+                _players[i][0]=false;
+                _players[i][1]=false;
         }
+        _games.removeAll(_gamesToRemove);
+        _gamesToRemove.clear();
     }
 }
