@@ -137,6 +137,7 @@ public class ClientTest {
     public void testSetupClient(){
         setTestingServer();
         GoGameClient.connectToServer();
+        goGameClient.getServerCommunicator().getPrintWriter().println("NEW_GAME");
         GoGameClient.initializeGame();
         GoGameClient.setupClient();
         assertEquals(GoGameClient.getColor(), "Black");
