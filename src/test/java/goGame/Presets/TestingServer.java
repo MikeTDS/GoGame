@@ -3,6 +3,8 @@ package goGame.Presets;
 import goGame.Server.GoGameServer;
 import org.junit.Test;
 
+import java.net.Socket;
+
 public class TestingServer implements Runnable{
     GoGameServer goGameServer;
     @Override
@@ -22,5 +24,8 @@ public class TestingServer implements Runnable{
     }
     public int getBoardSize(){
         return goGameServer.getPreviouslySetBoardSize();
+    }
+    public Socket getCurrentSocket(){
+        return goGameServer.getCurrentSocket();
     }
 }

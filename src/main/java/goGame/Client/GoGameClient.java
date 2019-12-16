@@ -27,7 +27,7 @@ public class GoGameClient {
             chooseGame();
     }
 
-    public static void chooseGame(){
+    private static void chooseGame(){
         String chosenGame = chooseMenu();
         if(chosenGame.equals("New game")){
             _serverCommunicator.getPrintWriter().println("NEW_GAME");
@@ -128,7 +128,7 @@ public class GoGameClient {
 
     }
 
-    private static int convertToInt(String str){
+    public static int convertToInt(String str){
         int num = 0;
         try{
             num = Integer.parseInt(str);
@@ -157,8 +157,8 @@ public class GoGameClient {
         }
     }
 
-    private static void setupClient() {
-        color = _serverCommunicator.getScanner().nextLine();;
+    public static void setupClient() {
+        color = _serverCommunicator.getScanner().nextLine();
         opponentColor = color.equals("Black") ? "White" : "Black";
         if(color.equals("Black")){
             _clientFrame.chooseOpponent();
@@ -166,7 +166,7 @@ public class GoGameClient {
         _clientFrame.setTitle("Go: Gracz " + color);
     }
 
-    private static void performActionFromResponse(String response) throws IOException {
+    public static void performActionFromResponse(String response) throws IOException {
         int x, y;
         switch (response){
             case "VALID_MOVE":
@@ -269,4 +269,6 @@ public class GoGameClient {
     public static MenuFrame getMenuFrame(){
         return _menuFrame;
     }
+    public static String getColor(){return color;}
+    public static String getOpponentColor(){return opponentColor;}
 }

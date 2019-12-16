@@ -20,6 +20,7 @@ public class GoGameServer {
     private static ArrayList<Game> _games;
     private static ArrayList<Game> _gamesToRemove;
     private static boolean[][] _players;
+    private static Socket _currentSocket;
 
     public static void main(String[] args) {
 
@@ -42,6 +43,7 @@ public class GoGameServer {
             Socket acceptedSocket;
             try {
                 acceptedSocket = _serverSocket.accept();
+                _currentSocket = acceptedSocket;
                 Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
                 PrintWriter acceptedSocketWriter = new PrintWriter(acceptedSocket.getOutputStream(), true);
                 String gameOption = getGameOption(acceptedSocketScanner);
@@ -187,4 +189,5 @@ public class GoGameServer {
     public int getPreviouslySetBoardSize(){
         return _boardSize;
     }
+    public Socket getCurrentSocket(){return _currentSocket;}
 }
