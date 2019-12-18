@@ -158,8 +158,8 @@ public class GoGameClient {
     }
 
     public static void setupClient() {
-        color = _serverCommunicator.getScanner().nextLine();
-        opponentColor = color.equals("Black") ? "White" : "Black";
+        setColor(_serverCommunicator.getScanner().nextLine());
+        setOpponentColor(color.equals("Black") ? "White" : "Black");
         if(color.equals("Black")){
             _clientFrame.chooseOpponent();
         }
@@ -271,4 +271,6 @@ public class GoGameClient {
     }
     public static String getColor(){return color;}
     public static String getOpponentColor(){return opponentColor;}
+    public static void setColor(String clr){ color = clr; }
+    public static void setOpponentColor(String clr){ opponentColor = clr; }
 }

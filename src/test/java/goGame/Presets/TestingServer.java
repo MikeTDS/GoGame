@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class TestingServer implements Runnable{
+    private static final int BOARD_SIZE = 19;
+
     GoGameServer goGameServer;
     @Override
     public void run() {
@@ -18,7 +20,7 @@ public class TestingServer implements Runnable{
     }
     public void setup() throws Exception {
         goGameServer = new GoGameServer();
-        goGameServer.setBoardSize(19);
+        goGameServer.setBoardSize(BOARD_SIZE);
         GoGameServer.presetGameList();
         GoGameServer.initializeServer();
         GoGameServer.listenForClients();

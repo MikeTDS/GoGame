@@ -36,7 +36,9 @@ public class Game {
         Stone newStone = currentPlayer.getColor().equals("Black") ? new Stone(x, y, "Black") : new Stone(x, y, "White") ;
         _canBeUnlocked = true;
 
-        if (player != currentPlayer) {
+        if(x < 0 || y <0 || x >= _boardSize || y >= _boardSize){
+            throw new IllegalStateException("Wrong coordinates");
+        } else if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.getOpponent() == null) {
             throw new IllegalStateException("Opponent not present");
@@ -270,4 +272,5 @@ public class Game {
     private int calcPos(int x, int y){ return x + y*_boardSize; }
     private int getXFromBoard(int i){return i%_boardSize;}
     private int getYFromBoard(int i){return i/_boardSize;}
+    public void setBoard(Stone[] board) { _board = board; }
 }
