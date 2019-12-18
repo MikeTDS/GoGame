@@ -23,7 +23,6 @@ public class GoGameServer {
     private static Socket _currentSocket;
 
     public static void main(String[] args) {
-
         _boardSize = getBoardSize();
         presetGameList();
         try{
@@ -34,14 +33,18 @@ public class GoGameServer {
 
     public static void initializeServer() throws Exception{
         System.out.println("Server is Running :)");
-         _pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_GAMES*2);
+        initpool();
         _serverSocket = new ServerSocket(PORT);
-
+    }
+    public static void initpool(){
+        _pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_GAMES*2);
     }
     public static void listenForClients() {
         while (true) {
             Socket acceptedSocket;
             try {
+                if(_serverSocket.isClosed())
+                    break;
                 acceptedSocket = _serverSocket.accept();
                 _currentSocket = acceptedSocket;
                 Scanner acceptedSocketScanner = new Scanner(acceptedSocket.getInputStream());
@@ -190,5 +193,7 @@ public class GoGameServer {
         return _boardSize;
     }
     public Socket getCurrentSocket(){return _currentSocket;}
+    public ServerSocket getServerSocket(){ return _serverSocket; }
     public ArrayList<Game> getGameList(){return _games;}
+    public void setServerSocker(ServerSocket o) {_serverSocket = o; }
 }

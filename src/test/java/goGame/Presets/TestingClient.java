@@ -22,10 +22,17 @@ public class TestingClient implements Runnable{
     public ServerCommunicator getServerCommunicator(){
         return goGameClient.getServerCommunicator();
     }
-    public void setupClient() { GoGameClient.setupClient(); }
     public void setupTestingClient() {
-        goGameClient.setColor(goGameClient.getServerCommunicator().getScanner().nextLine());
-        goGameClient.setOpponentColor(goGameClient.getColor().equals("Black") ? "White" : "Black");
+        GoGameClient.setColor(goGameClient.getServerCommunicator().getScanner().nextLine());
+        GoGameClient.setOpponentColor(GoGameClient.getColor().equals("Black") ? "White" : "Black");
     }
-    public void disposeFrame() { goGameClient.getGuiFrame().dispose(); }
+    public void disposeFrame() {
+        if(GoGameClient.getGuiFrame() != null)
+            GoGameClient.getGuiFrame().dispose();
+    }
+    public void resetFrame() throws NoSuchFieldException, IllegalAccessException {
+        Field field = GoGameClient.class.getDeclaredField("_clientFrame");
+        field.setAccessible(true);
+        field.set(GoGameClient.getGuiFrame(), null);
+    }
 }

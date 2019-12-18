@@ -6,15 +6,17 @@ import goGame.Presets.TestingClient;
 import goGame.Presets.TestingServer;
 import goGame.Server.Bot.Bot;
 import goGame.Server.GoGameServer;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.theories.Theories;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.Random;
-import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -23,6 +25,27 @@ public class TestLogic {
     private Thread serverThread;
     private TestingClient testingClient;
     private Thread clientThread;
+
+    @Before
+    public void setTestingServer() {
+        testingServer = new TestingServer();
+        serverThread  = new Thread(testingServer);
+        serverThread.start();
+    }
+
+    @Before
+    public void presetClientToTests(){
+        testingClient = new TestingClient();
+        clientThread = new Thread(testingClient);
+        clientThread.start();
+    }
+
+    @After
+    public void closeSocket() throws IOException {
+        testingServer.closeSocket();
+        testingServer = null;
+    }
+
 
     int getXFromBoard(int i, int boardSize){
         if(i == 0)
@@ -37,14 +60,7 @@ public class TestLogic {
             return i / boardSize;
     }
 
-    private void setTestingServer(){
-        testingServer = new TestingServer();
-        serverThread  = new Thread(testingServer);
-        serverThread.start();
-    }
-
     private void setTestGameWithBot() throws InterruptedException {
-        setTestingServer();
         GoGameClient.connectToServer();
         testingClient.getServerCommunicator().getPrintWriter().println("NEW_GAME");
         GoGameClient.initializeGame();
@@ -54,7 +70,6 @@ public class TestLogic {
         Thread.sleep(100);
     }
     private void setTestGameWithoutBot() throws InterruptedException {
-        setTestingServer();
         GoGameClient.connectToServer();
         testingClient.getServerCommunicator().getPrintWriter().println("NEW_GAME");
         GoGameClient.initializeGame();
@@ -64,19 +79,9 @@ public class TestLogic {
         Thread.sleep(100);
     }
 
-    @Before
-    public void presetClientToTests(){
-        testingClient = new TestingClient();
-        clientThread = new Thread(testingClient);
-        clientThread.start();
-    }
-
     @Test
-    public void testCreatingGame(){
-        setTestingServer();
-        GoGameClient.connectToServer();
-        testingClient.getServerCommunicator().getPrintWriter().println("NEW_GAME");
-        GoGameClient.initializeGame();
+    public void testCreatingGame() throws InterruptedException {
+        setTestGameWithoutBot();
         assertEquals(testingServer.getGameList().size(),1 );
     }
 
@@ -208,6 +213,17 @@ public class TestLogic {
             else
                 assertEquals(testingServer.getGameList().get(0).getBoard()[i].getColor(), "Empty");
         }
+    }
 
+    @Test
+    public void testTerritoryCalc() throws InterruptedException {
+        setTestGameWithBot();
+        testingServer.getGameList().get(0).move(2, 0, testingServer.getGameList().get(0).getCurrentPlayer());
+        Thread.sleep(100);
+        testingServer.getGameList().get(0).move(0, 1, testingServer.getGameList().get(0).getCurrentPlayer());
+        Thread.sleep(100);
+        testingServer.getGameList().get(0).move(1, 1, testingServer.getGameList().get(0).getCurrentPlayer());
+        Thread.sleep(100);
+        assertEquals(testingServer.getGameList().get(0).getCurrentPlayer().getTotalPoints(), 2);
     }
 }
