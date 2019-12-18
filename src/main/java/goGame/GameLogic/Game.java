@@ -27,7 +27,7 @@ public class Game {
         _boardSize = size;
         _blockedField = -1;
         _finished = false;
-        _name = "Defualt Game.";
+        _name = "Default Game.";
         resetBoard();
     }
 

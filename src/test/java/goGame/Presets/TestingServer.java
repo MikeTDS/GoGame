@@ -1,9 +1,10 @@
 package goGame.Presets;
 
+import goGame.GameLogic.Game;
 import goGame.Server.GoGameServer;
-import org.junit.Test;
 
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class TestingServer implements Runnable{
     GoGameServer goGameServer;
@@ -27,5 +28,8 @@ public class TestingServer implements Runnable{
     }
     public Socket getCurrentSocket(){
         return goGameServer.getCurrentSocket();
+    }
+    public ArrayList<Game> getGameList(){
+        return goGameServer.getGameList();
     }
 }

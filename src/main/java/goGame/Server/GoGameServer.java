@@ -176,7 +176,7 @@ public class GoGameServer {
         _players = new boolean[MAX_GAMES][2];
         _gamesToRemove = new ArrayList<>();
     }
-    private synchronized static void checkIfGamesFinished(){
+    public synchronized static void checkIfGamesFinished(){
         for(int i=0; i<_games.size(); i++){
             if(_games.get(i)._finished)
                 _gamesToRemove.add(_games.get(i));
@@ -190,4 +190,5 @@ public class GoGameServer {
         return _boardSize;
     }
     public Socket getCurrentSocket(){return _currentSocket;}
+    public ArrayList<Game> getGameList(){return _games;}
 }
