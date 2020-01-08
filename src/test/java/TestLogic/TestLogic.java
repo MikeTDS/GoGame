@@ -5,14 +5,9 @@ import goGame.GameLogic.Stone;
 import goGame.Presets.TestingClient;
 import goGame.Presets.TestingServer;
 import goGame.Server.Bot.Bot;
-import goGame.Server.GoGameServer;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
