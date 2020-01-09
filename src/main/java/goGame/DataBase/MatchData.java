@@ -1,37 +1,88 @@
 package goGame.DataBase;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="saved_games")
 public class MatchData {
-    Boolean finished;
-    Boolean withBot;
-    int id;
-    String name;
-    StringBuilder whiteMoves;
-    StringBuilder blackMoves;
-    int[] blockedField = {-1,-1};
-    public MatchData(String game, Boolean withBot){
+    @Column(name="finished")
+    private Boolean finished;
+    @Column(name="with_bot")
+    private Boolean withBot;
+    @Column(name="id")
+    private int id;
+    @Column(name="name")
+    private String name;
+    @Column(name="white_moves")
+    private String whiteMoves;
+    @Column(name="black_moves")
+    private String blackMoves;
+    @Column(name="blocked_field")
+    private int blockedField;
+    @Column(name="board_size")
+    private int boardSize;
+    public MatchData(String game){
         this.name = game;
-        this.withBot=withBot;
         finished=false;
-        whiteMoves = new StringBuilder();
-        blackMoves = new StringBuilder();
+        withBot=false;
+        blockedField=-1;
+        whiteMoves="";
+        blackMoves="";
     }
-    public void addMove(String color, int x, int y){
-        if(color.equalsIgnoreCase("white"))
-            whiteMoves.append(x + ";" + y + "\n");
-        else if(color.equalsIgnoreCase("black"))
-            blackMoves.append(x + ";" + y + "\n");
+
+    public Boolean getFinished() {
+        return finished;
     }
-    public void setBlockedField(int x, int y){
-        blockedField[0]=x;
-        blockedField[1]=y;
+
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
     }
-    public void setStatusToFinished(){
-        finished=true;
+
+    public Boolean getWithBot() {
+        return withBot;
     }
-    public String setWhiteDataToSend(){
-        return whiteMoves.toString();
+
+    public int getId() {
+        return id;
     }
-    public String setBlackDataToSend(){
-        return blackMoves.toString();
+
+    public String getWhiteMoves() {
+        return whiteMoves;
+    }
+
+    public void setWhiteMoves(String whiteMoves) {
+        this.whiteMoves = whiteMoves;
+    }
+
+    public String getBlackMoves() {
+        return blackMoves;
+    }
+
+    public void setBlackMoves(String blackMoves) {
+        this.blackMoves = blackMoves;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setBlockedField(int id){
+        blockedField = id;
+    }
+    public int getBlockedField() {
+        return blockedField;
+    }
+
+    public int getBoardSize() {
+        return boardSize;
+    }
+
+    public void setBoardSize(int boardSize) {
+        this.boardSize = boardSize;
+    }
+
+    public void setWithBot(Boolean withBot) {
+        this.withBot = withBot;
     }
 }

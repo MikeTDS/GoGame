@@ -58,15 +58,15 @@ public class Player extends AbstractPlayer implements Runnable {
                 processMoveCommand(x, y);
             }
             else if(command.equals("EXIT")){
-                if(!_game._finished && _opponent!=null){
+                if(!_game.isFinished() && _opponent!=null){
                     _output.println("SURRENDER");
                     if(_opponent!=null)
                         _opponent.getOutput().println("SURRENDER_WIN");
-                    _game._finished=true;
+                    _game.setFinished();
                 }
                 else{
                     _output.println("NORMAL_EXIT");
-                    _game._finished=true;
+                    _game.setFinished();
                 }
             }
             else if(command.equals("PASS")){
@@ -91,7 +91,7 @@ public class Player extends AbstractPlayer implements Runnable {
                                 getOutput().println("DRAW");
                             }
                         }
-                        _game._finished=true;
+                        _game.setFinished();
                     }
                     else{
                         _output.println("FIRST_PASS");

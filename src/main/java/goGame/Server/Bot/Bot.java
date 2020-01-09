@@ -86,7 +86,7 @@ public class Bot extends AbstractPlayer implements Runnable {
                     else{
                         if(_opponent.getPass()){
                             _opponent.getOutput().println("QUIT_PASS");
-                            _game._finished=true;
+                            _game.setFinished();
                             if(_opponent.getTotalPoints()>getTotalPoints()){
                                 _opponent.getOutput().println("WINNER");
                             }

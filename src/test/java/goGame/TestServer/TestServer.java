@@ -92,7 +92,7 @@ public class TestServer {
         GoGameClient.connectToServer();
         testingClient.getServerCommunicator().getPrintWriter().println("NEW_GAME");
         GoGameClient.initializeGame();
-        assert(!testingServer.getGameList().get(0)._finished);
+        assert(!testingServer.getGameList().get(0).isFinished());
         GoGameServer.checkIfGamesFinished();
         assert(testingServer.getGameList().size()>0);
     }

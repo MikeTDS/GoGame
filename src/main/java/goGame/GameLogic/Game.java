@@ -1,6 +1,7 @@
 package goGame.GameLogic;
 
 
+import goGame.DataBase.MatchDataManager;
 import goGame.Server.Bot.Bot;
 
 import java.net.Socket;
@@ -15,8 +16,9 @@ public class Game {
     private int _currentTerritory;
     private volatile int _blockedField;
     private boolean _canBeUnlocked;
-    public boolean _finished;
+    private boolean _finished;
     private String _name;
+    private MatchDataManager matchDataManager;
 
     IPlayer currentPlayer;
 
@@ -28,6 +30,7 @@ public class Game {
         _blockedField = -1;
         _finished = false;
         _name = "Default Game.";
+        matchDataManager = new MatchDataManager(_name, _boardSize);
         resetBoard();
     }
 
@@ -63,7 +66,7 @@ public class Game {
         }
         currentPlayer.updatePoints();
         currentPlayer.sendPoints();
-
+        matchDataManager.update(currentPlayer.getColor(), location, _blockedField);
         currentPlayer = currentPlayer.getOpponent();
     }
 
@@ -255,10 +258,10 @@ public class Game {
     public void skipMove(){ currentPlayer=currentPlayer.getOpponent(); }
 
     public synchronized IPlayer createPlayer(Socket socket, String color){
-        if(color.equalsIgnoreCase("Bot"))
-            synchronized (this){
-                return new Bot(socket, "White", this);
-            }
+        if(color.equalsIgnoreCase("Bot")){
+            matchDataManager.setWithBot();
+            return new Bot(socket, "White", this);
+        }
         else
             return new Player(socket, color, this);
     }
@@ -272,5 +275,11 @@ public class Game {
     private int calcPos(int x, int y){ return x + y*_boardSize; }
     private int getXFromBoard(int i){return i%_boardSize;}
     private int getYFromBoard(int i){return i/_boardSize;}
+    public boolean isFinished() { return _finished; }
+
     public void setBoard(Stone[] board) { _board = board; }
+    public void setFinished() {
+        this._finished = true;
+        matchDataManager.setBoard(_board);
+        matchDataManager.finish();}
 }

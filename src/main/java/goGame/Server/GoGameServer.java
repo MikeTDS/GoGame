@@ -181,7 +181,7 @@ public class GoGameServer {
     }
     public synchronized static void checkIfGamesFinished(){
         for(int i=0; i<_games.size(); i++){
-            if(_games.get(i)._finished)
+            if(_games.get(i).isFinished())
                 _gamesToRemove.add(_games.get(i));
                 _players[i][0]=false;
                 _players[i][1]=false;
