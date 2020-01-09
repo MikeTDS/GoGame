@@ -1,18 +1,18 @@
 package goGame.DataBase;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="saved_games")
 public class MatchData {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
+    private int id;
     @Column(name="finished")
     private Boolean finished;
     @Column(name="with_bot")
     private Boolean withBot;
-    @Column(name="id")
-    private int id;
     @Column(name="name")
     private String name;
     @Column(name="white_moves")
