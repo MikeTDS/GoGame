@@ -4,7 +4,7 @@ import goGame.GameLogic.Stone;
 
 import java.util.*;
 
-public abstract class MoveState implements IMoveState {
+abstract class MoveState implements IMoveState {
 
     int[] _pointsBoard;
     Map<String, Integer> _pointsMap = new HashMap<>();
