@@ -2,10 +2,15 @@ package goGame.GUI;
 import goGame.Client.GoGameClient;
 import goGame.Client.ServerCommunicator;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 import static javax.swing.JOptionPane.YES_OPTION;
 
 public class GuiFrame extends JFrame implements IGuiFrame{
@@ -51,5 +56,16 @@ public class GuiFrame extends JFrame implements IGuiFrame{
     }
     public int getOption(){
         return JOptionPane.showConfirmDialog(this, "Do you want to play with bot?", "Exit", JOptionPane.YES_NO_OPTION);
+    }
+    public void saveBoardImage(){
+        Container c = getContentPane();
+        BufferedImage im = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        c.paint(im.getGraphics());
+        try {
+            ImageIO.write(im, "PNG", new File("currentBoard.png"));
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 }
