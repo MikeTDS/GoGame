@@ -20,11 +20,10 @@ public class WebClientController {
         model.addAttribute("msg", getMessage());
         model.addAttribute("today", new Date());
         return "index";
-
     }
 
     private String getMessage() {
-        return "Hello World";
+        return "GAME OF GO";
     }
     private Integer getSize(){return 35;}
 }
