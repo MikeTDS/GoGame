@@ -62,7 +62,7 @@ public class GuiFrame extends JFrame implements IGuiFrame{
         BufferedImage im = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_ARGB);
         c.paint(im.getGraphics());
         try {
-            ImageIO.write(im, "PNG", new File("currentBoard.png"));
+            ImageIO.write(im, "PNG", new File("src\\main\\webapp\\resources\\images\\currentBoard.png"));
         }
         catch (Exception ex){
             ex.printStackTrace();
