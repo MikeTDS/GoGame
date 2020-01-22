@@ -16,6 +16,7 @@ public class WebClientController {
     @GetMapping("/")
     public String index(Model model) {
         logger.debug("Welcome to mkyong.com...");
+        model.addAttribute("counterSize", getSize());
         model.addAttribute("msg", getMessage());
         model.addAttribute("today", new Date());
         return "index";
@@ -25,5 +26,5 @@ public class WebClientController {
     private String getMessage() {
         return "Hello World";
     }
-
+    private Integer getSize(){return 35;}
 }
