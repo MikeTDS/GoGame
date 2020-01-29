@@ -56,7 +56,7 @@ public class GoGameClient {
         _clientFrame.add(_goBoard);
         _clientFrame.add(_scoreBoard);
         _clientFrame.setVisible(true);
-        _clientFrame.saveBoardImage();
+        //_clientFrame.saveBoardImage();
     }
 
     private static void launchingGame(){
@@ -182,7 +182,7 @@ public class GoGameClient {
 
                 _goBoard.setStone(x, y, color);
                 _goBoard.repaint();
-                _clientFrame.saveBoardImage();
+                //_clientFrame.saveBoardImage();
                 _scoreBoard.showStones(_goBoard.getStonesAmount("black"), _goBoard.getStonesAmount("white"));
                 break;
             case "OPPONENT_MOVED":

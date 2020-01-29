@@ -266,6 +266,10 @@ public class Game {
             return new Player(socket, color, this);
     }
 
+    public synchronized IPlayer createPlayer(String color, com.example.websocketdemo.controller.WebController webController){
+        return new WebPlayer(color, this, webController);
+    }
+
     public String getName(){return _name;}
     public Stone[] getBoard() { return _board; }
     public int getBlockedField(){ return _blockedField; }
@@ -273,8 +277,8 @@ public class Game {
     public int getBoardSize(){ return _boardSize; }
     public IPlayer getCurrentPlayer(){return currentPlayer;}
     private int calcPos(int x, int y){ return x + y*_boardSize; }
-    private int getXFromBoard(int i){return i%_boardSize;}
-    private int getYFromBoard(int i){return i/_boardSize;}
+    int getXFromBoard(int i){return i%_boardSize;}
+    int getYFromBoard(int i){return i/_boardSize;}
     public boolean isFinished() { return _finished; }
 
     public void setBoard(Stone[] board) { _board = board; }
