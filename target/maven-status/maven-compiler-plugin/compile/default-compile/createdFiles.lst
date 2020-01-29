@@ -1,0 +1,3 @@
+goGame\Web\config\SpringConfig.class
+goGame\Web\controller\WebClientController.class
+goGame\Web\WebInitializer.class

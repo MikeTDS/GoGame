@@ -1,0 +1,36 @@
+body{
+    background: #212121;
+    color: #666;
+}
+
+#box{
+    width: 900px;
+    overflow: auto;
+    margin: 40px auto;
+    background: #f2c679;
+    padding-bottom: 40px;
+    border-radius: 10px;
+}
+#message{
+    background: #333;
+    color: #fff;
+}
+#gameBoard li{
+    float: left;
+    margin: 10px;
+    height: 70px;
+    width: 70px;
+    font-size: 50px;
+    background: #c29861;
+    color: #ccc;
+    list-style: none;
+    text-align: center;
+    border-radius: 60px;
+}
+#gameBoard li:hover {
+    cursor: pointer;
+    background: #575757;
+    opacity: 0.5;
+}
+
+
