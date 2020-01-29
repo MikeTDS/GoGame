@@ -21,6 +21,7 @@ public class GoGameClient {
     private static MenuFrame _menuFrame;
     private static boolean closedSocket = false;
     private static String color, opponentColor;
+    private static boolean _finished;
 
     public static void main( String[] args ) {
             connectToServer();
@@ -47,6 +48,7 @@ public class GoGameClient {
 
     public static void initializeGame(){
         int goBoardSize = convertToInt(getResponse());
+        _finished = false;
         _goBoard = new GoBoard(goBoardSize);
         _scoreBoard = new ScoreBoard();
         _clientFrame = new GuiFrame(WIDTH, HEIGHT);
@@ -102,7 +104,7 @@ public class GoGameClient {
         _serverCommunicator.getPrintWriter().println(game);
     }
     public static String getResponse() {
-        String response = "null";
+        String response = null;
         while (_serverCommunicator.getScanner().hasNextLine()){
             response = _serverCommunicator.getScanner().nextLine();
             if(response != null)
@@ -141,7 +143,7 @@ public class GoGameClient {
         String response;
         try {
             setupClient();
-            while (_serverCommunicator.getScanner().hasNext()){
+            while (_serverCommunicator.getScanner().hasNext() && !_finished){
                 response = _serverCommunicator.getScanner().nextLine();
                 performActionFromResponse(response);
             }
@@ -158,8 +160,8 @@ public class GoGameClient {
     }
 
     public static void setupClient() {
-        color = _serverCommunicator.getScanner().nextLine();
-        opponentColor = color.equals("Black") ? "White" : "Black";
+        setColor(_serverCommunicator.getScanner().nextLine());
+        setOpponentColor(color.equals("Black") ? "White" : "Black");
         if(color.equals("Black")){
             _clientFrame.chooseOpponent();
         }
@@ -240,18 +242,21 @@ public class GoGameClient {
                 ScoreBoard.showPoints(points);
                 break;
             case "WINNER":
+                _finished = true;
                 JOptionPane.showMessageDialog(_clientFrame, "You won.");
                 _serverCommunicator.getSocket().close();
                 closedSocket=true;
                 _clientFrame.dispose();
                 break;
             case "LOSER":
+                _finished = true;
                 JOptionPane.showMessageDialog(_clientFrame, "You lost.");
                 _serverCommunicator.getSocket().close();
                 closedSocket=true;
                 _clientFrame.dispose();
                 break;
             case "DRAW":
+                _finished = true;
                 JOptionPane.showMessageDialog(_clientFrame, "Draw.");
                 _serverCommunicator.getSocket().close();
                 closedSocket=true;
@@ -271,4 +276,6 @@ public class GoGameClient {
     }
     public static String getColor(){return color;}
     public static String getOpponentColor(){return opponentColor;}
+    public static void setColor(String clr){ color = clr; }
+    public static void setOpponentColor(String clr){ opponentColor = clr; }
 }

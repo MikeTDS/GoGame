@@ -73,8 +73,10 @@ public class Bot extends AbstractPlayer implements Runnable {
                 _botBrain.setBrainForRound();
                 if(_botBrain.calculateStonesOnTheBoard() == _midTrigger)
                     _moveOrganizer.setMoveState(new MidMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
-                if(_botBrain.calculateStonesOnTheBoard() == _lateTrigger)
+                if(_botBrain.calculateStonesOnTheBoard() >= _lateTrigger && _lateTrigger != -1){
                     _moveOrganizer.setMoveState(new LateMoveState(new int[_game.getBoardSize()*_game.getBoardSize()], _botBrain));
+                    _lateTrigger = -1;
+                }
 
                 int chosenField = _moveOrganizer.getBestField(this);
                 if(chosenField == -1){
@@ -85,6 +87,15 @@ public class Bot extends AbstractPlayer implements Runnable {
                         if(_opponent.getPass()){
                             _opponent.getOutput().println("QUIT_PASS");
                             _game._finished=true;
+                            if(_opponent.getTotalPoints()>getTotalPoints()){
+                                _opponent.getOutput().println("WINNER");
+                            }
+                            else if(_opponent.getTotalPoints()<getTotalPoints()){
+                                _opponent.getOutput().println("LOSER");
+                            }
+                            else{
+                                _opponent.getOutput().println("DRAW");
+                            }
                         }
                         else{
                             _opponent.getOutput().println("OPPONENT_PASS");
